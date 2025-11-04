@@ -6,16 +6,33 @@ public class FirstPersonController : MonoBehaviour
 {
     //Determine whether a player/character is in control
     public bool CanMove { get; private set; } = true;
+    //Determine whether or not you can sprint/if you should sprint
+    private bool IsSprinting => canSprint && Input.GetKey(sprintKey);
+    //Determine whether or not you can jump/if you should jump
+    private bool ShouldJump => Input.GetKeyDown(jumpKey) && characterController.isGrounded;
+
+    //Functional Options
+    [SerializeField] private bool canSprint = true; //check if you can sprint
+    [SerializeField] private bool canJump = true; //check if you can jump
+
+    //Controls
+    [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift; //assign left shift key to sprint
+    [SerializeField] private KeyCode jumpKey = KeyCode.Space; //assign jump key to jump
 
     //Movement Parameters
     [SerializeField] private float walkSpeed = 3.0f;
-    [SerializeField] private float gravity = 30.0f;
-
+    [SerializeField] private float sprintSpeed = 6.0f;
+   
     //Look Parameters
     [SerializeField, Range(1, 10)] private float lookSpeedX = 2.0f; //upper and lower bound for look speed in the x axis
     [SerializeField, Range(1, 10)] private float lookSpeedY = 2.0f; //upper and lower bound for look speed in the y axis
     [SerializeField, Range(1, 180)] private float upperLookLimit = 80.0f; //how many degrees we can actually look up before the camera will stop moving
     [SerializeField, Range(1, 180)] private float lowerLookLimit = 80.0f; //how many degrees we can actually look down before the camera will stop moving
+
+    //Jumping Parameters
+    [SerializeField] private float jumpForce = 8.0f;
+    [SerializeField] private float gravity = 30.0f;
+
 
     private Camera playerCamera;
     private CharacterController characterController;
@@ -43,6 +60,12 @@ public class FirstPersonController : MonoBehaviour
         {
             HandleMovementInput();
             HandleMouseLook();
+            
+            if(canJump)
+            {
+                HandleJump();
+            }
+             
 
             ApplyFinalMovements();
         }
@@ -50,7 +73,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandleMovementInput()
     {
-        currentInput = new Vector2(walkSpeed * Input.GetAxis("Vertical"), walkSpeed * Input.GetAxis("Horizontal"));
+        currentInput = new Vector2((IsSprinting ? sprintSpeed : walkSpeed) * Input.GetAxis("Vertical"), (IsSprinting ? sprintSpeed : walkSpeed) * Input.GetAxis("Horizontal")); //check if sprinting otherwise use walk speed instead
 
         float moveDirectionY = moveDirection.y;
         moveDirection = (transform.TransformDirection(Vector3.forward) * currentInput.x) + (transform.TransformDirection(Vector3.right) * currentInput.y);
@@ -63,6 +86,14 @@ public class FirstPersonController : MonoBehaviour
         rotationX = Mathf.Clamp(rotationX, -upperLookLimit, lowerLookLimit);
         playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeedX, 0);
+    }
+
+    private void HandleJump()
+    {
+        if(ShouldJump)
+        {
+            moveDirection.y = jumpForce;
+        }
     }
 
     private void ApplyFinalMovements()
