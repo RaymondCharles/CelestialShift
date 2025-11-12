@@ -12,6 +12,10 @@ public class FirstPersonController : MonoBehaviour
     private bool ShouldJump => Input.GetKeyDown(jumpKey) && characterController.isGrounded;
     //Determine whether or not you can crouch/if you should crouch
     private bool ShouldCrouch => Input.GetKeyDown(crouchKey) && !duringCrouchAnimation && characterController.isGrounded;   
+    //Determine whether or not you can slide/if you should slide
+    private bool CanSlide => Input.GetKeyDown(slideKey) && characterController.isGrounded;
+    private bool ContinueSlide => Input.GetKey(slideKey) && characterController.isGrounded;
+    private bool isSliding = false; //check if you can slide
 
     //Functional Options
     [SerializeField] private bool canSprint = true; //check if you can sprint
@@ -23,7 +27,8 @@ public class FirstPersonController : MonoBehaviour
     //Controls
     [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift; //assign left shift key to sprint
     [SerializeField] private KeyCode jumpKey = KeyCode.Space; //assign jump key to jump
-    [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl; //assign letf control key to crouch
+    [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl; //assign left control key to crouch
+    [SerializeField] private KeyCode slideKey = KeyCode.C; //assign C key to slide
 
 
     //Movement Parameters
@@ -70,6 +75,7 @@ public class FirstPersonController : MonoBehaviour
 
     // Sliding Parameters
     private Vector3 hitPointNormal; //Normal Position of the Surface you are walking on
+    /*
     private bool IsSliding
     {
         get
@@ -85,7 +91,7 @@ public class FirstPersonController : MonoBehaviour
                 return false;
             }
         }
-    }
+    }*/
 
     private Camera playerCamera;
     private CharacterController characterController;
@@ -125,9 +131,31 @@ public class FirstPersonController : MonoBehaviour
                 HandleCrouch();
             }
 
-            if(canUseHeadbob)
+            if(canUseHeadbob && !isSliding)
             {
                 HandleHeadbob();
+            }
+
+            // Start slide on press
+            if (CanSlide && !isSliding)
+            {
+                Debug.Log("Start Slide");
+                StartSlide(characterController.velocity);
+                isSliding = true;
+            }
+
+            // Stop slide when released
+            if (isSliding && !ContinueSlide && !CanSlide && Input.GetKeyUp(slideKey))
+            {
+                Debug.Log("Restart Slide");
+                isSliding = false;
+            }
+
+            // While sliding
+            if (isSliding)
+            {
+                Debug.Log("Is Sliding");
+                HandleSlide();
             }
 
             ApplyFinalMovements();
@@ -194,10 +222,11 @@ public class FirstPersonController : MonoBehaviour
             moveDirection.y -= gravity * Time.deltaTime;
         }
 
+/*
         if(WillSlideOnSlopes && IsSliding)
         {
             moveDirection += new Vector3(hitPointNormal.x, -hitPointNormal.y, hitPointNormal.z) * slopeSpeed;
-        }
+        }*/
 
         characterController.Move(moveDirection * Time.deltaTime);
 
@@ -235,4 +264,64 @@ public class FirstPersonController : MonoBehaviour
 
         duringCrouchAnimation = false;
     }
+
+    [Header("Sliding Settings")]
+    public float slideAcceleration = 10f;   // Downhill acceleration
+    public float slideDeceleration = 5f;    // Uphill deceleration
+    public float slopeThreshold = 0.1f;     // Minimum slope to count as slide
+
+    public Vector3 slideVelocity;
+
+
+    public void StartSlide(Vector3 currentVelocity)
+    {
+        slideVelocity = currentVelocity;
+        Vector3 facingDirection = transform.forward;
+        facingDirection.y = 0f;
+        facingDirection.Normalize();
+
+        slideVelocity += (10 * facingDirection);
+    }
+
+
+    public void HandleSlide()
+    {
+
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 2f))
+        {
+            Vector3 slopeNormal = hit.normal;
+            Vector3 slopeDirection = Vector3.Cross(Vector3.Cross(Vector3.up, slopeNormal), slopeNormal).normalized;
+            float slopeAngle = Vector3.Angle(Vector3.up, slopeNormal);
+
+
+            // Flatten the orientation forward vector (ignore vertical tilt)
+            Vector3 facingDirection = transform.forward;
+            facingDirection.y = 0f;
+            facingDirection.Normalize();
+
+
+
+            // Determine alignment of facing vs slope
+            float alignment = Vector3.Dot(facingDirection, slopeDirection);
+
+            // Keep only the part of velocity aligned with player facing
+            Vector3 projectedVelocity = Vector3.Project(slideVelocity, facingDirection);
+            slideVelocity.x = projectedVelocity.x;
+            slideVelocity.z = projectedVelocity.z;
+
+            if (slopeAngle >= slopeThreshold)
+            {
+                // Accelerate along the slope
+                slideVelocity += slopeDirection * slideAcceleration * Time.deltaTime * Mathf.Abs(alignment);
+            }
+
+            // Apply gravity
+            slideVelocity.y -= gravity * Time.deltaTime;
+
+            moveDirection = slideVelocity;
+            // Move once per frame
+            //characterController.Move(slideVelocity * Time.deltaTime);
+        }
+    }
+
 }
