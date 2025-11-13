@@ -1,20 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;   // NEW INPUT SYSTEM
 
 public class FirstPersonController : MonoBehaviour
 {
+    // New Input System object
+    private PlayerInputActions inputActions;
+
     //Determine whether a player/character is in control
     public bool CanMove { get; private set; } = true;
-    //Determine whether or not you can sprint/if you should sprint
-    private bool IsSprinting => canSprint && Input.GetKey(sprintKey);
-    //Determine whether or not you can jump/if you should jump
-    private bool ShouldJump => Input.GetKeyDown(jumpKey) && characterController.isGrounded;
-    //Determine whether or not you can crouch/if you should crouch
-    private bool ShouldCrouch => Input.GetKeyDown(crouchKey) && !duringCrouchAnimation && characterController.isGrounded;   
-    //Determine whether or not you can slide/if you should slide
-    private bool CanSlide => Input.GetKeyDown(slideKey) && characterController.isGrounded;
-    private bool ContinueSlide => Input.GetKey(slideKey) && characterController.isGrounded;
+
+    // Input-based booleans now use Input Actions
+    private bool IsSprinting => canSprint && inputActions.Player.Sprint.IsPressed();
+    private bool ShouldJump => canJump && inputActions.Player.Jump.triggered && characterController.isGrounded;
+    private bool ShouldCrouch => canCrouch && inputActions.Player.Crouch.triggered && !duringCrouchAnimation && characterController.isGrounded;
+    private bool CanSlide => inputActions.Player.Slide.triggered && characterController.isGrounded;
+    private bool ContinueSlide => inputActions.Player.Slide.IsPressed() && characterController.isGrounded;
     private bool isSliding = false; //check if you can slide
 
     //Functional Options
@@ -23,13 +25,6 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private bool canCrouch = true; //check if you can jump
     [SerializeField] private bool canUseHeadbob = true; //check if you can head bob
     [SerializeField] private bool WillSlideOnSlopes = true; //check if you can slide
-
-    //Controls
-    [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift; //assign left shift key to sprint
-    [SerializeField] private KeyCode jumpKey = KeyCode.Space; //assign jump key to jump
-    [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl; //assign left control key to crouch
-    [SerializeField] private KeyCode slideKey = KeyCode.C; //assign C key to slide
-
 
     //Movement Parameters
     [SerializeField] private float walkSpeed = 3.0f;
@@ -48,19 +43,12 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float gravity = 30.0f;
 
     //Crouch Parameters
-    //-> Crouch Height
     [SerializeField] private float crouchHeight = 0.5f;
-    //-> Stand Height
     [SerializeField] private float standingHeight = 2f;
-    //-> Time to crouch/stand
     [SerializeField] private float timeToCrouch = 0.25f;
-    //-> Crouching Center Point
     [SerializeField] private Vector3 crouchingCenter = new Vector3(0, 0.5f, 0);
-    //-> Standing Center Point
     [SerializeField] private Vector3 standingCenter = new Vector3(0, 0, 0);
-    //-> Is Crouching?
     private bool isCrouching;
-    //-> Is in crouch animation/mid crouch?
     private bool duringCrouchAnimation;
 
     //Headbob Parameters
@@ -75,63 +63,76 @@ public class FirstPersonController : MonoBehaviour
 
     // Sliding Parameters
     private Vector3 hitPointNormal; //Normal Position of the Surface you are walking on
-    /*
-    private bool IsSliding
-    {
-        get
-        {
-            //Debug.DrawRay(transform.position, Vector3.down, Color.red); --> Use this for debugging
-            if(characterController.isGrounded && Physics.Raycast(transform.position, Vector3.down, out RaycastHit slopeHit, 2f))
-            {
-                hitPointNormal = slopeHit.normal; //angle value of floor
-                return Vector3.Angle(hitPointNormal, Vector3.up) > characterController.slopeLimit;
-            }
-            else 
-            {
-                return false;
-            }
-        }
-    }*/
 
     private Camera playerCamera;
     private CharacterController characterController;
 
     private Vector3 moveDirection; //store current movement direction as a 3d vector
-    private Vector2 currentInput; //store current keyboard input (W,A,S,D...)
+
+    // New input values
+    private Vector2 moveInput;     // WASD from Input System
+    private Vector2 lookInput;     // Mouse delta from Input System
 
     private float rotationX = 0;
 
+    [Header("Sliding Settings")]
+    public float slideAcceleration = 10f;   // Downhill acceleration
+    public float slideDeceleration = 5f;    // Uphill deceleration
+    public float slopeThreshold = 0.1f;     // Minimum slope to count as slide
 
-    
-    // Start is called before the first frame update
+    public Vector3 slideVelocity;
+
+    //Mouse Settings
+    [SerializeField] private float mouseSmoothTime = 0.03f; // 0.03–0.08 is good
+
+    private Vector2 currentMouseDelta;
+    private Vector2 currentMouseDeltaVelocity;
+
     void Awake()
     {
-        playerCamera = GetComponentInChildren<Camera>(); 
+        playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
         defaultYPos = playerCamera.transform.localPosition.y;
-        Cursor.lockState = CursorLockMode.Locked;  
-        Cursor.visible = false; 
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        // Instantiate the input actions
+        inputActions = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        inputActions.Enable();
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Disable();
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Read input from the New Input System each frame
+        moveInput = inputActions.Player.Move.ReadValue<Vector2>(); // x = horizontal, y = vertical
+        lookInput = inputActions.Player.Look.ReadValue<Vector2>();
+
         if (CanMove)
         {
             HandleMovementInput();
             HandleMouseLook();
-            
-            if(canJump)
+
+            if (canJump)
             {
                 HandleJump();
             }
 
-            if(canCrouch)
+            if (canCrouch)
             {
                 HandleCrouch();
             }
 
-            if(canUseHeadbob && !isSliding)
+            if (canUseHeadbob && !isSliding)
             {
                 HandleHeadbob();
             }
@@ -144,10 +145,10 @@ public class FirstPersonController : MonoBehaviour
                 isSliding = true;
             }
 
-            // Stop slide when released
-            if (isSliding && !ContinueSlide && !CanSlide && Input.GetKeyUp(slideKey))
+            // Stop slide when button no longer held
+            if (isSliding && !ContinueSlide)
             {
-                Debug.Log("Restart Slide");
+                Debug.Log("Stop Slide");
                 isSliding = false;
             }
 
@@ -164,24 +165,52 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandleMovementInput()
     {
-        currentInput = new Vector2((isCrouching ? crouchSpeed : IsSprinting ? sprintSpeed :  walkSpeed) * Input.GetAxis("Vertical"), (isCrouching ? crouchSpeed : IsSprinting ? sprintSpeed : walkSpeed) * Input.GetAxis("Horizontal")); //check if sprinting otherwise use walk speed instead
+        // Determine current speed based on state
+        float currentSpeed = isCrouching ? crouchSpeed : IsSprinting ? sprintSpeed : walkSpeed;
 
+        // moveInput.y = Vertical (W/S), moveInput.x = Horizontal (A/D)
+        float targetX = currentSpeed * moveInput.y;   // forward/back
+        float targetZ = currentSpeed * moveInput.x;   // left/right
+
+        // Keep existing y velocity (for jump / gravity)
         float moveDirectionY = moveDirection.y;
-        moveDirection = (transform.TransformDirection(Vector3.forward) * currentInput.x) + (transform.TransformDirection(Vector3.right) * currentInput.y);
+
+        // Convert local input into world space movement
+        Vector3 forwardMovement = transform.TransformDirection(Vector3.forward) * targetX;
+        Vector3 rightMovement = transform.TransformDirection(Vector3.right) * targetZ;
+
+        moveDirection = forwardMovement + rightMovement;
         moveDirection.y = moveDirectionY;
     }
 
     private void HandleMouseLook()
     {
-        rotationX -= Input.GetAxis("Mouse Y") * lookSpeedY;
+        // Target delta is raw input * sensitivity
+        Vector2 targetMouseDelta = new Vector2(
+            lookInput.x * lookSpeedX,
+            lookInput.y * lookSpeedY
+        );
+
+        // Smooth from current value to target value
+        currentMouseDelta = Vector2.SmoothDamp(
+            currentMouseDelta,
+            targetMouseDelta,
+            ref currentMouseDeltaVelocity,
+            mouseSmoothTime
+        );
+
+        // Vertical (pitch)
+        rotationX -= currentMouseDelta.y;
         rotationX = Mathf.Clamp(rotationX, -upperLookLimit, lowerLookLimit);
         playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-        transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeedX, 0);
+
+        // Horizontal (yaw)
+        transform.rotation *= Quaternion.Euler(0, currentMouseDelta.x, 0);
     }
 
     private void HandleJump()
     {
-        if(ShouldJump)
+        if (ShouldJump)
         {
             moveDirection.y = jumpForce;
         }
@@ -189,7 +218,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandleCrouch()
     {
-        if(ShouldCrouch)
+        if (ShouldCrouch)
         {
             StartCoroutine(CrouchStand());
         }
@@ -202,45 +231,36 @@ public class FirstPersonController : MonoBehaviour
             return;
         }
 
-        //if grounded apply the headbob effect
-        if(Mathf.Abs(moveDirection.x) > 0.1f || Mathf.Abs(moveDirection.z) > 0.1f)
+        if (Mathf.Abs(moveDirection.x) > 0.1f || Mathf.Abs(moveDirection.z) > 0.1f)
         {
-            //check if walking, sprinting, jumping to apply correct effect
-            timer += Time.deltaTime * (isCrouching ? crouchBobSpeed : IsSprinting ? sprintBobSpeed: walkBobSpeed);
+            timer += Time.deltaTime * (isCrouching ? crouchBobSpeed : IsSprinting ? sprintBobSpeed : walkBobSpeed);
             playerCamera.transform.localPosition = new Vector3(
                 playerCamera.transform.localPosition.x,
                 defaultYPos + Mathf.Sin(timer) * (isCrouching ? crouchBobAmount : IsSprinting ? sprintBobAmount : walkBobAmount),
                 playerCamera.transform.localPosition.z);
-
         }
     }
 
     private void ApplyFinalMovements()
     {
-        if(!characterController.isGrounded)
+        if (!characterController.isGrounded)
         {
             moveDirection.y -= gravity * Time.deltaTime;
         }
 
-/*
-        if(WillSlideOnSlopes && IsSliding)
-        {
-            moveDirection += new Vector3(hitPointNormal.x, -hitPointNormal.y, hitPointNormal.z) * slopeSpeed;
-        }*/
+        // If you want slope sliding based on the surface normal, re-enable the code here.
 
         characterController.Move(moveDirection * Time.deltaTime);
-
     }
 
     private IEnumerator CrouchStand()
     {
         //Prevent clipping onto the ceiling when crouching
-        if(isCrouching && Physics.Raycast(playerCamera.transform.position, Vector3.up, 1f))
+        if (isCrouching && Physics.Raycast(playerCamera.transform.position, Vector3.up, 1f))
         {
             yield break;
         }
 
-        //Lerp from one value to another over a set amount of time ie.: standing height and crouching height
         duringCrouchAnimation = true;
 
         float timeElapsed = 0;
@@ -257,21 +277,13 @@ public class FirstPersonController : MonoBehaviour
             yield return null;
         }
 
-        characterController.height = targetHeight;  
+        characterController.height = targetHeight;
         characterController.center = targetCenter;
 
         isCrouching = !isCrouching;
 
         duringCrouchAnimation = false;
     }
-
-    [Header("Sliding Settings")]
-    public float slideAcceleration = 10f;   // Downhill acceleration
-    public float slideDeceleration = 5f;    // Uphill deceleration
-    public float slopeThreshold = 0.1f;     // Minimum slope to count as slide
-
-    public Vector3 slideVelocity;
-
 
     public void StartSlide(Vector3 currentVelocity)
     {
@@ -283,23 +295,18 @@ public class FirstPersonController : MonoBehaviour
         slideVelocity += (10 * facingDirection);
     }
 
-
     public void HandleSlide()
     {
-
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 2f))
         {
             Vector3 slopeNormal = hit.normal;
             Vector3 slopeDirection = Vector3.Cross(Vector3.Cross(Vector3.up, slopeNormal), slopeNormal).normalized;
             float slopeAngle = Vector3.Angle(Vector3.up, slopeNormal);
 
-
             // Flatten the orientation forward vector (ignore vertical tilt)
             Vector3 facingDirection = transform.forward;
             facingDirection.y = 0f;
             facingDirection.Normalize();
-
-
 
             // Determine alignment of facing vs slope
             float alignment = Vector3.Dot(facingDirection, slopeDirection);
@@ -319,9 +326,6 @@ public class FirstPersonController : MonoBehaviour
             slideVelocity.y -= gravity * Time.deltaTime;
 
             moveDirection = slideVelocity;
-            // Move once per frame
-            //characterController.Move(slideVelocity * Time.deltaTime);
         }
     }
-
 }

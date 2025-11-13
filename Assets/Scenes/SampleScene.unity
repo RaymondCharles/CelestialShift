@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -302,16 +302,12 @@ MonoBehaviour:
   canCrouch: 1
   canUseHeadbob: 1
   WillSlideOnSlopes: 1
-  sprintKey: 304
-  jumpKey: 32
-  crouchKey: 306
-  slideKey: 99
   walkSpeed: 3
   sprintSpeed: 6
   crouchSpeed: 1.5
   slopeSpeed: 8
-  lookSpeedX: 2
-  lookSpeedY: 2
+  lookSpeedX: 3
+  lookSpeedY: 2.5
   upperLookLimit: 80
   lowerLookLimit: 80
   jumpForce: 8
@@ -331,6 +327,7 @@ MonoBehaviour:
   slideDeceleration: 5
   slopeThreshold: 0.1
   slideVelocity: {x: 0, y: 0, z: 0}
+  mouseSmoothTime: 0.03
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
