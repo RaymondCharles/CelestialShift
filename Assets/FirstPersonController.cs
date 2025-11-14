@@ -20,11 +20,11 @@ public class FirstPersonController : MonoBehaviour
     private bool isSliding = false; //check if you can slide
 
     //Functional Options
-    [SerializeField] private bool canSprint = true; //check if you can sprint
-    [SerializeField] private bool canJump = true; //check if you can jump
-    [SerializeField] private bool canCrouch = true; //check if you can jump
-    [SerializeField] private bool canUseHeadbob = true; //check if you can head bob
-    [SerializeField] private bool WillSlideOnSlopes = true; //check if you can slide
+    [SerializeField] private bool canSprint = true;
+    [SerializeField] private bool canJump = true;
+    [SerializeField] private bool canCrouch = true;
+    [SerializeField] private bool canUseHeadbob = true;
+    [SerializeField] private bool WillSlideOnSlopes = true;
 
     //Movement Parameters
     [SerializeField] private float walkSpeed = 3.0f;
@@ -33,10 +33,10 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float slopeSpeed = 8f;
 
     //Look Parameters
-    [SerializeField, Range(1, 10)] private float lookSpeedX = 2.0f; //upper and lower bound for look speed in the x axis
-    [SerializeField, Range(1, 10)] private float lookSpeedY = 2.0f; //upper and lower bound for look speed in the y axis
-    [SerializeField, Range(1, 180)] private float upperLookLimit = 80.0f; //how many degrees we can actually look up before the camera will stop moving
-    [SerializeField, Range(1, 180)] private float lowerLookLimit = 80.0f; //how many degrees we can actually look down before the camera will stop moving
+    [SerializeField, Range(1, 10)] private float lookSpeedX = 2.0f;
+    [SerializeField, Range(1, 10)] private float lookSpeedY = 2.0f;
+    [SerializeField, Range(1, 180)] private float upperLookLimit = 80.0f;
+    [SerializeField, Range(1, 180)] private float lowerLookLimit = 80.0f;
 
     //Jumping Parameters
     [SerializeField] private float jumpForce = 8.0f;
@@ -74,6 +74,9 @@ public class FirstPersonController : MonoBehaviour
     private Vector2 lookInput;     // Mouse delta from Input System
 
     private float rotationX = 0;
+
+    [Header("Enemy Collision")]
+    [SerializeField] private LayerMask enemyLayer;   // set in Inspector to the Enemy layer
 
     [Header("Sliding Settings")]
     public float slideAcceleration = 10f;   // Downhill acceleration
@@ -248,8 +251,6 @@ public class FirstPersonController : MonoBehaviour
             moveDirection.y -= gravity * Time.deltaTime;
         }
 
-        // If you want slope sliding based on the surface normal, re-enable the code here.
-
         characterController.Move(moveDirection * Time.deltaTime);
     }
 
@@ -327,5 +328,32 @@ public class FirstPersonController : MonoBehaviour
 
             moveDirection = slideVelocity;
         }
+    }
+
+    // --------- THIS is the key part that stops you climbing enemies ----------
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        // If this collider is not on the enemyLayer, ignore.
+        if ((enemyLayer.value & (1 << hit.collider.gameObject.layer)) == 0)
+            return;
+
+        // Don't let enemy act as a ramp / ground you can climb.
+        // Remove any upward movement that would climb along its surface.
+        if (moveDirection.y > 0f)
+            moveDirection.y = 0f;
+
+        // Also, only slide horizontally along it.
+        Vector3 horizontalMove = new Vector3(moveDirection.x, 0f, moveDirection.z);
+        if (horizontalMove.sqrMagnitude < 0.0001f)
+            return;
+
+        // Use only the horizontal part of the normal so we slide around, not up.
+        Vector3 normal = hit.normal;
+        normal.y = 0f;
+
+        Vector3 slide = Vector3.ProjectOnPlane(horizontalMove, normal);
+
+        moveDirection.x = slide.x;
+        moveDirection.z = slide.z;
     }
 }
