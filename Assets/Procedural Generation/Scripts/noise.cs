@@ -11,7 +11,7 @@ public static class noise
             scale = 0.0001f;
         }
         for (int y=0; y < mapHeight; y++){
-            for (int x=0; y < mapWidth; x++){
+            for (int x=0; x < mapWidth; x++){
                 // Cast int x and y to float, divide by scale to add variety to values
                 float sampleX = x / scale;
                 float sampleY = y / scale;
