@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StartMenu : MonoBehaviour
 {
@@ -11,24 +12,17 @@ public class StartMenu : MonoBehaviour
 
     public void ChangeScreenToPlayerView()
     {
-        Debug.Log("Start Button pressed");
         PlayerViewScreen.SetActive(true);
     }
     public void ChangeScreenToMainScreen()
     {
-        Debug.Log("Back Button pressed");
         PlayerViewScreen.SetActive(false);
     }
-    public void ChangeScreenToGameScreen()
+    public void OnClickPlay()
     {
-        PlayerViewScreen.SetActive(false);
-        MainScreen.SetActive(false);
+        LoadingManager.Instance.ChangeToGameScene(1);
     }
-    public void ChangeScreenToGamePlayScreen()
-    {
-        PlayerViewScreen.SetActive(false);
-        MainScreen.SetActive(false);
-        PauseScreen.SetActive(false);
-    }
+    
+
 
 }
