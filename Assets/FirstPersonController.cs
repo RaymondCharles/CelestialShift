@@ -16,7 +16,6 @@ public class FirstPersonController : MonoBehaviour
     private bool ShouldJump => canJump && inputActions.Player.Jump.triggered && characterController.isGrounded;
     private bool ShouldCrouch => canCrouch && inputActions.Player.Crouch.triggered && !duringCrouchAnimation && characterController.isGrounded;
     private bool CanSlide => inputActions.Player.Slide.triggered && characterController.isGrounded;
-    private bool ContinueSlide => inputActions.Player.Slide.IsPressed() && characterController.isGrounded;
     private bool isSliding = false; //check if you can slide
 
     //Functional Options
@@ -61,10 +60,15 @@ public class FirstPersonController : MonoBehaviour
     private float defaultYPos = 0;
     private float timer;
 
+
+    //Animator
+    [SerializeField] private Animator playerAnimator;
+
     // Sliding Parameters
     private Vector3 hitPointNormal; //Normal Position of the Surface you are walking on
 
-    private Camera playerCamera;
+    public Camera playerCamera;
+    public Transform cameraPos;
     private CharacterController characterController;
 
     private Vector3 moveDirection; //store current movement direction as a 3d vector
@@ -86,14 +90,13 @@ public class FirstPersonController : MonoBehaviour
     public Vector3 slideVelocity;
 
     //Mouse Settings
-    [SerializeField] private float mouseSmoothTime = 0.03f; // 0.03–0.08 is good
+    [SerializeField] private float mouseSmoothTime = 0.03f; // 0.03ï¿½0.08 is good
 
     private Vector2 currentMouseDelta;
     private Vector2 currentMouseDeltaVelocity;
 
     void Awake()
     {
-        playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
         defaultYPos = playerCamera.transform.localPosition.y;
         Cursor.lockState = CursorLockMode.Locked;
@@ -119,11 +122,26 @@ public class FirstPersonController : MonoBehaviour
         // Read input from the New Input System each frame
         moveInput = inputActions.Player.Move.ReadValue<Vector2>(); // x = horizontal, y = vertical
         lookInput = inputActions.Player.Look.ReadValue<Vector2>();
+        bool isIdle = true;
+        bool isFalling = false;
 
         if (CanMove)
         {
             HandleMovementInput();
-            HandleMouseLook();
+            //HandleMouseLook();
+
+            if (moveInput.magnitude > 0)
+            {
+                Debug.Log("IsMoving");
+                isIdle = false;
+            }
+            else
+            {
+                playerAnimator.SetBool("isWalking", false);
+                playerAnimator.SetBool("isRunning", false);
+                playerAnimator.SetBool("isCrouching", false);
+                isIdle = true;
+            }
 
             if (canJump)
             {
@@ -133,12 +151,19 @@ public class FirstPersonController : MonoBehaviour
             if (canCrouch)
             {
                 HandleCrouch();
+                if (isCrouching)
+                {
+                    Debug.Log("Crouching");
+                    playerAnimator.SetBool("isCrouching", true);
+                    isIdle = false;
+                }
             }
 
+            /*
             if (canUseHeadbob && !isSliding)
             {
                 HandleHeadbob();
-            }
+            }*/
 
             // Start slide on press
             if (CanSlide && !isSliding)
@@ -146,13 +171,18 @@ public class FirstPersonController : MonoBehaviour
                 Debug.Log("Start Slide");
                 StartSlide(characterController.velocity);
                 isSliding = true;
+                isIdle = false;
             }
 
+            bool ContinueSlide = inputActions.Player.Slide.IsPressed() && characterController.isGrounded;
+            Debug.Log(ContinueSlide + "ContinueSlide");
+            Debug.Log(isSliding + "isSliding");
             // Stop slide when button no longer held
             if (isSliding && !ContinueSlide)
             {
                 Debug.Log("Stop Slide");
                 isSliding = false;
+                isIdle = true;
             }
 
             // While sliding
@@ -160,8 +190,19 @@ public class FirstPersonController : MonoBehaviour
             {
                 Debug.Log("Is Sliding");
                 HandleSlide();
+                isIdle = false;
+            }
+            
+            if (!characterController.isGrounded)
+            {
+                Debug.Log("Grounded check");
+                isFalling = true;
+                isIdle = false;
             }
 
+            playerAnimator.SetBool("isIdle", isIdle);
+            playerAnimator.SetBool("isFalling", isFalling);
+            playerAnimator.SetBool("isSliding", isSliding);
             ApplyFinalMovements();
         }
     }
@@ -170,6 +211,12 @@ public class FirstPersonController : MonoBehaviour
     {
         // Determine current speed based on state
         float currentSpeed = isCrouching ? crouchSpeed : IsSprinting ? sprintSpeed : walkSpeed;
+        if (moveInput.magnitude > 0)
+        {
+            playerAnimator.SetBool("isWalking", !isCrouching && !IsSprinting);
+            playerAnimator.SetBool("isRunning", IsSprinting);
+            playerAnimator.SetBool("isCrouching", isCrouching);
+        }
 
         // moveInput.y = Vertical (W/S), moveInput.x = Horizontal (A/D)
         float targetX = currentSpeed * moveInput.y;   // forward/back
@@ -185,31 +232,12 @@ public class FirstPersonController : MonoBehaviour
         moveDirection = forwardMovement + rightMovement;
         moveDirection.y = moveDirectionY;
     }
-
+/*
     private void HandleMouseLook()
     {
-        // Target delta is raw input * sensitivity
-        Vector2 targetMouseDelta = new Vector2(
-            lookInput.x * lookSpeedX,
-            lookInput.y * lookSpeedY
-        );
-
-        // Smooth from current value to target value
-        currentMouseDelta = Vector2.SmoothDamp(
-            currentMouseDelta,
-            targetMouseDelta,
-            ref currentMouseDeltaVelocity,
-            mouseSmoothTime
-        );
-
-        // Vertical (pitch)
-        rotationX -= currentMouseDelta.y;
-        rotationX = Mathf.Clamp(rotationX, -upperLookLimit, lowerLookLimit);
-        playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-
-        // Horizontal (yaw)
-        transform.rotation *= Quaternion.Euler(0, currentMouseDelta.x, 0);
-    }
+         Horizontal (yaw)
+        transform.rotation *= Quaternion.Euler(0, playerCamera.transform.localRotation.x, 0);
+    }*/
 
     private void HandleJump()
     {
@@ -227,7 +255,7 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
-    private void HandleHeadbob()
+    /*private void HandleHeadbob()
     {
         if (!characterController.isGrounded)
         {
@@ -242,7 +270,7 @@ public class FirstPersonController : MonoBehaviour
                 defaultYPos + Mathf.Sin(timer) * (isCrouching ? crouchBobAmount : IsSprinting ? sprintBobAmount : walkBobAmount),
                 playerCamera.transform.localPosition.z);
         }
-    }
+    }*/
 
     private void ApplyFinalMovements()
     {
