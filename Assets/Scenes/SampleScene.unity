@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1437,7 +1437,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494344952}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.337457, y: 0.0016675149, z: -0.011807366, w: 0.9412654}
+  m_LocalRotation: {x: 0.337457, y: 0.0016675165, z: -0.011807367, w: 0.9412654}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1637,7 +1637,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   navAgent: {fileID: 1567202150}
-  playerTransform: {fileID: 615117695}
+  playerTransform: {fileID: 543450652733109136}
   firePoint: {fileID: 1456470974}
   projectilePrefab: {fileID: 1729211062053963970, guid: 03cda2cc4edbfe84cb847d28ce2bb9f2, type: 3}
   terrainLayer:
@@ -1963,7 +1963,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144748341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3030429, y: 0.002095348, z: -0.011739013, w: 0.9529024}
+  m_LocalRotation: {x: 0.30304292, y: 0.0020953086, z: -0.011739002, w: 0.9529023}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2147,7 +2147,7 @@ GameObject:
   - component: {fileID: 1376318064}
   - component: {fileID: 919132149081975083}
   - component: {fileID: 919132149081975084}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: mainCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
