@@ -9,7 +9,9 @@ public class PlayerMotion : MonoBehaviour
     PlayerInput playerInput;
     InputAction moveAction;
     InputAction InverntoryAction;
+    InputAction PauseAction;
     public GameObject InventoryPanel;
+    public GameObject PausePanel;
     public float speed = 5.0f;
 
     // Start is called before the first frame update
@@ -18,6 +20,7 @@ public class PlayerMotion : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions.FindAction("Move");
         InverntoryAction = playerInput.actions.FindAction("Inventory");
+        PauseAction = playerInput.actions.FindAction("Pause");
     }
 
     // Update is called once per frame
@@ -28,11 +31,19 @@ public class PlayerMotion : MonoBehaviour
         {
             InventoryPanelShow();
         }
+        if (PauseAction.triggered)
+        {
+            PausePanelShow();
+        }
       
     }
     public void InventoryPanelShow()
     {
         InventoryPanel.SetActive(!InventoryPanel.activeSelf);
+    }
+    public void PausePanelShow()
+    {
+        PausePanel.SetActive(!PausePanel.activeSelf);
     }
     void movePlayer()
     {
