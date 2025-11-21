@@ -45,10 +45,18 @@ public class PlayerMotion : MonoBehaviour
     {
         PausePanel.SetActive(!PausePanel.activeSelf);
     }
+    public void PausePanelHideOnClick()
+    {
+        PausePanel.SetActive(false);
+    }
     void movePlayer()
     {
         Vector2 direction = moveAction.ReadValue<Vector2>();
         transform.position += new Vector3(direction.x, 0, direction.y) * Time.deltaTime * speed;
     }
-    
+    public void OnClickPlay()
+    {
+        LoadingManager.Instance.ChangeToGameScene(0);
+    }
+
 }

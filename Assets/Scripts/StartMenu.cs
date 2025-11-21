@@ -8,7 +8,6 @@ public class StartMenu : MonoBehaviour
 {
     public GameObject PlayerViewScreen;
     public GameObject MainScreen;
-    public GameObject PauseScreen;
 
     public void ChangeScreenToPlayerView()
     {

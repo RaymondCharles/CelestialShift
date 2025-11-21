@@ -120,6 +120,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &36454633 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4795805603753196009, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+  m_PrefabInstance: {fileID: 1417127642}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &73152911
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,6 +369,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: a7fa0c88-224b-49c3-a7b5-bb5ff2ba60d4
     m_ActionName: 'Movement/Inventory[/Keyboard/e]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: df8785a3-8fb4-4c13-88ba-3adfeede8d23
+    m_ActionName: 'Movement/Pause[/Keyboard/escape]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Movement
@@ -382,6 +391,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InventoryPanel: {fileID: 2046880587}
+  PausePanel: {fileID: 36454633}
   speed: 5
 --- !u!1 &455127392
 GameObject:
@@ -929,13 +939,69 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1267610579333056973, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267610579333056973, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267610579333056973, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 330532280}
+    - target: {fileID: 1267610579333056973, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267610579333056973, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickPlay
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267610579333056973, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerMotion, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267610579333056973, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4795805603753196009, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
       propertyPath: m_Name
       value: PauseScreen
       objectReference: {fileID: 0}
     - target: {fileID: 4795805603753196009, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434286331393340703, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434286331393340703, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434286331393340703, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 330532280}
+    - target: {fileID: 5434286331393340703, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434286331393340703, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PausePanelHideOnClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434286331393340703, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerMotion, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434286331393340703, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8494887525019062460, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
       propertyPath: m_AnchoredPosition.y
