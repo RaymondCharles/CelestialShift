@@ -3,87 +3,64 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]//ensures there is always a mesh filter on the object
-public class meshGenerator : MonoBehaviour
+public static class meshGenerator
 {
-    // Vertices and triangles for the mesh, stored in arrays
-    Mesh mesh;
-    Vector3[] vertices;
-    int[] triangles;
 
-    // Size of the mesh grid
-    public int xSize = 20;
-    public int zSize = 20;
+    public static MeshData GenerateTerrainMesh(float[,] heightMap){
+        int width = heightMap.GetLength(0);
+        int height = heightMap.GetLength(1);
+        float topLeftX = (width-1) / -2f;
+        float topLeftZ = (height-1) / 2f;
+    
+        MeshData meshData = new MeshData (width, height);
+        int vertexIndex = 0;
 
-    void Start()
-    {
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
+        for (int y = 0; y < height; y++){
+            for (int x = 0; x < width; x++){
+                
+                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, heightMap[x,y], topLeftX - y);
+                meshData.uvs[vertexIndex] = new Vector2(x/(float)width, y/(float)height);
 
-        CreateShape();
-        updateMesh();
+                if (x < width - 1 && y < height -1 ){
+                    // set the 2 triangles per quad, skipping right and bottom edge to ensure erroneous triangles are not drawn, triangles are set clockwise to ensure unitys lighting correctly renders
+                    meshData.AddTriangle(vertexIndex, vertexIndex + width + 1, vertexIndex + width);
+                    meshData.AddTriangle(vertexIndex + width + 1, vertexIndex, vertexIndex + 1);
+                }
+
+                vertexIndex++;
+            }
+        }
+        return meshData;
+    }
+}
+
+//Mesh Data Class containing vertices and triangles array, and a helper method to add a triangle
+public class MeshData{
+    public Vector3[] vertices;
+    public int[] triangles;
+    public Vector2[] uvs;
+
+    // 1D arrays are used to store both triangles and vertices.
+    public MeshData(int meshWidth, int meshHeight){
+        vertices = new Vector3[meshWidth * meshHeight];
+        uvs = new Vector2[meshWidth * meshHeight];
+        triangles = new int[(meshWidth-1)*(meshHeight-1)];
     }
 
-    void CreateShape()
-    {
-        // set vertices coordinates, via a nested loop
-        vertices = new Vector3[(xSize + 1) * (zSize + 1)];
-
-        for (int z = 0, i = 0; z <= zSize; z++)
-        {
-            for (int x = 0; x <= xSize; x++)
-            {
-                // add simple perlin noise
-                float y = Mathf.PerlinNoise(x * .3f, z * .3f) * 2f;
-                vertices[i] = new Vector3(x, y, z);
-                i++;
-            }
-            ;
-        }
-
-        // set triangles by looping through each quad, updating triangles array with correct coordinates for each pair of triangles
-        triangles = new int[xSize * zSize * 6];
-
-        int vert = 0;
-        int tris = 0;
-        for (int z = 0; z < zSize; z++)
-        {
-            for (int x = 0; x < xSize; x++)
-            {
-                triangles[tris + 0] = vert + 0;
-                triangles[tris + 1] = vert + xSize + 1;
-                triangles[tris + 2] = vert + 1;
-                triangles[tris + 3] = vert + 1;
-                triangles[tris + 4] = vert + xSize + 1;
-                triangles[tris + 5] = vert + xSize + 2;
-
-                vert++;
-                tris += 6;
-            }
-            vert++;
-        }
+    public void AddTriangle(int a, int b, int c){
+        triangles[triangleIndex] = a;
+        triangles[triangleIndex + 1] = b;
+        triangles[triangleIndex + 2] = c;
+        triangleIndex += 3;
     }
 
-    void updateMesh()
-    {
-        // clear existing mesh data and assign new vertices and triangles, recalculating normals to ensure correct lighting
-        mesh.Clear();
-
+    // create mesh method, adds vertices, triangles and uv map to mesh, recalculates normals to ensure correct lighting
+    public Mesh CreateMesh(){
+        Mesh mesh = new Mesh ();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
-
-        mesh.RecalculateNormals();
+        mesh.uv = uvs;
+        mesh.RecalculateNormals ();
+        return mesh;
     }
-    
-    private void OnDrawGizmos()
-    {
-        //visualize vertices in editor with gizmos
-        if (vertices == null)
-            return;
-
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            Gizmos.DrawSphere(vertices[i], 0.1f);
-        }
-    }
-
 }
