@@ -10,8 +10,10 @@ public class PlayerMotion : MonoBehaviour
     InputAction moveAction;
     InputAction InverntoryAction;
     InputAction PauseAction;
+    InputAction DropAction;
     public GameObject InventoryPanel;
     public GameObject PausePanel;
+    public Transform playerTransform;
     public float speed = 5.0f;
 
     // Start is called before the first frame update
@@ -21,6 +23,8 @@ public class PlayerMotion : MonoBehaviour
         moveAction = playerInput.actions.FindAction("Move");
         InverntoryAction = playerInput.actions.FindAction("Inventory");
         PauseAction = playerInput.actions.FindAction("Pause");
+        DropAction = playerInput.actions.FindAction("Drop");
+
     }
 
     // Update is called once per frame
@@ -34,6 +38,10 @@ public class PlayerMotion : MonoBehaviour
         if (PauseAction.triggered)
         {
             PausePanelShow();
+        }
+        if (DropAction.triggered)
+        {
+            DropSelectedItem();
         }
       
     }
@@ -57,6 +65,16 @@ public class PlayerMotion : MonoBehaviour
     public void OnClickPlay()
     {
         LoadingManager.Instance.ChangeToGameScene(0);
+    }
+    public void DropSelectedItem()
+    {
+        if (Inventory.Instance.items.Count > 0)
+        {
+            Item selectedItem = Inventory.Instance.items[0];
+            Vector3 dropPoint = playerTransform.position + playerTransform.forward;
+            dropPoint.y = playerTransform.position.y;
+            Inventory.Instance.DropItem(selectedItem, dropPoint);
+        }
     }
 
 }
