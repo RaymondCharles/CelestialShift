@@ -5,25 +5,35 @@ using UnityEngine;
 public class PickUpScript : MonoBehaviour
 {
     public Item item;
-    // Start is called before the first frame update
-    void Start()
-    {
+    public HotBarManager hotBarManager;
 
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Player"))
+    //    {
+    //        Inventory.Instance.addItem(item, transform.position);
+    //        HotBarManager.Instance.AddItemToSlot(0, item);
+
+    //        Destroy(gameObject);
+    //        Debug.Log("Item picked Up");
+    //    }
+    //}
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
             Inventory.Instance.addItem(item, transform.position);
+
+            if (HotBarManager.Instance != null)
+            {
+                HotBarManager.Instance.AddItemToSlot(item); 
+            }
+
             Destroy(gameObject);
-            Debug.Log("Item picked Up");
+            Debug.Log("Item picked Up" + item.itemName);
         }
     }
+
+
 }

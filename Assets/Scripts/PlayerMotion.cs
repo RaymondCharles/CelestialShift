@@ -16,6 +16,7 @@ public class PlayerMotion : MonoBehaviour
     public Transform playerTransform;
     public float speed = 5.0f;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,15 +67,36 @@ public class PlayerMotion : MonoBehaviour
     {
         LoadingManager.Instance.ChangeToGameScene(0);
     }
+    //public void DropSelectedItem()
+    //{
+    //    if (Inventory.Instance.items.Count > 0)
+    //    {
+    //        Item selectedItem = Inventory.Instance.items[0];
+    //        Vector3 dropPoint = playerTransform.position + playerTransform.forward;
+    //        dropPoint.y = playerTransform.position.y;
+    //        Inventory.Instance.DropItem(selectedItem, dropPoint);
+    //    }
+    //    if (HotBarManager.Instance != null)
+    //    {
+    //        HotBarManager.Instance.RemoveSpriteFromSlot(0);
+    //    }
+    //}
     public void DropSelectedItem()
     {
-        if (Inventory.Instance.items.Count > 0)
-        {
-            Item selectedItem = Inventory.Instance.items[0];
-            Vector3 dropPoint = playerTransform.position + playerTransform.forward;
-            dropPoint.y = playerTransform.position.y;
-            Inventory.Instance.DropItem(selectedItem, dropPoint);
-        }
+        int selectedSlot = HotBarManager.Instance.selectedSlot;
+        // Get the item in the currently selected slot
+        Item item = HotBarManager.Instance.slotItems[selectedSlot];
+        if (item == null) return;
+
+        Vector3 dropPoint = playerTransform.position + playerTransform.forward;
+        dropPoint.y = playerTransform.position.y;
+
+        Inventory.Instance.DropItem(item, dropPoint);
+
+        // Clear the slot in the hotbar
+        HotBarManager.Instance.ClearSlot(item);
     }
+
+
 
 }
