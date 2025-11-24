@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]//ensures there is always a mesh filter on the object
-public class meshGenerator : MonoBehaviour
+public class meshGeneratorOld : MonoBehaviour
 {
     // Vertices and triangles for the mesh, stored in arrays
     Mesh mesh;
@@ -11,8 +11,12 @@ public class meshGenerator : MonoBehaviour
     int[] triangles;
 
     // Size of the mesh grid
-    public int xSize = 20;
-    public int zSize = 20;
+    /*
+    public int xSize = heightMap.GetLength (0);
+    public int zSize = heightMap.GetLength (1);
+    */
+    public int xSize = 100;
+    public int zSize = 100;
 
     void Start()
     {

@@ -40,6 +40,8 @@ public class MeshData{
     public int[] triangles;
     public Vector2[] uvs;
 
+    int triangleIndex;
+
     // 1D arrays are used to store both triangles and vertices.
     public MeshData(int meshWidth, int meshHeight){
         vertices = new Vector3[meshWidth * meshHeight];
