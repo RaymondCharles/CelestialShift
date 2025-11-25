@@ -5,7 +5,7 @@ using UnityEngine;
 public class mapGenerator : MonoBehaviour
 {
     public enum DrawMode{
-        NoiseMap, ColourMap
+        NoiseMap, ColourMap, Mesh
     }
     public DrawMode drawMode;
     
@@ -20,6 +20,9 @@ public class mapGenerator : MonoBehaviour
 
     public int seed;
     public Vector2 offset;
+
+    public float meshHeightMultiplier;
+    public AnimationCurve meshHeightCurve;
 
     public bool autoUpdate;
 
@@ -50,8 +53,9 @@ public class mapGenerator : MonoBehaviour
             display.DrawTexture (TextureGenerator.TextureFromHeightMap(noiseMap));
         }else if (drawMode == DrawMode.ColourMap){
             display.DrawTexture (TextureGenerator.TextureFromColourMap(colourMap, mapWidth, mapHeight));
+        }else if (drawMode == DrawMode.Mesh){
+            display.DrawMesh (meshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColourMap(colourMap, mapWidth, mapHeight));
         }
-
 
     }
 
