@@ -26,4 +26,6 @@ public static class TextureGenerator{
         }
         return TextureFromColourMap(colourMap, width, height);
     }
+
+    //public static Texture2D TextureFromBiomeMap(float)
 }

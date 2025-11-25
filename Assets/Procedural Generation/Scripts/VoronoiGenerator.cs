@@ -3,64 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// TODO
+// 1. Add Noise to edges
+// 2. Change to make voronoi generic, i.e. return VoronoiMap of floats, then move colour logic to perlin one
+// 3. Optimise points generation code - generate in main method or see if needed for other return
+// 4. Maybe tie noiseScale to no of cells
 public static class VoronoiGenerator{
-    /*
-    [SerializeField] private Color[] cellColors;
-    [SerializeField] private int numOfCells = 10;
-    private int imgSize;
-    private int pixelsPerCell;
-    private RawImage image;
-    private Vector2Int[,] pointsPosArray; // Array to hold cell point positions
-    private Color[,] cellColorsArray; // Array to hold cell colors
-
-    
-    private void Awake()
+    public static Color[] GenerateVDiagram(int width, int height, Color[] cellColours, int numOfCells, int seed)
     {
-        // Fetch RawImage component and determine size
-        // Just cache the RawImage. The RectTransform size may not be final at Awake
-        image = GetComponent<RawImage>();
-    }
-
-    
-    // Check that colors are assigned in the inspector
-    private void OnValidate()
-    {
-        if (cellColors == null || cellColors.Length == 0)
-        {
-            cellColors = new Color[] { Color.red, Color.green, Color.blue, Color.yellow, Color.cyan, Color.magenta };
-        }
-    }
-
-    
-    private void Start()
-    {
-        // Force layout rebuild so RectTransform.rect has the correct pixel size
-        var rt = image.GetComponent<RectTransform>();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
-        imgSize = Mathf.RoundToInt(rt.rect.width);
-        if (imgSize <= 0)
-        {
-            Debug.LogWarning($"VoronoiDiagram: computed imgSize <= 0 (rect.width={rt.rect.width}). Using fallback 256.");
-            imgSize = 256; // fallback to a sane default
-        }
-
-        GenerateVDiagram();
-    }
-    */
-
-    public static Color[] GenerateVDiagram(int width, int height, Color[] cellColours, int numOfCells)
-    {
-        // Create texture, loop through pixels, assign colour according to Voronoi logic
+        // Create ColourMap, loop through pixels, assign colour according to Voronoi logic
         // Ensure we have at least one cell and at least one pixel per cell
         int cells = Mathf.Max(1, numOfCells);
         int pixelsPerCell = Mathf.Max(1, width / cells);
 
+        System.Random prng = new System.Random (seed);
+
         // Create Colour Map
         Color[] colourMap = new Color[width * height];
 
-        // Ensure points are generated before use
-        Vector2Int[,] pointsPosArray = GeneratePoints(numOfCells, pixelsPerCell); // Array to hold cell point positions
-        Color[,] cellColorsArray = GeneratePointColours(numOfCells, pixelsPerCell, cellColours);
+        // Generate Points and CellColours array
+        Vector2Int[,] pointsPosArray = GeneratePoints(numOfCells, pixelsPerCell, prng); // Array to hold cell point positions
+        Color[,] cellColorsArray = GeneratePointColours(numOfCells, pixelsPerCell, cellColours, prng);
 
         /*** test code to visualize points only
         for (int x = 0; x < imgSize; x++)
@@ -114,41 +77,34 @@ public static class VoronoiGenerator{
                     }
                 }
                 // Once looped through all nearby points, assign color of closest cell
-                //texture.SetPixel(x, y, cellColorsArray[closestCell.x, closestCell.y]);
-                colourMap[x * width + y] = cellColorsArray[closestCell.x, closestCell.y];
+                colourMap[y * width + x] = cellColorsArray[closestCell.x, closestCell.y];
             }
         }
-        /*
-        texture.Apply();
-        image.texture = texture;
-        // Save a PNG to persistentDataPath
-        byte[] png = texture.EncodeToPNG();
-        string path = System.IO.Path.Combine(Application.persistentDataPath, $"voronoi_{System.DateTime.Now:yyyyMMdd_HHmmss}.png");
-        System.IO.File.WriteAllBytes(path, png);
-        */
         return colourMap;
     }
 
     // COME BACK AND OPTIMIZE - MOST LIKELY GENERATE IN METHOD ABOVE
-private static Vector2Int[,] GeneratePoints(int cells, int pixelsPerCell){
+private static Vector2Int[,] GeneratePoints(int cells, int pixelsPerCell, System.Random prng){
         Vector2Int[,] pointsPosArray = new Vector2Int[cells, cells];
         for (int i = 0; i < cells; i++)
         {
             for (int j = 0; j < cells; j++)
             {
-                pointsPosArray[i, j] = new Vector2Int(i * pixelsPerCell + Random.Range(0, pixelsPerCell), j * pixelsPerCell + Random.Range(0, pixelsPerCell)); // Each point is a random position within its cell
+                //pointsPosArray[i, j] = new Vector2Int(i * pixelsPerCell + Random.Range(0, pixelsPerCell), j * pixelsPerCell + Random.Range(0, pixelsPerCell)); // Each point is a random position within its cell
+                pointsPosArray[i, j] = new Vector2Int(i * pixelsPerCell + prng.Next(0, pixelsPerCell), j * pixelsPerCell + prng.Next(0, pixelsPerCell)); // Each point is a random position within its cell
             }
         }
         return pointsPosArray;
     }
 
-    private static Color[,] GeneratePointColours(int cells, int pixelsPerCell, Color[] cellColours){
+    private static Color[,] GeneratePointColours(int cells, int pixelsPerCell, Color[] cellColours, System.Random prng){
         Color[,] cellColorsArray = new Color[cells, cells];
         for (int i = 0; i < cells; i++)
         {
             for (int j = 0; j < cells; j++)
             {
-                cellColorsArray[i, j] = cellColours[Random.Range(0, cellColours.Length)];// Assign a random color from the array
+                //cellColorsArray[i, j] = cellColours[Random.Range(0, cellColours.Length)];// Assign a random color from the array
+                cellColorsArray[i, j] = cellColours[prng.Next(0, cellColours.Length)];// Assign a random color from the array
             }
         }
         return cellColorsArray;

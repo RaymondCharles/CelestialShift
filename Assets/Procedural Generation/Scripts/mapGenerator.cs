@@ -61,7 +61,7 @@ public class mapGenerator : MonoBehaviour
         }else if (drawMode == DrawMode.Mesh){
             display.DrawMesh (meshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColourMap(colourMap, mapWidth, mapHeight));
         }else if (drawMode == DrawMode.Voronoi){
-            display.DrawTexture (TextureGenerator.TextureFromColourMap(VoronoiGenerator.GenerateVDiagram(mapWidth, mapHeight, cellColours, numOfCells), mapWidth, mapHeight));
+            display.DrawTexture (TextureGenerator.TextureFromColourMap(VoronoiGenerator.GenerateVDiagram(mapWidth, mapHeight, cellColours, numOfCells, seed), mapWidth, mapHeight));
         }
 
     }
