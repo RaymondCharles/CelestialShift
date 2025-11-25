@@ -58,6 +58,13 @@ public static class noise
             }
         }
 
+        // Integrate Voronoi
+        Color[] VoronoiMap = VoronoiGenerator.GenerateVDiagram(mapWidth, mapHeight, new Color[] {Color.black, Color.white}, 10);
+        // struct in mapdisplay for biome variables, pass in as parameter - then no need for so many variables can just be one struct
+        // within perlin loop, check which biome it is in, use those variables
+        // new loop checking weights then can use that to multiply variables by a factor of each - use curve too, maybe in editor for how close to border to blend - then pass that into VD generate method, for each one, after finding closest, try this Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x,y]); using min as next closest biome, max as this biome, value is distance between the two, then check curve to see if you should apply it or not
+
+        // normalizes values between 0 and 1 using max and minimum noiseheight
         for (int y=0; y < mapHeight; y++){
             for (int x=0; x < mapWidth; x++){
                 noiseMap[x,y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x,y]);

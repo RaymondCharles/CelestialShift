@@ -31,6 +31,8 @@ public class mapGenerator : MonoBehaviour
 
     public TerrainType[] regions;
 
+    public Biomes[] biomes;
+
     public void generateMap(){
         // call noise.GenerateNoiseMap() with parameters to generate noise map
         float[,] noiseMap = noise.GenerateNoiseMap (mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
@@ -80,9 +82,17 @@ public class mapGenerator : MonoBehaviour
     }
 }
 
+
+// add new struct with terraintype as a field, biomes, adding lacunarity and all that good stuff as fields
 [System.Serializable]
 public struct TerrainType{
     public string name;
     public float height;
     public Color colour;
+}
+
+[System.Serializable]
+public struct Biomes{
+    public string name;
+    public TerrainType[] terrainType;
 }
