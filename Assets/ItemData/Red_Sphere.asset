@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Red_Sphere
   m_EditorClassIdentifier: 
   itemName: Red_Ball
-  itemImg: {fileID: 546601033, guid: 58b91ef4865cd7b49b8b7cb46d9b40c2, type: 3}
-  quantity: 0
+  itemImg: {fileID: 1557730168, guid: e78b3d820b1142d4293528cf016ae6d8, type: 3}
+  quantity: 1
   quantityLimit: 10
   selected: 0
   equipped: 0
