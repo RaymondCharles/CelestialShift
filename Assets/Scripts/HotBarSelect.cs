@@ -38,6 +38,8 @@ public class HotBarSelect : MonoBehaviour
         // Tell HotBarManager which slot is currently selected
         if (HotBarManager.Instance != null)
             HotBarManager.Instance.selectedSlot = index;
+            HotBarManager.Instance.UpdateSelectedItem();
+
     }
 
 }

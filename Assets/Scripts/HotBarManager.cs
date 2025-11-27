@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class HotBarManager : MonoBehaviour
@@ -16,7 +17,7 @@ public class HotBarManager : MonoBehaviour
         // Set singleton instance
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject); 
+            Destroy(gameObject);
             return;
         }
         Instance = this;
@@ -38,7 +39,7 @@ public class HotBarManager : MonoBehaviour
     //}
     public void AddItemToSlot(Item item, int slotIndex = -1)
     {
-        // If no slotIndex is provided, find the first empty slot
+
         if (slotIndex < 0)
         {
             slotIndex = GetFirstEmptySlot();
@@ -49,7 +50,7 @@ public class HotBarManager : MonoBehaviour
             }
         }
 
-   
+
         Slots[slotIndex].image.sprite = item.itemImg;
         slotItems[slotIndex] = item;
     }
@@ -61,7 +62,7 @@ public class HotBarManager : MonoBehaviour
         {
             if (slotItems[i] == item)
             {
-                Slots[i].image.sprite = emptySlotSprite; 
+                Slots[i].image.sprite = emptySlotSprite;
                 slotItems[i] = null;
                 break;
             }
@@ -72,9 +73,35 @@ public class HotBarManager : MonoBehaviour
         for (int i = 0; i < slotItems.Length; i++)
         {
             if (slotItems[i] == null)
-                return i; // return first empty slot
+                return i;
         }
-        return -1; // no empty slots
+        return -1;
     }
 
+    public void SlotSwap(int slot1, int slot2)
+    {
+        Item temp = slotItems[slot1];
+        slotItems[slot1] = slotItems[slot2];
+        slotItems[slot2] = temp;
+
+        Slots[slot1].image.sprite = slotItems[slot1] != null ? slotItems[slot1].itemImg : emptySlotSprite;
+        Slots[slot2].image.sprite = slotItems[slot2] != null ? slotItems[slot2].itemImg : emptySlotSprite;
+        UpdateSelectedItem();
+
+    }
+
+    public void UpdateSelectedItem()
+    {
+        for (int i = 0; i < slotItems.Length; i++)
+        {
+            if (slotItems[i] != null)
+            {
+                slotItems[i].selected = false;
+            }
+        }
+        Item selectedItem = slotItems[selectedSlot];
+        if (selectedItem != null) { 
+            selectedItem.selected = true;
+        }
+    }
 }
