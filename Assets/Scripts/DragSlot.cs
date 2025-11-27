@@ -1,15 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler ,IEndDragHandler
 {
     public int index;
+    public SlotType slotType;
     public Canvas canvas;
+
     public CanvasGroup group;
     public Image dragIcon;
+
+    private Item draggedItem;
 
     public void Awake()
     {
@@ -23,15 +28,21 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler ,IEndDrag
 
     public void OnBeginDrag(PointerEventData eventdata)
     {
-        Item item = HotBarManager.Instance.slotItems[index];
-        if (item == null)
+        //Item item = HotBarManager.Instance.slotItems[index];
+        //if (item == null)
+        //{
+        //    return;
+        //}
+        draggedItem = GetItem();
+        if (draggedItem == null)
         {
             return;
         }
 
         dragIcon = new GameObject("dragIcon").AddComponent<Image>();
         dragIcon.transform.SetParent(canvas.transform, false);
-        dragIcon.sprite = item.itemImg;
+        dragIcon.transform.SetAsLastSibling();
+        dragIcon.sprite = draggedItem.itemImg;
         //dragIcon.color = new Color(1, 1, 1, 0.8f);
         dragIcon.rectTransform.sizeDelta = new Vector2(50, 50);
         dragIcon.raycastTarget = false;
@@ -49,23 +60,156 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler ,IEndDrag
 
     }
 
-    public void OnEndDrag(PointerEventData eventData) {
+    //public void OnEndDrag(PointerEventData eventData)
+    //{
+    //    group.alpha = 1f;
+    //    if (dragIcon != null)
+    //    {
+    //        Destroy(dragIcon);
+    //    }
+    //    if (eventData.pointerEnter == null)
+    //    {
+    //        return;
+    //    }
+    //    DragSlot targetslot = eventData.pointerEnter.GetComponentInParent<DragSlot>();
+    //    if (targetslot != null)
+    //    {
+    //        HandleSlotSwap(targetslot);
+    //    }
+
+    //}
+    public void OnEndDrag(PointerEventData eventData)
+    {
         group.alpha = 1f;
+
         if (dragIcon != null)
-        {
             Destroy(dragIcon);
-        }
-        if (eventData.pointerEnter == null)
+
+        DragSlot targetSlot = eventData.pointerEnter?.GetComponentInParent<DragSlot>();
+        if (targetSlot != null)
         {
+            HandleSlotSwap(targetSlot);
             return;
         }
-        DragSlot targetslot = eventData.pointerEnter.GetComponentInParent<DragSlot>();
-        if (targetslot != null)
+
+        // Dropped somewhere else -> spawn in world
+        if (draggedItem != null && Inventory.Instance != null && PlayerMotion.Instance != null)
         {
-            HotBarManager.Instance.SlotSwap(index, targetslot.index);
+            Vector3 dropPos = PlayerMotion.Instance.playerTransform.position + PlayerMotion.Instance.playerTransform.forward;
+            dropPos.y = PlayerMotion.Instance.playerTransform.position.y;
+
+            // Spawn the world object
+            Inventory.Instance.GenerateItem(draggedItem, dropPos);
+
+            // Remove from original slot
+            if (slotType == SlotType.Hotbar && HotBarManager.Instance != null)
+            {
+                HotBarManager.Instance.ClearSlot(draggedItem);
+            }
+            else if (slotType == SlotType.Inventory && InventoryUI.Instance != null)
+            {
+                InventoryUI.Instance.inventoryItems[index] = null;
+                InventoryUI.Instance.UpdateSlot(index);
+            }
         }
 
+        draggedItem = null;
     }
+
+
+
+
+    private void DropItemToWorld()
+    {
+        if (draggedItem == null) return;
+
+        // Find player position
+        PlayerMotion player = FindObjectOfType<PlayerMotion>();
+        if (player == null) return;
+
+        Vector3 dropPos = player.playerTransform.position + player.playerTransform.forward;
+        dropPos.y = player.playerTransform.position.y;
+
+        // Drop the item into the world
+        Inventory.Instance.DropItem(draggedItem, dropPos);
+
+        // Remove from inventory slot
+        InventoryUI.Instance.ClearSlot(index);
+
+        draggedItem = null;
+    }
+
+
+    private Item GetItem()
+    {
+        if (slotType == SlotType.Hotbar)
+            return HotBarManager.Instance.slotItems[index];
+        else if (slotType == SlotType.Inventory)
+            return InventoryUI.Instance.inventoryItems[index];
+        return null;
+    }
+
+
+    void HandleSlotSwap(DragSlot target)
+    {
+        if (target == null) return;  
+        if ((slotType == SlotType.Inventory || target.slotType == SlotType.Inventory)
+            && InventoryUI.Instance == null) return; 
+        if (slotType == SlotType.Hotbar && target.slotType == SlotType.Hotbar)
+        {
+            HotBarManager.Instance.SlotSwap(index, target.index);
+            return;
+        }
+
+        if (slotType == SlotType.Inventory && target.slotType == SlotType.Inventory)
+        {
+            if (InventoryUI.Instance == null) return;
+
+            // Swap items in inventory
+            Item temp = InventoryUI.Instance.inventoryItems[index];
+            InventoryUI.Instance.inventoryItems[index] = InventoryUI.Instance.inventoryItems[target.index];
+            InventoryUI.Instance.inventoryItems[target.index] = temp;
+
+            // Update the UI images
+            InventoryUI.Instance.UpdateSlot(index);
+            InventoryUI.Instance.UpdateSlot(target.index);
+            return;
+        }
+
+
+        if (slotType == SlotType.Hotbar && target.slotType == SlotType.Inventory)
+        {
+            InventoryUI.Instance.inventoryItems[target.index] = ScriptableObject.Instantiate(draggedItem);
+            InventoryUI.Instance.UpdateSlot(target.index);
+
+            HotBarManager.Instance.slotItems[index] = null;
+            HotBarManager.Instance.UpdateSlot(index);
+            return;
+        }
+
+
+
+
+        if (slotType == SlotType.Inventory && target.slotType == SlotType.Hotbar)
+        {
+            Item item = InventoryUI.Instance.inventoryItems[index];
+            if (item == null) { return; }
+
+            // Instantiate a new copy for the hotbar
+            HotBarManager.Instance.slotItems[target.index] = ScriptableObject.Instantiate(item);
+            HotBarManager.Instance.UpdateSlot(target.index);
+
+            InventoryUI.Instance.inventoryItems[index] = null;
+            InventoryUI.Instance.UpdateSlot(index);
+            return;
+        }
+
+
+
+    }
+
+
+
 
 
 }

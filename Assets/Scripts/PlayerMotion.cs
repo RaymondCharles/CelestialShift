@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerMotion : MonoBehaviour
 {
+    public static PlayerMotion Instance;
+
     PlayerInput playerInput;
     InputAction moveAction;
     InputAction InverntoryAction;
@@ -15,6 +17,18 @@ public class PlayerMotion : MonoBehaviour
     public GameObject PausePanel;
     public Transform playerTransform;
     public float speed = 5.0f;
+
+
+    private void Awake()
+    {
+        // Set up singleton
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
 
 
     // Start is called before the first frame update

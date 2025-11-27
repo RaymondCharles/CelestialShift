@@ -37,8 +37,26 @@ public class HotBarManager : MonoBehaviour
     //    Slots[slotIndex].image.sprite = item.itemImg;
     //    slotItems[slotIndex] = item;
     //}
+    //public void AddItemToSlot(Item item, int slotIndex = -1)
+    //{
+
+    //    if (slotIndex < 0)
+    //    {
+    //        slotIndex = GetFirstEmptySlot();
+    //        if (slotIndex == -1)
+    //        {
+    //            Debug.Log("No empty slots!");
+    //            return;
+    //        }
+    //    }
+
+
+    //    Slots[slotIndex].image.sprite = item.itemImg;
+    //    slotItems[slotIndex] = item;
+    //}
     public void AddItemToSlot(Item item, int slotIndex = -1)
     {
+        if (item == null) return;
 
         if (slotIndex < 0)
         {
@@ -50,10 +68,13 @@ public class HotBarManager : MonoBehaviour
             }
         }
 
+        // CREATE A NEW INSTANCE FOR THIS SLOT
+        Item newItem = ScriptableObject.Instantiate(item);
 
-        Slots[slotIndex].image.sprite = item.itemImg;
-        slotItems[slotIndex] = item;
+        Slots[slotIndex].image.sprite = newItem.itemImg;
+        slotItems[slotIndex] = newItem;
     }
+
 
 
     public void ClearSlot(Item item)
@@ -103,5 +124,10 @@ public class HotBarManager : MonoBehaviour
         if (selectedItem != null) { 
             selectedItem.selected = true;
         }
+    }
+
+    public void UpdateSlot(int slot)
+    {
+        Slots[slot].image.sprite = slotItems[slot] != null ? slotItems[slot].itemImg : emptySlotSprite;
     }
 }
