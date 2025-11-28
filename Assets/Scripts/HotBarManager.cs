@@ -130,4 +130,24 @@ public class HotBarManager : MonoBehaviour
     {
         Slots[slot].image.sprite = slotItems[slot] != null ? slotItems[slot].itemImg : emptySlotSprite;
     }
+
+    public void DropSelectedItem()
+    {
+        Item item = slotItems[selectedSlot];
+        if (item == null) return;
+
+        PlayerMotion player = PlayerMotion.Instance;
+        if (player == null) return;
+
+        Vector3 dropPos = player.playerTransform.position + player.playerTransform.forward;
+
+
+        dropPos.y = player.playerTransform.position.y;
+
+        Inventory.Instance.GenerateItem(item, dropPos);
+
+        // Remove from hotbar
+        ClearSlot(item);
+    }
+
 }

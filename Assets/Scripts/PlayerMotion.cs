@@ -1,4 +1,4 @@
-  using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -58,7 +58,7 @@ public class PlayerMotion : MonoBehaviour
         {
             DropSelectedItem();
         }
-      
+
     }
     public void InventoryPanelShow()
     {
@@ -97,19 +97,26 @@ public class PlayerMotion : MonoBehaviour
     //}
     public void DropSelectedItem()
     {
+        if (HotBarManager.Instance == null) return;
+
         int selectedSlot = HotBarManager.Instance.selectedSlot;
-        // Get the item in the currently selected slot
         Item item = HotBarManager.Instance.slotItems[selectedSlot];
         if (item == null) return;
 
-        Vector3 dropPoint = playerTransform.position + playerTransform.forward;
-        dropPoint.y = playerTransform.position.y;
+        if (Inventory.Instance == null) return;
+        if (item.worldPrefab == null) return;
 
-        Inventory.Instance.DropItem(item, dropPoint);
+        // Safe drop position: forward + slightly up
+        Vector3 dropPos = playerTransform.position + playerTransform.forward * 1.5f + Vector3.up * 0.5f;
 
-        // Clear the slot in the hotbar
+        // Spawn the world item
+        Inventory.Instance.GenerateItem(item, dropPos);
+
+        // Remove from hotbar
         HotBarManager.Instance.ClearSlot(item);
     }
+
+
 
 
 

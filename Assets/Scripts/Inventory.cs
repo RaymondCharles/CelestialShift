@@ -35,10 +35,7 @@ public class Inventory : MonoBehaviour
 
     public void DropItem(Item item, Vector3 pos)
     {
-        if (!items.Contains(item))
-        {
-            return;
-        }
+        if (!items.Contains(item)) return;
 
         item.quantity--;
 
@@ -46,8 +43,11 @@ public class Inventory : MonoBehaviour
         {
             items.Remove(item);
         }
-        GenerateItem(item, pos);
+
+        if (item.worldPrefab != null)
+            GenerateItem(item, pos);
     }
+
 
 
 
