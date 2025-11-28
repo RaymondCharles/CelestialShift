@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class mapGenerator : MonoBehaviour
 {
+    // enum to select which 
     public enum DrawMode{
         NoiseMap, ColourMap, Mesh, Voronoi
     }
@@ -31,7 +32,8 @@ public class mapGenerator : MonoBehaviour
 
     public TerrainType[] regions;
 
-    public Biomes[] biomes;
+    //public Biomes[] biomes;
+    public BiomeScriptableObject[] Biomes;
 
     public void generateMap(){
         // call noise.GenerateNoiseMap() with parameters to generate noise map
@@ -41,6 +43,7 @@ public class mapGenerator : MonoBehaviour
         Color[] colourMap = new Color[mapWidth * mapHeight];
         for (int y=0; y < mapHeight; y++){
             for (int x=0; x < mapWidth; x++){
+
                 float currentHeight = noiseMap[x,y];
                 for (int i = 0; i < regions.Length; i++){
                     if (currentHeight <= regions[i].height){
@@ -61,7 +64,13 @@ public class mapGenerator : MonoBehaviour
         }else if (drawMode == DrawMode.Mesh){
             display.DrawMesh (meshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColourMap(colourMap, mapWidth, mapHeight));
         }else if (drawMode == DrawMode.Voronoi){
-            display.DrawTexture (TextureGenerator.TextureFromColourMap(VoronoiGenerator.GenerateVDiagram(mapWidth, mapHeight, cellColours, numOfCells, seed), mapWidth, mapHeight));
+            // Iterate through biomes list to obtain voronoi colours
+            Color[] voronoiColours = new Color[Biomes.Length];
+            for (int i=0; i < Biomes.Length; i++){
+                voronoiColours[i] = Biomes[i].biomeColour;
+                Debug.Log("Added colour: " + Biomes[i].biomeColour);
+            }
+            display.DrawTexture (TextureGenerator.TextureFromColourMap(VoronoiGenerator.GenerateVDiagram(mapWidth, mapHeight, voronoiColours, numOfCells, seed), mapWidth, mapHeight));
         }
 
     }
@@ -95,4 +104,10 @@ public struct TerrainType{
 public struct Biomes{
     public string name;
     public TerrainType[] terrainType;
+    public float noiseScale;
+    public int octaves;
+    [Range(0,1)]
+    public float persistance;
+    public float lacunarity;
+    public Color biomeColour;
 }
