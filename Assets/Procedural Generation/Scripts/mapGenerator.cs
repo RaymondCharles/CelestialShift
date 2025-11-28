@@ -25,15 +25,14 @@ public class mapGenerator : MonoBehaviour
     public float meshHeightMultiplier;
     public AnimationCurve meshHeightCurve;
 
-    [SerializeField] public Color[] cellColours;
-    [SerializeField] public int numOfCells = 10;
-
     public bool autoUpdate;
 
     public TerrainType[] regions;
 
     //public Biomes[] biomes;
     public BiomeScriptableObject[] Biomes;
+
+    public int numOfCells;
 
     public void generateMap(){
         // call noise.GenerateNoiseMap() with parameters to generate noise map
@@ -64,13 +63,14 @@ public class mapGenerator : MonoBehaviour
         }else if (drawMode == DrawMode.Mesh){
             display.DrawMesh (meshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColourMap(colourMap, mapWidth, mapHeight));
         }else if (drawMode == DrawMode.Voronoi){
-            // Iterate through biomes list to obtain voronoi colours
+            // Iterate through biomes list to obtain voronoi colours#
+            // find more efficient way: enums or a class or dict or smt in mapgen
             Color[] voronoiColours = new Color[Biomes.Length];
             for (int i=0; i < Biomes.Length; i++){
                 voronoiColours[i] = Biomes[i].biomeColour;
                 Debug.Log("Added colour: " + Biomes[i].biomeColour);
             }
-            display.DrawTexture (TextureGenerator.TextureFromColourMap(VoronoiGenerator.GenerateVDiagram(mapWidth, mapHeight, voronoiColours, numOfCells, seed), mapWidth, mapHeight));
+            display.DrawTexture (TextureGenerator.TextureFromBiomeMap(VoronoiGenerator.GenerateVDiagram(mapWidth, mapHeight, voronoiColours, numOfCells, seed, Biomes), Biomes));
         }
 
     }
