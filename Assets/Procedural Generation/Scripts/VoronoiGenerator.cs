@@ -9,7 +9,7 @@ using UnityEngine.UI;
 // 3. Optimise points generation code - generate in main method or see if needed for other return
 // 4. Maybe tie noiseScale to no of cells
 public static class VoronoiGenerator{
-    public static Color[] GenerateVDiagram(int width, int height, Color[] cellColours, int numOfCells, int seed)
+    public static string [,] GenerateVDiagram(int width, int height, Color[] cellColours, int numOfCells, int seed, BiomeScriptableObject[] biomes)
     {
         // Create ColourMap, loop through pixels, assign colour according to Voronoi logic
         // Ensure we have at least one cell and at least one pixel per cell
@@ -19,11 +19,14 @@ public static class VoronoiGenerator{
         System.Random prng = new System.Random (seed);
 
         // Create Colour Map
-        Color[] colourMap = new Color[width * height];
+        //Color[] colourMap = new Color[width * height];
+
+        // Create BiomeMap
+        string [,] biomeMap = new string [width , height];
 
         // Generate Points and CellColours array
         Vector2Int[,] pointsPosArray = GeneratePoints(numOfCells, pixelsPerCell, prng); // Array to hold cell point positions
-        Color[,] cellColorsArray = GeneratePointColours(numOfCells, pixelsPerCell, cellColours, prng);
+        string [,] pointBiomeMap = GeneratePointBiomes(numOfCells, pixelsPerCell, biomes, prng);// Dictionary to hold biome assignment for each point
 
         /*** test code to visualize points only
         for (int x = 0; x < imgSize; x++)
@@ -77,10 +80,11 @@ public static class VoronoiGenerator{
                     }
                 }
                 // Once looped through all nearby points, assign color of closest cell
-                colourMap[y * width + x] = cellColorsArray[closestCell.x, closestCell.y];
+                //colourMap[y * width + x] = cellColorsArray[closestCell.x, closestCell.y];
+                biomeMap[y * width , x] = pointBiomeMap[closestCell.x-1, closestCell.y-1];
             }
         }
-        return colourMap;
+        return biomeMap;
     }
 
     // COME BACK AND OPTIMIZE - MOST LIKELY GENERATE IN METHOD ABOVE
@@ -97,16 +101,32 @@ private static Vector2Int[,] GeneratePoints(int cells, int pixelsPerCell, System
         return pointsPosArray;
     }
 
-    private static Color[,] GeneratePointColours(int cells, int pixelsPerCell, Color[] cellColours, System.Random prng){
-        Color[,] cellColorsArray = new Color[cells, cells];
+    // potential optimization: use enum for biome types instead of string names
+    private static string [,] GeneratePointBiomes(int cells, int pixelsPerCell, BiomeScriptableObject[] biomes, System.Random prng){
+        string [,] pointBiomeMap = new string[cells, cells];
         for (int i = 0; i < cells; i++)
         {
             for (int j = 0; j < cells; j++)
             {
                 //cellColorsArray[i, j] = cellColours[Random.Range(0, cellColours.Length)];// Assign a random color from the array
-                cellColorsArray[i, j] = cellColours[prng.Next(0, cellColours.Length)];// Assign a random color from the array
+                //cellColorsArray[i, j] = cellColours[prng.Next(0, cellColours.Length)];// Assign a random color from the array
+                pointBiomeMap[i,j] = biomes[prng.Next(0, biomes.Length)].name;// Create new biomeCoord object, assign random biome 
             }
         }
-        return cellColorsArray;
+        return pointBiomeMap;
     }
 }
+
+public class biomeCoord{
+    string biome;
+
+    public biomeCoord(float _x, float _y, string _biome){
+        biome = _biome;
+    }
+
+    public string getBiome(){
+        return biome;
+    }
+}
+
+

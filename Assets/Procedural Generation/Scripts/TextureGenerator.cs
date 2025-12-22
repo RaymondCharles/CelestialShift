@@ -27,5 +27,23 @@ public static class TextureGenerator{
         return TextureFromColourMap(colourMap, width, height);
     }
 
-    //public static Texture2D TextureFromBiomeMap(float)
+    public static Texture2D TextureFromBiomeMap(string[,] biomeMap, BiomeScriptableObject[] biomes){
+        int width = biomeMap.GetLength(0);
+        int height = biomeMap.GetLength(1);
+
+        // find more efficient way: enums or a class or dict or smt in mapgen
+        Dictionary<string, Color> biomeColourDict = new Dictionary<string, Color>();
+        for (int i = 0; i < biomes.Length; i++){
+            biomeColourDict.Add(biomes[i].name , biomes[i].biomeColour);
+        }
+
+        // 1d array to store colours for biomemap in order to get a visual representation
+        Color [] colourMap = new Color[width * height];
+        for (int y=0; y < height; y++){
+            for (int x=0; x < height; x++){
+                colourMap[y * width + x] = biomeColourDict[biomeMap[x,y]];
+            }
+        }
+        return TextureFromColourMap(colourMap, width, height);
+    }
 }

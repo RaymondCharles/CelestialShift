@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ba415e03ca788444aa75fd2f844b9d2, type: 3}
+  m_Name: grassPlainBiome
+  m_EditorClassIdentifier: 
+  name: Grass Plains
+  terrainType:
+  - name: Water
+    height: 0.4
+    colour: {r: 0.14901961, g: 0.4156863, b: 0.45882356, a: 0}
+  - name: Sand
+    height: 0.45
+    colour: {r: 0.7137255, g: 0.4431373, b: 0.10588236, a: 0}
+  - name: Grass
+    height: 0.7
+    colour: {r: 0.19607845, g: 0.4901961, b: 0.09411766, a: 0}
+  - name: Mountain
+    height: 0.9
+    colour: {r: 0.28235295, g: 0.24313727, b: 0.21960786, a: 0}
+  - name: Snow
+    height: 1
+    colour: {r: 0.97647065, g: 0.8431373, b: 0.7254902, a: 0}
+  noiseScale: 71
+  octaves: 6
+  persistance: 0.182
+  lacunarity: 6.77
+  biomeColour: {r: 0.25742579, g: 1, b: 0, a: 0}
