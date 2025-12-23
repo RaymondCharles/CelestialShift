@@ -81,7 +81,7 @@ public static class VoronoiGenerator{
                 }
                 // Once looped through all nearby points, assign color of closest cell
                 //colourMap[y * width + x] = cellColorsArray[closestCell.x, closestCell.y];
-                biomeMap[y * width , x] = pointBiomeMap[closestCell.x-1, closestCell.y-1];
+                biomeMap[x, y] = pointBiomeMap[closestCell.x, closestCell.y];
             }
         }
         return biomeMap;
