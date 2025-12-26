@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
-public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler ,IEndDragHandler
+public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public int index;
     public SlotType slotType;
@@ -24,6 +24,13 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler ,IEndDrag
         {
             group = gameObject.AddComponent<CanvasGroup>();
         }
+        GameObject icon = new GameObject("dragIcon");
+        dragIcon = icon.AddComponent<Image>();
+        dragIcon.transform.SetParent(canvas.transform, false);
+        dragIcon.transform.SetAsLastSibling();
+        dragIcon.raycastTarget = false;
+        dragIcon.rectTransform.sizeDelta = new Vector2(50, 50);
+        dragIcon.gameObject.SetActive(false);
     }
 
     public void OnBeginDrag(PointerEventData eventdata)
@@ -33,20 +40,20 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler ,IEndDrag
         //{
         //    return;
         //}
-        draggedItem = GetItem();
+
+        //draggedItem = GetItem();
+        draggedItem = SlotFunctions.GetItem(slotType, index);
         if (draggedItem == null)
         {
             return;
         }
 
-        dragIcon = new GameObject("dragIcon").AddComponent<Image>();
-        dragIcon.transform.SetParent(canvas.transform, false);
-        dragIcon.transform.SetAsLastSibling();
-        dragIcon.sprite = draggedItem.itemImg;
-        //dragIcon.color = new Color(1, 1, 1, 0.8f);
-        dragIcon.rectTransform.sizeDelta = new Vector2(50, 50);
-        dragIcon.raycastTarget = false;
+        draggedItem = SlotFunctions.GetItem(slotType, index);
+        if (draggedItem == null) return;
 
+        dragIcon.sprite = draggedItem.itemImg;
+        dragIcon.color = new Color(1, 1, 1, 0.8f); // optional transparency
+        dragIcon.gameObject.SetActive(true);
         group.alpha = 0.5f;
 
     }
@@ -83,110 +90,141 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler ,IEndDrag
         group.alpha = 1f;
 
         if (dragIcon != null)
-            Destroy(dragIcon);
+            dragIcon.gameObject.SetActive(false);
+
 
         DragSlot targetSlot = eventData.pointerEnter?.GetComponentInParent<DragSlot>();
         if (targetSlot != null)
         {
-            HandleSlotSwap(targetSlot);
+            HandleSwapSlot(targetSlot);
             return;
         }
-
-      
         if (draggedItem != null && Inventory.Instance != null && PlayerMotion.Instance != null)
         {
-            Vector3 dropPos = PlayerMotion.Instance.playerTransform.position + PlayerMotion.Instance.playerTransform.forward;
-            dropPos.y = PlayerMotion.Instance.playerTransform.position.y;
+            Vector3 dropPos = PlayerMotion.Instance.playerTransform.position +
+                              PlayerMotion.Instance.playerTransform.forward * 1.5f +
+                              Vector3.up * 0.5f;
 
-            Inventory.Instance.GenerateItem(draggedItem, dropPos);
+            // Delegated to Inventory
+            Inventory.Instance.DropItemToWorld(draggedItem, dropPos);
 
+            // Clear slot in UI
             if (slotType == SlotType.Hotbar && HotBarManager.Instance != null)
-            {
                 HotBarManager.Instance.ClearSlot(draggedItem);
-            }
             else if (slotType == SlotType.Inventory && InventoryUI.Instance != null)
-            {
-                InventoryUI.Instance.inventoryItems[index] = null;
-                InventoryUI.Instance.UpdateSlot(index);
-            }
+                InventoryUI.Instance.ClearSlot(index);
+
+            draggedItem = null;
         }
 
-        draggedItem = null;
+
+
+        //if (draggedItem != null && Inventory.Instance != null && PlayerMotion.Instance != null)
+        //{
+        //    Vector3 dropPos = PlayerMotion.Instance.playerTransform.position + PlayerMotion.Instance.playerTransform.forward;
+        //    dropPos.y = PlayerMotion.Instance.playerTransform.position.y;
+
+        //    Inventory.Instance.GenerateItem(draggedItem, dropPos);
+
+        //    if (slotType == SlotType.Hotbar && HotBarManager.Instance != null)
+        //    {
+        //        HotBarManager.Instance.ClearSlot(draggedItem);
+        //    }
+        //    else if (slotType == SlotType.Inventory && InventoryUI.Instance != null)
+        //    {
+        //        InventoryUI.Instance.inventoryItems[index] = null;
+        //        InventoryUI.Instance.UpdateSlot(index);
+        //    }
+        //}
+
+        //draggedItem = null;
     }
 
 
-    private Item GetItem()
+    //private Item GetItem()
+    //{
+    //    if (slotType == SlotType.Hotbar)
+    //        return HotBarManager.Instance.slotItems[index];
+    //    else if (slotType == SlotType.Inventory)
+    //        return InventoryUI.Instance.inventoryItems[index];
+    //    return null;
+    //}
+
+    void HandleSwapSlot(DragSlot target)
     {
-        if (slotType == SlotType.Hotbar)
-            return HotBarManager.Instance.slotItems[index];
-        else if (slotType == SlotType.Inventory)
-            return InventoryUI.Instance.inventoryItems[index];
-        return null;
+        if (target == null)
+        {
+            return;
+        }
+        if ((slotType == SlotType.Inventory || target.slotType == SlotType.Inventory) && InventoryUI.Instance == null)
+        {
+            return;
+        }
+        SlotFunctions.HandleSwap(slotType, index, target.slotType, target.index, draggedItem);
     }
-
-
-    void HandleSlotSwap(DragSlot target)
-    {
-        if (target == null) return;  
-        if ((slotType == SlotType.Inventory || target.slotType == SlotType.Inventory)
-            && InventoryUI.Instance == null) return; 
-
-        if (slotType == SlotType.Hotbar && target.slotType == SlotType.Hotbar)
-        {
-            HotBarManager.Instance.SlotSwap(index, target.index);
-            return;
-        }
-
-        if (slotType == SlotType.Inventory && target.slotType == SlotType.Inventory)
-        {
-            if (InventoryUI.Instance == null) return;
-
-            // Swap items in inventory
-            Item temp = InventoryUI.Instance.inventoryItems[index];
-            InventoryUI.Instance.inventoryItems[index] = InventoryUI.Instance.inventoryItems[target.index];
-            InventoryUI.Instance.inventoryItems[target.index] = temp;
-
-            // Update the UI images
-            InventoryUI.Instance.UpdateSlot(index);
-            InventoryUI.Instance.UpdateSlot(target.index);
-            return;
-        }
-
-
-        if (slotType == SlotType.Hotbar && target.slotType == SlotType.Inventory)
-        {
-            InventoryUI.Instance.inventoryItems[target.index] = ScriptableObject.Instantiate(draggedItem);
-            InventoryUI.Instance.UpdateSlot(target.index);
-
-            HotBarManager.Instance.slotItems[index] = null;
-            HotBarManager.Instance.UpdateSlot(index);
-            return;
-        }
-
-
-
-
-        if (slotType == SlotType.Inventory && target.slotType == SlotType.Hotbar)
-        {
-            Item item = InventoryUI.Instance.inventoryItems[index];
-            if (item == null) { return; }
-
-            // Instantiate a new copy for the hotbar
-            HotBarManager.Instance.slotItems[target.index] = ScriptableObject.Instantiate(item);
-            HotBarManager.Instance.UpdateSlot(target.index);
-
-            InventoryUI.Instance.inventoryItems[index] = null;
-            InventoryUI.Instance.UpdateSlot(index);
-            return;
-        }
-
-
-
-    }
-
-
-
-
-
 }
+
+
+    //void HandleSlotSwap(DragSlot target)
+    //{
+    //    if (target == null) return;  
+    //    if ((slotType == SlotType.Inventory || target.slotType == SlotType.Inventory)
+    //        && InventoryUI.Instance == null) return; 
+
+    //    if (slotType == SlotType.Hotbar && target.slotType == SlotType.Hotbar)
+    //    {
+    //        HotBarManager.Instance.SlotSwap(index, target.index);
+    //        return;
+    //    }
+
+    //    if (slotType == SlotType.Inventory && target.slotType == SlotType.Inventory)
+    //    {
+    //        if (InventoryUI.Instance == null) return;
+
+    //        // Swap items in inventory
+    //        Item temp = InventoryUI.Instance.inventoryItems[index];
+    //        InventoryUI.Instance.inventoryItems[index] = InventoryUI.Instance.inventoryItems[target.index];
+    //        InventoryUI.Instance.inventoryItems[target.index] = temp;
+
+    //        // Update the UI images
+    //        InventoryUI.Instance.UpdateSlot(index);
+    //        InventoryUI.Instance.UpdateSlot(target.index);
+    //        return;
+    //    }
+
+
+    //    if (slotType == SlotType.Hotbar && target.slotType == SlotType.Inventory)
+    //    {
+    //        InventoryUI.Instance.inventoryItems[target.index] = ScriptableObject.Instantiate(draggedItem);
+    //        InventoryUI.Instance.UpdateSlot(target.index);
+
+    //        HotBarManager.Instance.slotItems[index] = null;
+    //        HotBarManager.Instance.UpdateSlot(index);
+    //        return;
+    //    }
+
+
+
+
+    //    if (slotType == SlotType.Inventory && target.slotType == SlotType.Hotbar)
+    //    {
+    //        Item item = InventoryUI.Instance.inventoryItems[index];
+    //        if (item == null) { return; }
+
+    //        // Instantiate a new copy for the hotbar
+    //        HotBarManager.Instance.slotItems[target.index] = ScriptableObject.Instantiate(item);
+    //        HotBarManager.Instance.UpdateSlot(target.index);
+
+    //        InventoryUI.Instance.inventoryItems[index] = null;
+    //        InventoryUI.Instance.UpdateSlot(index);
+    //        return;
+    //    }
+
+
+    
+
+
+
+
+
 

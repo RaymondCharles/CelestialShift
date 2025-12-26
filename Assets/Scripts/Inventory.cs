@@ -8,7 +8,7 @@ public class Inventory : MonoBehaviour
     public static Inventory Instance;
     public List<Item> items = new List<Item>();
 
-  
+
 
     public void Awake()
     {
@@ -54,6 +54,12 @@ public class Inventory : MonoBehaviour
     public void GenerateItem(Item item, Vector3 pos)
     {
         Instantiate(item.worldPrefab, pos, Quaternion.identity);
+    }
+
+    public void DropItemToWorld(Item item, Vector3 pos)
+    {
+        if (item == null ||  item.worldPrefab == null) return;
+        GenerateItem(item, pos);
     }
 
 
