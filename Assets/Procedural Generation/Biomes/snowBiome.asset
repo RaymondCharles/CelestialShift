@@ -14,9 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Snow
   terrainType:
-  - name: 
-    height: 0
-    colour: {r: 0, g: 0, b: 0, a: 0}
+  - name: Water
+    height: 0.2
+    colour: {r: 0.08170167, g: 0.5032541, b: 0.6415094, a: 0}
+  - name: Mountain
+    height: 0.5
+    colour: {r: 0.31011412, g: 0.31132078, b: 0.3098523, a: 0}
+  - name: Snow
+    height: 1
+    colour: {r: 1, g: 1, b: 1, a: 0}
   noiseScale: 0
   octaves: 0
   persistance: 0

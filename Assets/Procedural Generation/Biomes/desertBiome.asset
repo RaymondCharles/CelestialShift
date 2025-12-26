@@ -13,7 +13,13 @@ MonoBehaviour:
   m_Name: desertBiome
   m_EditorClassIdentifier: 
   name: Desert
-  terrainType: []
+  terrainType:
+  - name: rock
+    height: 0.2
+    colour: {r: 0.21568629, g: 0.21568629, b: 0.21568629, a: 0}
+  - name: Sand
+    height: 1
+    colour: {r: 0.754717, g: 0.5373814, b: 0.06051977, a: 0}
   noiseScale: 0
   octaves: 0
   persistance: 0

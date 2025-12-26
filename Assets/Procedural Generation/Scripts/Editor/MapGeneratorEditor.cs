@@ -11,11 +11,11 @@ public class MapGeneratorEditor : Editor {
         // draw default inspector, adding a button to generate map
         if (DrawDefaultInspector()){
             if (mapGen.autoUpdate){
-                mapGen.generateMap();
+                mapGen.DrawMapInEditor();
             }
         }   
         if (GUILayout.Button ("Generate")){
-            mapGen.generateMap();
+            mapGen.DrawMapInEditor();
         }
     }
 }

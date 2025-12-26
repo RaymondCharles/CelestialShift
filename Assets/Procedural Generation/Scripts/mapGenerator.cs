@@ -31,69 +31,64 @@ public class mapGenerator : MonoBehaviour
     public TerrainType[] regions;
 
     //public Biomes[] biomes;
+    // efficiency improvement: use dict?
     public BiomeScriptableObject[] Biomes;
 
     public int numOfCells;
-
-    private string[,] VoronoiMap;
-    private Color[] voronoiColours;
+    
     
     public void DrawMapInEditor(){
-
-        voronoiColours = new Color[Biomes.Length];
+        MapData mapData = generateMapData();
+        
+        Color[] voronoiColours = new Color[Biomes.Length];
         for (int i=0; i < Biomes.Length; i++){
                 voronoiColours[i] = Biomes[i].biomeColour;
                 Debug.Log("Added colour: " + Biomes[i].biomeColour);
             }
-        VoronoiMap = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes);
 
         // find displayMap object, and draw noisemap
         mapDisplay display = Object.FindFirstObjectByType<mapDisplay> ();
         if (drawMode == DrawMode.NoiseMap) {
-            display.DrawTexture (TextureGenerator.TextureFromHeightMap(noiseMap));
+            display.DrawTexture (TextureGenerator.TextureFromHeightMap(mapData.noiseMap));
         }else if (drawMode == DrawMode.ColourMap){
-            display.DrawTexture (TextureGenerator.TextureFromColourMap(colourMap, mapChunkSize, mapChunkSize));
+            display.DrawTexture (TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize));
         }else if (drawMode == DrawMode.Mesh){
-            display.DrawMesh (meshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier, meshHeightCurve, levelOfDetail), TextureGenerator.TextureFromColourMap(colourMap, mapChunkSize, mapChunkSize));
+            display.DrawMesh (meshGenerator.GenerateTerrainMesh(mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, levelOfDetail), TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize));
         }else if (drawMode == DrawMode.Voronoi){
-            // Iterate through biomes list to obtain voronoi colours#
-            // find more efficient way: enums or a class or dict or smt in mapgen
-            Color[] voronoiColours = new Color[Biomes.Length];
-            for (int i=0; i < Biomes.Length; i++){
-                voronoiColours[i] = Biomes[i].biomeColour;
-                Debug.Log("Added colour: " + Biomes[i].biomeColour);
-            }
-            display.DrawTexture (TextureGenerator.TextureFromBiomeMap(VoronoiMap, Biomes));
+            display.DrawTexture (TextureGenerator.TextureFromBiomeMap(mapData.voronoiMap, Biomes));
         }
     }
 
-    public void generateMap(){
-        voronoiColours = new Color[Biomes.Length];
+    MapData generateMapData(){
+        Color[] voronoiColours = new Color[Biomes.Length];
         for (int i=0; i < Biomes.Length; i++){
                 voronoiColours[i] = Biomes[i].biomeColour;
                 Debug.Log("Added colour: " + Biomes[i].biomeColour);
             }
-        VoronoiMap = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes);
+        string[,] voronoiMap = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes);
 
         
         // call noise.GenerateNoiseMap() with parameters to generate noise map
-        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset, VoronoiMap, Biomes);
+        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset, voronoiMap, Biomes);
 
         // build a 1d array of colours by looping through the heightmap, checking TerrainType struct, and assigning colours accordingly EXPAND WITH BIOMES - i.e. figure out different structs for different biomes
         Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
         for (int y=0; y < mapChunkSize; y++){
             for (int x=0; x < mapChunkSize; x++){
-
                 float currentHeight = noiseMap[x,y];
-                for (int i = 0; i < regions.Length; i++){
-                    if (currentHeight <= regions[i].height){
-                        colourMap[y * mapChunkSize + x] = regions[i].colour;
+                string currentBiome = voronoiMap[x,y];
+                TerrainType[] biomeRegions = Biomes[0].terrainType; // defaults to first biome
+                foreach (BiomeScriptableObject biome in Biomes) { if (biome.name == currentBiome) {biomeRegions = biome.terrainType;}};
+                for (int i = 0; i < biomeRegions.Length; i++){
+                    if (currentHeight <= biomeRegions[i].height){
+                        colourMap[y * mapChunkSize + x] = biomeRegions[i].colour;
                         break;
                     }
                 }
             }
         }
 
+        return new MapData (noiseMap, colourMap, voronoiMap);
     }
 
     void onValidate (){
@@ -128,6 +123,14 @@ public struct Biomes{
 }
 
 public struct MapData{
-    public float[,] heightMap;
+    public float[,] noiseMap;
     public Color[] colourMap;
+    public string[,] voronoiMap;
+
+
+    public MapData(float[,] noiseMap, Color[] colourMap, string[,] voronoiMap){
+        this.noiseMap = noiseMap;
+        this.colourMap = colourMap;
+        this.voronoiMap = voronoiMap;
+    }
 }

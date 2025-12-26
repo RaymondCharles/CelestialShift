@@ -33,4 +33,4 @@ MonoBehaviour:
   octaves: 6
   persistance: 0.182
   lacunarity: 6.77
-  biomeColour: {r: 0.25742579, g: 1, b: 0, a: 0}
+  biomeColour: {r: 0.06403237, g: 0.2830189, b: 0.057404775, a: 0}
