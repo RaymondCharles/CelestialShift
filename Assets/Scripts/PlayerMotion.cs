@@ -106,13 +106,9 @@ public class PlayerMotion : MonoBehaviour
         if (Inventory.Instance == null) return;
         if (item.worldPrefab == null) return;
 
-        // Safe drop position: forward + slightly up
+       
         Vector3 dropPos = playerTransform.position + playerTransform.forward * 1.5f + Vector3.up * 0.5f;
-
-        // Spawn the world item
         Inventory.Instance.GenerateItem(item, dropPos);
-
-        // Remove from hotbar
         HotBarManager.Instance.ClearSlot(item);
     }
 

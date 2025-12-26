@@ -92,16 +92,14 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler ,IEndDrag
             return;
         }
 
-        // Dropped somewhere else -> spawn in world
+      
         if (draggedItem != null && Inventory.Instance != null && PlayerMotion.Instance != null)
         {
             Vector3 dropPos = PlayerMotion.Instance.playerTransform.position + PlayerMotion.Instance.playerTransform.forward;
             dropPos.y = PlayerMotion.Instance.playerTransform.position.y;
 
-            // Spawn the world object
             Inventory.Instance.GenerateItem(draggedItem, dropPos);
 
-            // Remove from original slot
             if (slotType == SlotType.Hotbar && HotBarManager.Instance != null)
             {
                 HotBarManager.Instance.ClearSlot(draggedItem);
@@ -112,29 +110,6 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler ,IEndDrag
                 InventoryUI.Instance.UpdateSlot(index);
             }
         }
-
-        draggedItem = null;
-    }
-
-
-
-
-    private void DropItemToWorld()
-    {
-        if (draggedItem == null) return;
-
-        // Find player position
-        PlayerMotion player = FindObjectOfType<PlayerMotion>();
-        if (player == null) return;
-
-        Vector3 dropPos = player.playerTransform.position + player.playerTransform.forward;
-        dropPos.y = player.playerTransform.position.y;
-
-        // Drop the item into the world
-        Inventory.Instance.DropItem(draggedItem, dropPos);
-
-        // Remove from inventory slot
-        InventoryUI.Instance.ClearSlot(index);
 
         draggedItem = null;
     }
@@ -155,6 +130,7 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler ,IEndDrag
         if (target == null) return;  
         if ((slotType == SlotType.Inventory || target.slotType == SlotType.Inventory)
             && InventoryUI.Instance == null) return; 
+
         if (slotType == SlotType.Hotbar && target.slotType == SlotType.Hotbar)
         {
             HotBarManager.Instance.SlotSwap(index, target.index);
