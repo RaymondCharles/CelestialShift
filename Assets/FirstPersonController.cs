@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;   // NEW INPUT SYSTEM
 public class FirstPersonController : MonoBehaviour
 {
     // New Input System object
-    private PlayerInputActions inputActions;
+    public PlayerInputActions inputActions;
 
     //Determine whether a player/character is in control
     public bool CanMove { get; private set; } = true;
@@ -17,6 +17,8 @@ public class FirstPersonController : MonoBehaviour
     private bool ShouldCrouch => canCrouch && inputActions.Player.Crouch.triggered && !duringCrouchAnimation && characterController.isGrounded;
     private bool CanSlide => inputActions.Player.Slide.triggered && characterController.isGrounded;
     private bool isSliding = false; //check if you can slide
+    public bool swordAttack = false;
+    public bool shieldDefend = false;
 
     //Functional Options
     [SerializeField] private bool canSprint = true;
@@ -204,6 +206,7 @@ public class FirstPersonController : MonoBehaviour
             playerAnimator.SetBool("isFalling", isFalling);
             playerAnimator.SetBool("isSliding", isSliding);
             ApplyFinalMovements();
+            
         }
     }
 
