@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class noise
 {
-    public static float[,] GenerateNoiseMap (int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, string [,] VoronoiMap, BiomeScriptableObject[] Biomes){
+    public static float[,] GenerateNoiseMap (int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, biomeCoord[,] VoronoiMap, BiomeScriptableObject[] Biomes){
         // Create 2d float array, iterate through it and assign noise values
         float [,] noiseMap = new float[mapWidth, mapHeight];
         

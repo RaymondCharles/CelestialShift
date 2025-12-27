@@ -65,7 +65,7 @@ public class mapGenerator : MonoBehaviour
                 voronoiColours[i] = Biomes[i].biomeColour;
                 Debug.Log("Added colour: " + Biomes[i].biomeColour);
             }
-        string[,] voronoiMap = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes);
+        biomeCoord[,] voronoiMap = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes);
 
         
         // call noise.GenerateNoiseMap() with parameters to generate noise map
@@ -76,7 +76,7 @@ public class mapGenerator : MonoBehaviour
         for (int y=0; y < mapChunkSize; y++){
             for (int x=0; x < mapChunkSize; x++){
                 float currentHeight = noiseMap[x,y];
-                string currentBiome = voronoiMap[x,y];
+                string currentBiome = voronoiMap[x,y].getBiome();
                 TerrainType[] biomeRegions = Biomes[0].terrainType; // defaults to first biome
                 foreach (BiomeScriptableObject biome in Biomes) { if (biome.name == currentBiome) {biomeRegions = biome.terrainType;}};
                 for (int i = 0; i < biomeRegions.Length; i++){
@@ -125,10 +125,10 @@ public struct Biomes{
 public struct MapData{
     public float[,] noiseMap;
     public Color[] colourMap;
-    public string[,] voronoiMap;
+    public biomeCoord[,] voronoiMap;
 
 
-    public MapData(float[,] noiseMap, Color[] colourMap, string[,] voronoiMap){
+    public MapData(float[,] noiseMap, Color[] colourMap, biomeCoord[,] voronoiMap){
         this.noiseMap = noiseMap;
         this.colourMap = colourMap;
         this.voronoiMap = voronoiMap;

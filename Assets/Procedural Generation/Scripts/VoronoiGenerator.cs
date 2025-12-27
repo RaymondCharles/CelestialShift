@@ -9,7 +9,7 @@ using UnityEngine.UI;
 // 3. Optimise points generation code - generate in main method or see if needed for other return
 // 4. Maybe tie noiseScale to no of cells
 public static class VoronoiGenerator{
-    public static string [,] GenerateVDiagram(int width, int height, Color[] cellColours, int numOfCells, int seed, BiomeScriptableObject[] biomes)
+    public static biomeCoord[,] GenerateVDiagram(int width, int height, Color[] cellColours, int numOfCells, int seed, BiomeScriptableObject[] biomes)
     {
         // Create ColourMap, loop through pixels, assign colour according to Voronoi logic
         // Ensure we have at least one cell and at least one pixel per cell
@@ -22,7 +22,7 @@ public static class VoronoiGenerator{
         //Color[] colourMap = new Color[width * height];
 
         // Create BiomeMap
-        string [,] biomeMap = new string [width , height];
+        biomeCoord[,] biomeMap = new biomeCoord [width , height];
 
         // Generate Points and CellColours array
         Vector2Int[,] pointsPosArray = GeneratePoints(numOfCells, pixelsPerCell, prng); // Array to hold cell point positions
@@ -81,14 +81,17 @@ public static class VoronoiGenerator{
                 }
                 // Once looped through all nearby points, assign color of closest cell
                 //colourMap[y * width + x] = cellColorsArray[closestCell.x, closestCell.y];
-                biomeMap[x, y] = pointBiomeMap[closestCell.x, closestCell.y];
+                //biomeMap[x, y] = pointBiomeMap[closestCell.x, closestCell.y];
+                biomeCoord newBiomeCoord = new biomeCoord(pointBiomeMap[closestCell.x, closestCell.y], closestDist);
+                biomeMap[x, y] = newBiomeCoord;
+                //Debug.Log("Assigned biome: " + newBiomeCoord.getBiome() + " at (" + x + "," + y + ") with weight " + newBiomeCoord.getWeight());
             }
         }
         return biomeMap;
     }
 
     // COME BACK AND OPTIMIZE - MOST LIKELY GENERATE IN METHOD ABOVE
-private static Vector2Int[,] GeneratePoints(int cells, int pixelsPerCell, System.Random prng){
+    private static Vector2Int[,] GeneratePoints(int cells, int pixelsPerCell, System.Random prng){
         Vector2Int[,] pointsPosArray = new Vector2Int[cells, cells];
         for (int i = 0; i < cells; i++)
         {
@@ -118,14 +121,19 @@ private static Vector2Int[,] GeneratePoints(int cells, int pixelsPerCell, System
 }
 
 public class biomeCoord{
+    // holds biome type, weight for a given coordinate
     string biome;
+    float weight;
 
-    public biomeCoord(float _x, float _y, string _biome){
+    public biomeCoord(string _biome, float _weight){
         biome = _biome;
+        weight = _weight;
     }
-
     public string getBiome(){
         return biome;
+    }
+    public float getWeight(){
+        return weight;
     }
 }
 
