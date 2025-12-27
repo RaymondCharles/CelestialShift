@@ -27,7 +27,7 @@ public static class TextureGenerator{
         return TextureFromColourMap(colourMap, width, height);
     }
 
-    public static Texture2D TextureFromBiomeMap(biomeCoord[,] biomeMap, BiomeScriptableObject[] biomes){
+    public static Texture2D TextureFromBiomeMap(BiomeCoord[,] biomeMap, BiomeScriptableObject[] biomes){
         int width = biomeMap.GetLength(0);
         int height = biomeMap.GetLength(1);
 
@@ -41,7 +41,7 @@ public static class TextureGenerator{
         Color [] colourMap = new Color[width * height];
         for (int y=0; y < height; y++){
             for (int x=0; x < height; x++){
-                colourMap[y * width + x] = biomeColourDict[biomeMap[x,y].getBiome()];
+                colourMap[y * width + x] = Color.Lerp(biomeColourDict[biomeMap[x,y].getBiome()], biomeColourDict[biomeMap[x,y].getSecondBiome()], biomeMap[x,y].getSecondWeight());
             }
         }
         return TextureFromColourMap(colourMap, width, height);
