@@ -8,6 +8,8 @@ public class PickUpScript : MonoBehaviour
     public HotBarManager hotBarManager;
 
 
+
+
     //private void OnCollisionEnter(Collision collision)
     //{
     //    if (collision.gameObject.CompareTag("Player"))
@@ -23,14 +25,17 @@ public class PickUpScript : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            
             Inventory.Instance.addItem(item, transform.position);
 
             if (HotBarManager.Instance != null)
             {
                 HotBarManager.Instance.AddItemToSlot(item); 
             }
-
-            Destroy(gameObject);
+            if (gameObject.name != "Well")
+            {
+                Destroy(gameObject);
+            }
             Debug.Log("Item picked Up" + item.itemName);
         }
     }
