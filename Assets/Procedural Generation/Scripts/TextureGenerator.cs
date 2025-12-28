@@ -27,9 +27,9 @@ public static class TextureGenerator{
         return TextureFromColourMap(colourMap, width, height);
     }
 
-    public static Texture2D TextureFromBiomeMap(BiomeCoord[,] biomeMap, BiomeScriptableObject[] biomes){
-        int width = biomeMap.GetLength(0);
-        int height = biomeMap.GetLength(1);
+    public static Texture2D TextureFromBiomeMap(BiomeGenData biomeGenData, BiomeScriptableObject[] biomes){
+        int width = biomeGenData.voronoiMap.GetLength(0);
+        int height = biomeGenData.voronoiMap.GetLength(1);
 
         // find more efficient way: enums or a class or dict or smt in mapgen
         Dictionary<string, Color> biomeColourDict = new Dictionary<string, Color>();
@@ -41,7 +41,17 @@ public static class TextureGenerator{
         Color [] colourMap = new Color[width * height];
         for (int y=0; y < height; y++){
             for (int x=0; x < height; x++){
-                colourMap[y * width + x] = Color.Lerp(biomeColourDict[biomeMap[x,y].getBiome()], biomeColourDict[biomeMap[x,y].getSecondBiome()], biomeMap[x,y].getSecondWeight());
+                Color c = Color.Lerp(biomeColourDict[biomeGenData.voronoiMap[x,y].getBiome()], biomeColourDict[biomeGenData.voronoiMap[x,y].getSecondBiome()], biomeGenData.voronoiMap[x,y].getSecondWeight());
+                colourMap[y * width + x] = Color.Lerp(c, biomeColourDict[biomeGenData.voronoiMap[x,y].getThirdBiome()], biomeGenData.voronoiMap[x,y].getThirdWeight());
+            }
+        }
+        // inefficient but works for now
+        for (int i = 0; i < biomeGenData.buildingPointsArray.GetLength(0); i++){
+            for (int j = 0; j < biomeGenData.buildingPointsArray.GetLength(1); j++){
+                Vector2Int point = biomeGenData.buildingPointsArray[i,j];
+                int x = (int)point.x;
+                int y = (int)point.y;
+                colourMap[y * width + x] = Color.black;
             }
         }
         return TextureFromColourMap(colourMap, width, height);

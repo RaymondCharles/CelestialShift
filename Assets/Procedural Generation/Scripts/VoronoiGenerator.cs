@@ -10,7 +10,7 @@ using UnityEngine.UI;
 // 4. Maybe tie noiseScale to no of cells
 // 5. Add biome warpFreq and warpStrength parameters, blendWidth parameter for biome blending
 public static class VoronoiGenerator{
-    public static BiomeCoord[,] GenerateVDiagram(int width, int height, Color[] cellColours, int numOfCells, int seed, BiomeScriptableObject[] biomes)
+    public static BiomeGenData GenerateVDiagram(int width, int height, Color[] cellColours, int numOfCells, int seed, BiomeScriptableObject[] biomes, float blendWidth)
     {
         // Create ColourMap, loop through pixels, assign colour according to Voronoi logic
         // Ensure we have at least one cell and at least one pixel per cell
@@ -22,16 +22,16 @@ public static class VoronoiGenerator{
         // Create Colour Map
         //Color[] colourMap = new Color[width * height];
 
-        // Create BiomeMap
+        // Create Maps to be returned
         BiomeCoord[,] biomeMap = new BiomeCoord [width , height];
+        Vector2Int[,] buildingPointsArray = new Vector2Int[numOfCells, numOfCells];
 
         // Generate Points and CellColours array
-        Vector2Int[,] pointsPosArray = GeneratePoints(numOfCells, pixelsPerCell, prng); // Array to hold cell point positions
+        Vector2Int[,] pointsPosArray = GeneratePoints(numOfCells, pixelsPerCell, prng, 1); // Array to hold cell point positions
         string [,] pointBiomeMap = GeneratePointBiomes(numOfCells, pixelsPerCell, biomes, prng);// Dictionary to hold biome assignment for each point
         
         float warpFreq = (float)numOfCells / (float)width;
         float warpStrength = 15f;
-        float blendWidth = pixelsPerCell * 0.3f;
 
         /*** test code to visualize points only
         for (int x = 0; x < imgSize; x++)
@@ -51,6 +51,12 @@ public static class VoronoiGenerator{
         }
         ***/
 
+        float closestDist;
+        float secondClosestDist;
+        float thirdClosestDist;
+        Vector2Int closestCell;
+        Vector2Int secondClosestCell;
+        Vector2Int thirdClosestCell;
         // Loop through each pixel to determine its closest point, and assign color accordingly
         for (int x = 0; x < width; x++)
         {
@@ -60,12 +66,16 @@ public static class VoronoiGenerator{
                 int gridX = x / pixelsPerCell;
                 int gridY = y / pixelsPerCell;
 
-                float closestDist = Mathf.Infinity;
-                float secondClosestDist = Mathf.Infinity;
-                Vector2Int closestCell = new Vector2Int();
-                Vector2Int secondClosestCell = new Vector2Int();
+                // Reset closest distance and cell for each pixel
+                closestDist = Mathf.Infinity;
+                secondClosestDist = Mathf.Infinity;
+                thirdClosestDist = Mathf.Infinity;
+                closestCell = new Vector2Int();
+                secondClosestCell = new Vector2Int();
+                thirdClosestCell = new Vector2Int();
 
                 for (int i = -1; i < 2; i++)
+                // 
                 {
                     for (int j = -1; j < 2; j++)
                     {
@@ -124,19 +134,92 @@ public static class VoronoiGenerator{
                     secondWeight = secondClosestDist / totalDist;
                 }
                 */
+                
                 float weight = 1f;
                 float secondWeight = 0f;
-                float edgeDist = secondClosestDist - closestDist;
+                float thirdWeight = 0f;
+                //float edgeDist = thirdClosestDist - secondClosestDist - closestDist;
 
+                /*
                 // If close to a border, blend between biomes based on distance
                 if (edgeDist < blendWidth)
                 {
-                    float t = Mathf.Clamp(1 - (edgeDist / blendWidth), 0, 0.5f);
+                    //float t = Mathf.Clamp(1 - (edgeDist / blendWidth), 0, 0.5f);
+                    float sum = closestDist + secondClosestDist + thirdClosestDist;
+                    float t = closestDist / sum;
+                    t = t * t * (3f - (2f * t)); // Smoothstep
                     weight = 1f - t;
-                    secondWeight = t;
+                    float sum2 = secondClosestDist + thirdClosestDist;
+                    float t2 = secondClosestDist / sum2;
+                    secondWeight = t2;
+                    thirdWeight = 1f - t2;
+                }
+                */
+                // inverse distances to get weights (closer = higher weight)
+                float w1 = 1f / (closestDist + 0.0001f);
+                float w2 = 1f / (secondClosestDist + 0.0001f);
+                float w3 = 1f / (thirdClosestDist + 0.0001f);
+
+                // determine if near edge or corner
+                bool nearEdge   = (secondClosestDist - closestDist) < blendWidth;
+                bool nearCorner = (thirdClosestDist  - closestDist) < blendWidth;
+
+                // do 1, 2 or 3 biome blend based on proximity to edge/corner
+                if (!nearEdge)
+                {
+                    // Pure biome
+                    weight = 1f;
+                    secondWeight = 0f;
+                    thirdWeight = 0f;
+                }
+                else if (!nearCorner)
+                {
+                    /*
+                    // 2-biome blend
+                    float sum = w1 + w2;
+                    weight = w1 / sum;
+                    secondWeight = w2 / sum;
+                    thirdWeight = 0f;
+                    */
+                    float edgeDist = secondClosestDist - closestDist;
+
+                    if (edgeDist >= blendWidth)
+                    {
+                        // Pure biome
+                        weight = 1f;
+                        secondWeight = 0f;
+                        thirdWeight = 0f;
+                    }
+                    else
+                    {
+                        // Distance-based blend from 1 → 0.5
+                        float t = Mathf.Clamp01(edgeDist / blendWidth);
+
+                        // Optional smoothing
+                        t = t * t * (3f - 2f * t); // Smoothstep
+
+                        weight = Mathf.Lerp(0.5f, 1f, t);
+                        secondWeight = 1f - weight;
+                        thirdWeight = 0f;
+                    }
+                }
+                else
+                {
+                    // 3-biome blend (corner)
+                    float sum = w1 + w2 + w3;
+                    weight = w1 / sum;
+                    secondWeight = w2 / sum;
+                    thirdWeight = w3 / sum;
                 }
 
-                BiomeCoord newBiomeCoord = new BiomeCoord(pointBiomeMap[closestCell.x, closestCell.y], weight, pointBiomeMap[secondClosestCell.x, secondClosestCell.y], secondWeight);
+                
+                // Smoothstep weights for better blending
+                weight = weight * weight * (3f - 2f * weight);
+                secondWeight = secondWeight * secondWeight * (3f - 2f * secondWeight);
+                thirdWeight = thirdWeight * thirdWeight * (3f - 2f * thirdWeight);
+                
+
+                BiomeCoord newBiomeCoord = new BiomeCoord(pointBiomeMap[closestCell.x, closestCell.y], weight, pointBiomeMap[secondClosestCell.x, secondClosestCell.y], secondWeight, pointBiomeMap[thirdClosestCell.x, thirdClosestCell.y], thirdWeight);
                 // closest biome only for pure biome borders
                 //BiomeCoord newBiomeCoord = new BiomeCoord(pointBiomeMap[closestCell.x, closestCell.y], 1, pointBiomeMap[secondClosestCell.x, secondClosestCell.y], 0);
                 
@@ -144,18 +227,23 @@ public static class VoronoiGenerator{
                 //Debug.Log("Assigned biome: " + newBiomeCoord.getBiome() + " at (" + x + "," + y + ") with weight " + newBiomeCoord.getWeight() + " and second biome: " + newBiomeCoord.getSecondBiome() + " with weight " + newBiomeCoord.getSecondWeight());
             }
         }
-        return biomeMap;
+        buildingPointsArray = GeneratePoints(numOfCells, pixelsPerCell, prng, 3); // Generate building points to be used later
+        BiomeGenData biomeGenData = new BiomeGenData(biomeMap, buildingPointsArray);
+        return biomeGenData;
     }
 
     // COME BACK AND OPTIMIZE - MOST LIKELY GENERATE IN METHOD ABOVE
-    private static Vector2Int[,] GeneratePoints(int cells, int pixelsPerCell, System.Random prng){
+
+    // modify to make more general, ok for now but for buildings need to have more parameters - e.g. only gen building in 1 weights of biome
+    private static Vector2Int[,] GeneratePoints(int cells, int pixelsPerCell, System.Random prng, int n){
+        // return array of random points positions within each cell, n = number of points to generate; use for biome spawning, other things such as buildings etc.
         Vector2Int[,] pointsPosArray = new Vector2Int[cells, cells];
-        for (int i = 0; i < cells; i++)
-        {
-            for (int j = 0; j < cells; j++)
-            {
-                //pointsPosArray[i, j] = new Vector2Int(i * pixelsPerCell + Random.Range(0, pixelsPerCell), j * pixelsPerCell + Random.Range(0, pixelsPerCell)); // Each point is a random position within its cell
-                pointsPosArray[i, j] = new Vector2Int(i * pixelsPerCell + prng.Next(0, pixelsPerCell), j * pixelsPerCell + prng.Next(0, pixelsPerCell)); // Each point is a random position within its cell
+        for (int i = 0; i < cells; i++){
+            for (int j = 0; j < cells; j++){
+                for (int k = 0; k < n; k++){
+                    //pointsPosArray[i, j] = new Vector2Int(i * pixelsPerCell + Random.Range(0, pixelsPerCell), j * pixelsPerCell + Random.Range(0, pixelsPerCell)); // Each point is a random position within its cell
+                    pointsPosArray[i, j] = new Vector2Int(i * pixelsPerCell + prng.Next(0, pixelsPerCell), j * pixelsPerCell + prng.Next(0, pixelsPerCell)); // Each point is a random position within its cell
+                }
             }
         }
         return pointsPosArray;
@@ -183,26 +271,33 @@ public class BiomeCoord{
     float weight;
     string secondBiome;
     float secondWeight;
+    string thirdBiome;
+    float thirdWeight;
 
-    public BiomeCoord (string _biome, float _weight, string _sBiome, float _sWeight){
+    public BiomeCoord (string _biome, float _weight, string _sBiome, float _sWeight, string _tBiome, float _tWeight){
         biome = _biome;
         weight = _weight;
         secondBiome = _sBiome;
         secondWeight = _sWeight;
+        thirdBiome = _tBiome;
+        thirdWeight = _tWeight;
     }
 
-    public string getBiome(){
-        return biome;
-    }
-    public float getWeight(){
-        return weight;
-    }
-    public string getSecondBiome(){
-        return secondBiome;
-    }
-    public float getSecondWeight(){
-        return secondWeight;
-    }
+    public string getBiome(){return biome;}
+    public float getWeight(){return weight;}
+    public string getSecondBiome(){return secondBiome;}
+    public float getSecondWeight(){return secondWeight;}
+    public string getThirdBiome(){return thirdBiome;}
+    public float getThirdWeight(){return thirdWeight;}
 }
 
+public struct BiomeGenData{
+    public BiomeCoord[,] voronoiMap;
+    public Vector2Int[,] buildingPointsArray;
 
+
+    public BiomeGenData(BiomeCoord[,] voronoiMap, Vector2Int[,] buildingPointsArray){
+        this.voronoiMap = voronoiMap;
+        this.buildingPointsArray = buildingPointsArray;
+        }
+    }

@@ -35,6 +35,10 @@ public class mapGenerator : MonoBehaviour
     public BiomeScriptableObject[] Biomes;
 
     public int numOfCells;
+
+    [Range(0, 240)]
+
+    public float blendWidth = 20f;
     
     
     public void DrawMapInEditor(){
@@ -55,7 +59,7 @@ public class mapGenerator : MonoBehaviour
         }else if (drawMode == DrawMode.Mesh){
             display.DrawMesh (meshGenerator.GenerateTerrainMesh(mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, levelOfDetail), TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize));
         }else if (drawMode == DrawMode.Voronoi){
-            display.DrawTexture (TextureGenerator.TextureFromBiomeMap(mapData.voronoiMap, Biomes));
+            display.DrawTexture (TextureGenerator.TextureFromBiomeMap(mapData.biomeGenData, Biomes));
         }
     }
 
@@ -65,19 +69,22 @@ public class mapGenerator : MonoBehaviour
                 voronoiColours[i] = Biomes[i].biomeColour;
                 Debug.Log("Added colour: " + Biomes[i].biomeColour);
             }
-        BiomeCoord[,] voronoiMap = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes);
+
+        //BiomeCoord[,] voronoiMap = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes, blendWidth);
+        BiomeGenData biomeGenData = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes, blendWidth);
 
         
         // call noise.GenerateNoiseMap() with parameters to generate noise map
-        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset, voronoiMap, Biomes);
+        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset, biomeGenData.voronoiMap, Biomes);
 
         // build a 1d array of colours by looping through the heightmap, checking TerrainType struct, and assigning colours accordingly EXPAND WITH BIOMES - i.e. figure out different structs for different biomes
         Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
         for (int y=0; y < mapChunkSize; y++){
             for (int x=0; x < mapChunkSize; x++){
                 float currentHeight = noiseMap[x,y];
-                string currentBiome = voronoiMap[x,y].getBiome();
+                string currentBiome = biomeGenData.voronoiMap[x,y].getBiome();
                 TerrainType[] biomeRegions = Biomes[0].terrainType; // defaults to first biome
+                // OPTIMIZE: change to dict or something AND LOOP IS BADDDDD
                 foreach (BiomeScriptableObject biome in Biomes) { if (biome.name == currentBiome) {biomeRegions = biome.terrainType;}};
                 for (int i = 0; i < biomeRegions.Length; i++){
                     if (currentHeight <= biomeRegions[i].height){
@@ -88,7 +95,7 @@ public class mapGenerator : MonoBehaviour
             }
         }
 
-        return new MapData (noiseMap, colourMap, voronoiMap);
+        return new MapData (noiseMap, colourMap, biomeGenData);
     }
 
     void onValidate (){
@@ -125,12 +132,12 @@ public struct Biomes{
 public struct MapData{
     public float[,] noiseMap;
     public Color[] colourMap;
-    public BiomeCoord[,] voronoiMap;
+    public BiomeGenData biomeGenData;
 
 
-    public MapData(float[,] noiseMap, Color[] colourMap, BiomeCoord[,] voronoiMap){
+    public MapData(float[,] noiseMap, Color[] colourMap, BiomeGenData biomeGenData){
         this.noiseMap = noiseMap;
         this.colourMap = colourMap;
-        this.voronoiMap = voronoiMap;
+        this.biomeGenData = biomeGenData;
     }
 }
