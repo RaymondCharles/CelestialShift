@@ -20,8 +20,14 @@ MonoBehaviour:
   - name: Snow
     height: 1
     colour: {r: 1, g: 1, b: 1, a: 0}
-  noiseScale: 0
-  octaves: 0
   persistance: 0
   lacunarity: 0
   biomeColour: {r: 0.742168, g: 0.867702, b: 0.8773585, a: 0}
+  meshHeightMultiplier: 0
+  meshHeightCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  buildingPrefab: {fileID: 651509608423966001, guid: 8e7ae73a0436de04db57344a3028524b, type: 3}

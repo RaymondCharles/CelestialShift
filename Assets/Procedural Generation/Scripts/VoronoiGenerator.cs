@@ -161,8 +161,9 @@ public static class VoronoiGenerator{
                 float w3 = 1f / (thirdClosestDist + 0.0001f);
 
                 // determine if near edge or corner
-                bool nearEdge   = (secondClosestDist - closestDist) < blendWidth;
-                bool nearCorner = (thirdClosestDist  - closestDist) < blendWidth;
+                float edgeDist = secondClosestDist - closestDist;
+                bool nearEdge   = edgeDist < blendWidth;
+                bool nearCorner = edgeDist < blendWidth;
 
                 // do 1, 2 or 3 biome blend based on proximity to edge/corner
                 if (!nearEdge)
@@ -181,35 +182,28 @@ public static class VoronoiGenerator{
                     secondWeight = w2 / sum;
                     thirdWeight = 0f;
                     */
-                    float edgeDist = secondClosestDist - closestDist;
+                    // Distance-based blend from 1 → 0.5
+                    float t = Mathf.Clamp01(edgeDist / blendWidth);
 
-                    if (edgeDist >= blendWidth)
-                    {
-                        // Pure biome
-                        weight = 1f;
-                        secondWeight = 0f;
-                        thirdWeight = 0f;
-                    }
-                    else
-                    {
-                        // Distance-based blend from 1 → 0.5
-                        float t = Mathf.Clamp01(edgeDist / blendWidth);
-
-                        // Optional smoothing
-                        t = t * t * (3f - 2f * t); // Smoothstep
-
-                        weight = Mathf.Lerp(0.5f, 1f, t);
-                        secondWeight = 1f - weight;
-                        thirdWeight = 0f;
-                    }
+                    weight = Mathf.Lerp(0.5f, 1f, t);
+                    secondWeight = 1f - weight;
+                    thirdWeight = 0f;
                 }
                 else
                 {
                     // 3-biome blend (corner)
+                    /*
                     float sum = w1 + w2 + w3;
                     weight = w1 / sum;
                     secondWeight = w2 / sum;
                     thirdWeight = w3 / sum;
+                    */
+                    float t = Mathf.Clamp01(edgeDist / blendWidth);
+
+                    weight = Mathf.Lerp(0.5f, 1f, t);
+                    float t2 = 1f - weight;
+                    secondWeight = t2 * (w2 / (w2 + w3));
+                    thirdWeight = t2 * (w3 / (w2 + w3));
                 }
 
                 

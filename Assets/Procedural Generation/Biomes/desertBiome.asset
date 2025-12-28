@@ -20,8 +20,14 @@ MonoBehaviour:
   - name: Sand
     height: 1
     colour: {r: 0.754717, g: 0.5373814, b: 0.06051977, a: 0}
-  noiseScale: 0
-  octaves: 0
   persistance: 0
   lacunarity: 0
   biomeColour: {r: 1, g: 0.84106404, b: 0, a: 0}
+  meshHeightMultiplier: 0
+  meshHeightCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  buildingPrefab: {fileID: 651509608423966001, guid: 8e7ae73a0436de04db57344a3028524b, type: 3}
