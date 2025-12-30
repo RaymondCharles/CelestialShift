@@ -1682,6 +1682,7 @@ MonoBehaviour:
   PausePanel: {fileID: 36454633}
   playerTransform: {fileID: 330532278}
   speed: 5
+  level: 0
 --- !u!54 &330532281
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5420,7 +5421,7 @@ GameObject:
   - component: {fileID: 1186560187}
   - component: {fileID: 1186560186}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: GameManage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5941,7 +5942,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1267610579333056973, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClickPlay
+      value: OnClick
       objectReference: {fileID: 0}
     - target: {fileID: 1267610579333056973, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
