@@ -148,3 +148,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: cd5d8a7376879d6488f9a10b76739983, type: 2}
   hotBarManager: {fileID: 0}
+  quantity: 1

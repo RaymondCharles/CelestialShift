@@ -113,6 +113,8 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
                 HotBarManager.Instance.ClearSlot(draggedItem);
             else if (slotType == SlotType.Inventory && InventoryUI.Instance != null)
                 InventoryUI.Instance.ClearSlot(index);
+            else if (slotType == SlotType.Crafting && CraftingUI.Instance != null)
+                CraftingUI.Instance.ClearSlot(index);
 
             draggedItem = null;
         }

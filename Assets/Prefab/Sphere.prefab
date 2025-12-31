@@ -119,8 +119,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8f1257943e51974c90b735a482fdf2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 11400000, guid: 6d6958e1ecd28874a9840beb1cb703e0, type: 2}
+  item: {fileID: 11400000, guid: 68f8d68dcb7337742a29d74270a74edf, type: 2}
   hotBarManager: {fileID: 0}
+  quantity: 1
 --- !u!54 &2218261963920280714
 Rigidbody:
   m_ObjectHideFlags: 0

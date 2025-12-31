@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class InventoryUI : MonoBehaviour
+public class InventoryUI : MonoBehaviour, UIManager
 {
     public static InventoryUI Instance;
 
@@ -17,9 +17,9 @@ public class InventoryUI : MonoBehaviour
         Instance = this;
         inventoryItems = new SlotItem[slots.Length];
     }
-    public void UpdateSlot(int index)
+    public void UpdateSlot(int slotIndex)
     {
-        slots[index].sprite = inventoryItems[index] != null ? inventoryItems[index].itemDetails.itemImg : emptySprite;
+        slots[slotIndex].sprite = inventoryItems[slotIndex] != null ? inventoryItems[slotIndex].itemDetails.itemImg : emptySprite;
     }
 
     public void SlotSwap(int slot1, int slot2)
@@ -38,6 +38,17 @@ public class InventoryUI : MonoBehaviour
 
         inventoryItems[index] = null;
         UpdateSlot(index);
+    }
+
+    public SlotItem GetItem(int slotIndex)
+    {
+        return inventoryItems[slotIndex];
+    }
+
+    public void SetItem(int slotIndex, SlotItem item)
+    {
+        inventoryItems[slotIndex] = item;
+        return;
     }
 
 }

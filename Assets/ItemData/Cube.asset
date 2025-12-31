@@ -10,13 +10,48 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
-  m_Name: cube
+  m_Name: Cube
   m_EditorClassIdentifier: 
   itemName: cube
   itemImg: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
   quantityLimit: 10
   selected: 0
-  parentItems: []
-  childrenItems: []
+  craftingTreeLists:
+  - treeName: tree1
+    node:
+      item: {fileID: 11400000}
+      treeName: tree1
+      parent: {fileID: 0}
+      children:
+      - item: {fileID: 11400000, guid: 68f8d68dcb7337742a29d74270a74edf, type: 2}
+        treeName: tree1
+        parent: {fileID: 11400000}
+        children: []
+      - item: {fileID: 0}
+        treeName: 
+        parent: {fileID: 0}
+        children: []
+      - item: {fileID: 11400000, guid: a14e1eda2b10d374a813241505cc5b44, type: 2}
+        treeName: tree1
+        parent: {fileID: 11400000}
+        children: []
+  - treeName: tree2
+    node:
+      item: {fileID: 11400000}
+      treeName: tree2
+      parent: {fileID: 11400000, guid: 68f8d68dcb7337742a29d74270a74edf, type: 2}
+      children:
+      - item: {fileID: 0}
+        treeName: 
+        parent: {fileID: 11400000}
+        children: []
+      - item: {fileID: 0}
+        treeName: 
+        parent: {fileID: 0}
+        children: []
+      - item: {fileID: 11400000, guid: a14e1eda2b10d374a813241505cc5b44, type: 2}
+        treeName: tree1
+        parent: {fileID: 11400000}
+        children: []
   worldPrefab: {fileID: 1877884569096021469, guid: 07a3e520ef0ed754f8d35c4cd1d8ee86, type: 3}
   action: {fileID: 11400000, guid: d786cde816a62944fa8f5bc7ee18d737, type: 2}

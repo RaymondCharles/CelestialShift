@@ -243,6 +243,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Use"",
+                    ""type"": ""Button"",
+                    ""id"": ""7474cb96-ba60-4fee-8ea1-68a9d239130e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -421,6 +430,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""HotBarSelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b5a4511c-4ac3-40b4-97d5-973e53943cd0"",
+                    ""path"": ""<Keyboard>/#(F)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Use"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -442,6 +462,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Movement_Pause = m_Movement.FindAction("Pause", throwIfNotFound: true);
         m_Movement_Drop = m_Movement.FindAction("Drop", throwIfNotFound: true);
         m_Movement_HotBarSelect = m_Movement.FindAction("HotBarSelect", throwIfNotFound: true);
+        m_Movement_Use = m_Movement.FindAction("Use", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -594,6 +615,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Movement_Pause;
     private readonly InputAction m_Movement_Drop;
     private readonly InputAction m_Movement_HotBarSelect;
+    private readonly InputAction m_Movement_Use;
     public struct MovementActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -603,6 +625,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Pause => m_Wrapper.m_Movement_Pause;
         public InputAction @Drop => m_Wrapper.m_Movement_Drop;
         public InputAction @HotBarSelect => m_Wrapper.m_Movement_HotBarSelect;
+        public InputAction @Use => m_Wrapper.m_Movement_Use;
         public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -627,6 +650,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @HotBarSelect.started += instance.OnHotBarSelect;
             @HotBarSelect.performed += instance.OnHotBarSelect;
             @HotBarSelect.canceled += instance.OnHotBarSelect;
+            @Use.started += instance.OnUse;
+            @Use.performed += instance.OnUse;
+            @Use.canceled += instance.OnUse;
         }
 
         private void UnregisterCallbacks(IMovementActions instance)
@@ -646,6 +672,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @HotBarSelect.started -= instance.OnHotBarSelect;
             @HotBarSelect.performed -= instance.OnHotBarSelect;
             @HotBarSelect.canceled -= instance.OnHotBarSelect;
+            @Use.started -= instance.OnUse;
+            @Use.performed -= instance.OnUse;
+            @Use.canceled -= instance.OnUse;
         }
 
         public void RemoveCallbacks(IMovementActions instance)
@@ -679,5 +708,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnPause(InputAction.CallbackContext context);
         void OnDrop(InputAction.CallbackContext context);
         void OnHotBarSelect(InputAction.CallbackContext context);
+        void OnUse(InputAction.CallbackContext context);
     }
 }

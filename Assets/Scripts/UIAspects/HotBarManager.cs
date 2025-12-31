@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public class HotBarManager : MonoBehaviour
+public class HotBarManager : MonoBehaviour, UIManager
 {
     public Button[] Slots;
     public Sprite emptySlotSprite;
@@ -73,7 +73,7 @@ public class HotBarManager : MonoBehaviour
             if (item2==null) continue;
             if (item2.itemDetails.itemName == item.itemName)
             {
-                Debug.Log("Added quantity");
+                Debug.Log("Added quantity, was " + item2.quantity.ToString() + "and now is " + (item2.quantity + quantity).ToString());
                 item2.quantity+=quantity;
                 leftOver = item2.quantity - item.quantityLimit;
                 return;
@@ -90,6 +90,7 @@ public class HotBarManager : MonoBehaviour
             Debug.Log(slotItems[i] + i.ToString());
         }
         UpdateSelectedItem();
+        item.printTrees();
     }
 
 
@@ -143,9 +144,9 @@ public class HotBarManager : MonoBehaviour
         }
     }
 
-    public void UpdateSlot(int slot)
+    public void UpdateSlot(int slotIndex)
     {
-        Slots[slot].image.sprite = slotItems[slot] != null ? slotItems[slot].itemDetails.itemImg : emptySlotSprite;
+        Slots[slotIndex].image.sprite = slotItems[slotIndex] != null ? slotItems[slotIndex].itemDetails.itemImg : emptySlotSprite;
     }
 
     public void DropSelectedItem()
@@ -165,6 +166,17 @@ public class HotBarManager : MonoBehaviour
 
         // Remove from hotbar
         ClearSlot(slotItem);
+    }
+
+    public SlotItem GetItem(int slotIndex)
+    {
+        return slotItems[slotIndex];
+    }
+
+    public void SetItem(int slotIndex, SlotItem item)
+    {
+        slotItems[slotIndex] = item;
+        return;
     }
 
 }

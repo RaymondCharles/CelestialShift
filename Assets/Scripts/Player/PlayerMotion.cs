@@ -15,6 +15,7 @@ public class PlayerMotion : MonoBehaviour
     InputAction InventoryAction;
     InputAction PauseAction;
     InputAction DropAction;
+    InputAction UseAction;
     public GameObject InventoryPanel;
     public GameObject PausePanel;
     public Transform playerTransform;
@@ -77,6 +78,7 @@ public class PlayerMotion : MonoBehaviour
         InventoryAction = playerInput.actions.FindAction("Inventory");
         PauseAction = playerInput.actions.FindAction("Pause");
         DropAction = playerInput.actions.FindAction("Drop");
+        UseAction = playerInput.actions.FindAction("Use");
 
         if (GameManager.Instance != null)
         {
@@ -111,6 +113,10 @@ public class PlayerMotion : MonoBehaviour
         if (DropAction.triggered)
         {
             DropSelectedItem();
+        }
+        if (UseAction.triggered)
+        {
+            UseSelectedItem();
         }
 
     }

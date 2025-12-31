@@ -43,12 +43,7 @@ public class Inventory : MonoBehaviour
 
     public void DropItem(SlotItem slotItem, Vector3 pos)
     {
-        slotItem.quantity--;
-
-        if (slotItem.quantity <= 0)
-        {
-            items.Remove(slotItem);
-        }
+        items.Remove(slotItem);
 
         if (slotItem.itemDetails.worldPrefab != null)
             GenerateItem(slotItem.itemDetails, slotItem.quantity, pos);
@@ -59,6 +54,7 @@ public class Inventory : MonoBehaviour
     public void GenerateItem(Item item, int quantity, Vector3 pos)
     {
         GameObject newItem = Instantiate(item.worldPrefab, pos, Quaternion.identity);
+        Debug.Log(quantity.ToString() + "QUANTITY O PREFAB"); 
         newItem.GetComponent<ItemInstance>().hotBarManager = hotBarManager;
         newItem.GetComponent<ItemInstance>().quantity = quantity;
     }

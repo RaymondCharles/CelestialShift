@@ -4,7 +4,8 @@ using UnityEngine;
 public enum SlotType
     {
         Hotbar,
-        Inventory
+        Inventory,
+        Crafting
     }
 
 public class SlotItem
