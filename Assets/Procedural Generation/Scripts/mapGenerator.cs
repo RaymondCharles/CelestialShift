@@ -27,13 +27,17 @@ public class mapGenerator : MonoBehaviour
     public AnimationCurve meshHeightCurve;
 
     public bool autoUpdate;
+    public bool generateBuildings;
 
     public TerrainType[] regions;
 
     //public Biomes[] biomes;
     // efficiency improvement: use dict?
     public BiomeScriptableObject[] Biomes;
+    public MapDataScriptableObject mapDataScriptableObject;
     //public Dictionary<string, BiomeScriptableObject> biomeDict = new Dictionary<string, BiomeScriptableObject>();
+
+    public GameObject mesh; // parent object to hold spawned buildings
 
     public int numOfCells;
 
@@ -41,32 +45,44 @@ public class mapGenerator : MonoBehaviour
 
     public float blendWidth = 20f;
     
+    public void GenerateMapDataInEditor(){
+        mapDataScriptableObject.mapData = generateMapData();
+    }
     
     public void DrawMapInEditor(){
-        MapData mapData = generateMapData();
-        
         Color[] voronoiColours = new Color[Biomes.Length];
         for (int i=0; i < Biomes.Length; i++){
                 voronoiColours[i] = Biomes[i].biomeColour;
-                Debug.Log("Added colour: " + Biomes[i].biomeColour);
+                //Debug.Log("Added colour: " + Biomes[i].biomeColour);
             }
 
         // find displayMap object, and draw noisemap
         mapDisplay display = Object.FindFirstObjectByType<mapDisplay> ();
         if (drawMode == DrawMode.NoiseMap) {
-            display.DrawTexture (TextureGenerator.TextureFromHeightMap(mapData.noiseMap));
+            display.DrawTexture (TextureGenerator.TextureFromHeightMap(mapDataScriptableObject.mapData.noiseMap));
         }else if (drawMode == DrawMode.ColourMap){
-            display.DrawTexture (TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize));
+            display.DrawTexture (TextureGenerator.TextureFromColourMap(mapDataScriptableObject.mapData.colourMap, mapChunkSize, mapChunkSize));
         }else if (drawMode == DrawMode.Mesh){
-            display.DrawMesh (meshGenerator.GenerateTerrainMesh(mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, levelOfDetail), TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize));
+            // draw mesh, spawn buildings at building points
+            display.DrawMesh (meshGenerator.GenerateTerrainMesh(mapDataScriptableObject.mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, levelOfDetail), TextureGenerator.TextureFromColourMap(mapDataScriptableObject.mapData.colourMap, mapChunkSize, mapChunkSize));
+            if (generateBuildings){
+                foreach (Vector2Int coord in mapDataScriptableObject.mapData.biomeGenData.buildingPointsArray){
+                    if (!mapDataScriptableObject.mapData.buildingsMap[coord.x, coord.y]){ // only spawn if not already spawned
+                        Debug.Log("Spawning building at: " + coord);
+                        spawnObject.SpawnObjectAtPoint(mapDataScriptableObject.mapData.biomeDict[mapDataScriptableObject.mapData.biomeGenData.voronoiMap[coord.x, coord.y].getBiome()].buildingPrefab, new Vector3(coord.x, 0.5f * meshHeightMultiplier, coord.y), Quaternion.identity, mesh.transform);
+                        mapDataScriptableObject.mapData.buildingsMap[coord.x, coord.y] = true; // mark as spawned
+                    }
+                }
+            }
         }else if (drawMode == DrawMode.Voronoi){
-            display.DrawTexture (TextureGenerator.TextureFromBiomeMap(mapData.biomeGenData, Biomes));
+            display.DrawTexture (TextureGenerator.TextureFromBiomeMap(mapDataScriptableObject.mapData.biomeGenData, Biomes));
         }
     }
 
-    MapData generateMapData(){
+    public MapData generateMapData(){
         // create biome dictionary for easy access
         Dictionary<string, BiomeScriptableObject> biomeDict = new Dictionary<string, BiomeScriptableObject>();
+        bool[,] buildingsMap = new bool[mapChunkSize, mapChunkSize]; // OPTIMIZE WE DO NOT NEED A FULL MAP HERE
         foreach (BiomeScriptableObject biome in Biomes) {
             biomeDict[biome.name] = biome;
         }
@@ -74,7 +90,7 @@ public class mapGenerator : MonoBehaviour
         Color[] voronoiColours = new Color[Biomes.Length];
         for (int i=0; i < Biomes.Length; i++){
                 voronoiColours[i] = Biomes[i].biomeColour;
-                Debug.Log("Added colour: " + Biomes[i].biomeColour);
+                //Debug.Log("Added colour: " + Biomes[i].biomeColour);
             }
 
         //BiomeCoord[,] voronoiMap = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes, blendWidth);
@@ -126,23 +142,25 @@ public class mapGenerator : MonoBehaviour
         }
 
         // set a 9 pixel square at building points to red to visualize them
-        Color redColor = new Color(1f, 0f, 0f);
-
-        foreach (Vector2Int coord in biomeGenData.buildingPointsArray){
-            if (coord.x > 2 && coord.x < mapChunkSize -2 && coord.y > 2 && coord.y < mapChunkSize -2){
-                colourMap[coord.y * mapChunkSize + coord.x] = redColor; // colour building points
-                colourMap[(coord.y-1) * mapChunkSize + (coord.x-1)] = redColor;
-                colourMap[(coord.y+1) * mapChunkSize + (coord.x+1)] = redColor;
-                colourMap[(coord.y+1) * mapChunkSize + (coord.x-1)] = redColor;
-                colourMap[(coord.y-1) * mapChunkSize + (coord.x+1)] = redColor;
-                colourMap[(coord.y) * mapChunkSize + (coord.x-1)] = redColor;
-                colourMap[(coord.y) * mapChunkSize + (coord.x+1)] = redColor;  
-                colourMap[(coord.y-1) * mapChunkSize + (coord.x)] = redColor;
-                colourMap[(coord.y+1) * mapChunkSize + (coord.x)] = redColor;
+            Color redColor = new Color(1f, 0f, 0f);
+        if (generateBuildings){
+            foreach (Vector2Int coord in biomeGenData.buildingPointsArray){
+                if (coord.x > 2 && coord.x < mapChunkSize -2 && coord.y > 2 && coord.y < mapChunkSize -2){
+                    colourMap[coord.y * mapChunkSize + coord.x] = redColor; // colour building points
+                    colourMap[(coord.y-1) * mapChunkSize + (coord.x-1)] = redColor;
+                    colourMap[(coord.y+1) * mapChunkSize + (coord.x+1)] = redColor;
+                    colourMap[(coord.y+1) * mapChunkSize + (coord.x-1)] = redColor;
+                    colourMap[(coord.y-1) * mapChunkSize + (coord.x+1)] = redColor;
+                    colourMap[(coord.y) * mapChunkSize + (coord.x-1)] = redColor;
+                    colourMap[(coord.y) * mapChunkSize + (coord.x+1)] = redColor;  
+                    colourMap[(coord.y-1) * mapChunkSize + (coord.x)] = redColor;
+                    colourMap[(coord.y+1) * mapChunkSize + (coord.x)] = redColor;
+                }
+                buildingsMap[coord.x, coord.y] = false; // mark building point as unspawned
+                Debug.Log("Marked building at: " + coord + " in buildings map." + ": " + buildingsMap[coord.x, coord.y] );
             }
-            Instantiate(biomeDict[biomeGenData.voronoiMap[coord.x, coord.y].getBiome()].buildingPrefab, new Vector3(coord.x, 0.5f * meshHeightMultiplier, coord.y), Quaternion.identity);
         }
-        return new MapData (noiseMap, colourMap, biomeGenData, biomeDict);
+        return new MapData (noiseMap, colourMap, biomeGenData, biomeDict, buildingsMap);
     }
 
     void onValidate (){
@@ -181,12 +199,14 @@ public struct MapData{
     public Color[] colourMap;
     public BiomeGenData biomeGenData;
     public Dictionary<string, BiomeScriptableObject> biomeDict;
+    public bool[,] buildingsMap;
 
 
-    public MapData(float[,] noiseMap, Color[] colourMap, BiomeGenData biomeGenData, Dictionary<string, BiomeScriptableObject> biomeDict){
+    public MapData(float[,] noiseMap, Color[] colourMap, BiomeGenData biomeGenData, Dictionary<string, BiomeScriptableObject> biomeDict, bool[,] buildingsMap){
         this.noiseMap = noiseMap;
         this.colourMap = colourMap;
         this.biomeGenData = biomeGenData;
         this.biomeDict = biomeDict;
+        this.buildingsMap = buildingsMap;
     }
 }

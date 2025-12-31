@@ -61,19 +61,22 @@ public static class noise
         // Integrate Voronoi
         //string [,] VoronoiMap = VoronoiGenerator.GenerateVDiagram(mapWidth, mapHeight, new Color[] {Color.black, Color.white}, 10, seed);
         // struct in mapdisplay for biome variables, pass in as parameter - then no need for so many variables can just be one struct
-        // within perlin loop, check which biome it is in, use those variables
+        // within perlin loop, check which biome it is in, use those variables, integrating weight of each biome
         // new loop checking weights then can use that to multiply variables by a factor of each - use curve too, maybe in editor for how close to border to blend - then pass that into VD generate method, for each one, after finding closest, try this Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x,y]); using min as next closest biome, max as this biome, value is distance between the two, then check curve to see if you should apply it or not
 
         foreach (Vector2Int coord in biomeGenData.buildingPointsArray){
+            // will need to blend surrouding area, get size of building from scriptable object
             noiseMap[coord.x, coord.y] = 0.5f; // flatten building points
-            noiseMap[coord.x-1, coord.y-1] = 0.5f;
-            noiseMap[coord.x+1, coord.y+1] = 0.5f;
-            noiseMap[coord.x+1, coord.y-1] = 0.5f;
-            noiseMap[coord.x-1, coord.y+1] = 0.5f;
-            noiseMap[coord.x, coord.y-1] = 0.5f;
-            noiseMap[coord.x, coord.y+1] = 0.5f;
-            noiseMap[coord.x-1, coord.y] = 0.5f;
-            noiseMap[coord.x+1, coord.y] = 0.5f;
+            if (coord.x > 0 && coord.y > 0 && coord.x < mapWidth -1 && coord.y < mapHeight -1){
+                noiseMap[coord.x-1, coord.y] = 0.5f;
+                noiseMap[coord.x-1, coord.y-1] = 0.5f;
+                noiseMap[coord.x-1, coord.y+1] = 0.5f;
+                noiseMap[coord.x+1, coord.y-1] = 0.5f;
+                noiseMap[coord.x+1, coord.y+1] = 0.5f;
+                noiseMap[coord.x, coord.y-1] = 0.5f;
+                noiseMap[coord.x, coord.y+1] = 0.5f;
+                noiseMap[coord.x+1, coord.y] = 0.5f;
+            }
         }
 
         // normalizes values between 0 and 1 using max and minimum noiseheight
