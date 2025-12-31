@@ -2,18 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Item : ScriptableObject
+[CreateAssetMenu(
+fileName = "NewItemData",
+menuName = "New Item Data"
+)]
+
+public class Item : ScriptableObject
 {
     public string itemName;
     public Sprite itemImg;
 
-    public int quantity = 0;
     public int quantityLimit;
 
     public bool selected;
-    public bool equipped;
+
+    public Item[] parentItems;
+    public Item[] childrenItems;
 
     public GameObject worldPrefab;
 
-    public abstract void Use();
+    public ItemAction action;
+
+
+    public void Use(GameObject gameManager)
+    {
+        Debug.Log("Trying to use");
+        if (action!=null)
+        {
+            action.Execute(this, gameManager);
+        }
+        else
+        {
+            Debug.Log("Did not execute item action");
+        }
+    }
 }

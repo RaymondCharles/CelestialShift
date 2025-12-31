@@ -14,7 +14,7 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     public CanvasGroup group;
     public Image dragIcon;
 
-    private Item draggedItem;
+    private SlotItem draggedItem;
 
     public void Awake()
     {
@@ -51,7 +51,7 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         draggedItem = SlotFunctions.GetItem(slotType, index);
         if (draggedItem == null) return;
 
-        dragIcon.sprite = draggedItem.itemImg;
+        dragIcon.sprite = draggedItem.itemDetails.itemImg;
         dragIcon.color = new Color(1, 1, 1, 0.8f); // optional transparency
         dragIcon.gameObject.SetActive(true);
         group.alpha = 0.5f;
@@ -106,7 +106,7 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
                               Vector3.up * 0.5f;
 
             // Delegated to Inventory
-            Inventory.Instance.DropItemToWorld(draggedItem, dropPos);
+            Inventory.Instance.DropItem(draggedItem, dropPos);
 
             // Clear slot in UI
             if (slotType == SlotType.Hotbar && HotBarManager.Instance != null)

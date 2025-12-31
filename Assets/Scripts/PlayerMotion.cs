@@ -12,7 +12,7 @@ public class PlayerMotion : MonoBehaviour
 
     PlayerInput playerInput;
     InputAction moveAction;
-    InputAction InverntoryAction;
+    InputAction InventoryAction;
     InputAction PauseAction;
     InputAction DropAction;
     public GameObject InventoryPanel;
@@ -20,6 +20,8 @@ public class PlayerMotion : MonoBehaviour
     public Transform playerTransform;
     public float speed = 5.0f;
     public int level = 0; // save feature testing
+
+    public GameObject gameManager;
 
     public void SavePlayer()
     {
@@ -72,7 +74,7 @@ public class PlayerMotion : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions.FindAction("Move");
-        InverntoryAction = playerInput.actions.FindAction("Inventory");
+        InventoryAction = playerInput.actions.FindAction("Inventory");
         PauseAction = playerInput.actions.FindAction("Pause");
         DropAction = playerInput.actions.FindAction("Drop");
 
@@ -98,7 +100,7 @@ public class PlayerMotion : MonoBehaviour
     void Update()
     {
         movePlayer();
-        if (InverntoryAction.triggered)
+        if (InventoryAction.triggered)
         {
             InventoryPanelShow();
         }
@@ -158,23 +160,47 @@ public class PlayerMotion : MonoBehaviour
     //        HotBarManager.Instance.RemoveSpriteFromSlot(0);
     //    }
     //}
+    
     public void DropSelectedItem()
     {
         if (HotBarManager.Instance == null) return;
-
         int selectedSlot = HotBarManager.Instance.selectedSlot;
-        Item item = HotBarManager.Instance.slotItems[selectedSlot];
-        if (item == null) return;
+        SlotItem slotItem = HotBarManager.Instance.slotItems[selectedSlot];
+        if (slotItem == null) return;
 
         if (Inventory.Instance == null) return;
-        if (item.worldPrefab == null) return;
+        if (slotItem.itemDetails.worldPrefab == null) return;
 
        
         Vector3 dropPos = playerTransform.position + playerTransform.forward * 1.5f + Vector3.up * 0.5f;
-        Inventory.Instance.GenerateItem(item, dropPos);
-        HotBarManager.Instance.ClearSlot(item);
+
+        // Spawn the world item
+        Inventory.Instance.GenerateItem(slotItem.itemDetails, slotItem.quantity, dropPos);
+
+        // Remove from hotbar
+        HotBarManager.Instance.ClearSlot(slotItem);
     }
 
+
+    public void UseSelectedItem()
+    {
+        int selectedSlot = HotBarManager.Instance.selectedSlot;
+        SlotItem slotItem = HotBarManager.Instance.slotItems[selectedSlot];
+        if (slotItem == null) return;
+
+        if (Inventory.Instance == null) return;
+        if (slotItem.itemDetails.worldPrefab == null) return;
+
+        if (slotItem.quantity > 0)
+        {
+            slotItem.itemDetails.Use(gameManager);
+            slotItem.quantity--;
+            if (slotItem.quantity == 0)
+            {
+                HotBarManager.Instance.ClearSlot(slotItem);
+            }
+        }
+    }
 
 
 

@@ -7,7 +7,7 @@ using UnityEngine;
 public class SlotFunctions : MonoBehaviour
 {
 
-    public static Item GetItem(SlotType slotType, int index)
+    public static SlotItem GetItem(SlotType slotType, int index)
     {
         if (slotType == SlotType.Hotbar)
         {
@@ -31,7 +31,7 @@ public class SlotFunctions : MonoBehaviour
     }
 
 
-    public static void SetItem(SlotType slotType, int index, Item item)
+    public static void SetItem(SlotType slotType, int index, SlotItem item)
     {
         if (slotType == SlotType.Hotbar)
         {
@@ -52,20 +52,20 @@ public class SlotFunctions : MonoBehaviour
 
     public void SlotSwap(SlotType a, int aindex, SlotType b, int bindex)
     {
-        Item aItem = GetItem(a, aindex);
-        Item bItem = GetItem(b, bindex);
+        SlotItem aItem = GetItem(a, aindex);
+        SlotItem bItem = GetItem(b, bindex);
 
         SetItem(a, aindex, bItem);
         SetItem(b, bindex, aItem);
 
     }
 
-    public static Item Clone(Item item)
+    public static SlotItem Clone(SlotItem item)
     {
-        return item == null ? null : ScriptableObject.Instantiate(item);
+        return item == null ? null : new SlotItem(ScriptableObject.Instantiate(item.itemDetails), item.quantity);
 
     }
-    public static void HandleSwap(SlotType fromType, int fromIndex, SlotType toType, int toIndex, Item draggedItem)
+    public static void HandleSwap(SlotType fromType, int fromIndex, SlotType toType, int toIndex, SlotItem draggedItem)
     {
         ///Hotbar - Hotbar
         if (fromType == SlotType.Hotbar && toType == SlotType.Hotbar)
@@ -77,7 +77,7 @@ public class SlotFunctions : MonoBehaviour
         //Inventory - Inventory
         if (fromType == SlotType.Inventory && toType == SlotType.Inventory)
         {
-            Item temp = InventoryUI.Instance.inventoryItems[fromIndex];
+            SlotItem temp = InventoryUI.Instance.inventoryItems[fromIndex];
             InventoryUI.Instance.inventoryItems[fromIndex] = InventoryUI.Instance.inventoryItems[toIndex];
             InventoryUI.Instance.inventoryItems[toIndex] = temp;
 
@@ -89,7 +89,7 @@ public class SlotFunctions : MonoBehaviour
         //Hotbar - Inventory
         if (fromType == SlotType.Hotbar && toType == SlotType.Inventory)
         {
-            InventoryUI.Instance.inventoryItems[toIndex] = ScriptableObject.Instantiate(draggedItem);
+            InventoryUI.Instance.inventoryItems[toIndex] = new SlotItem(ScriptableObject.Instantiate(draggedItem.itemDetails), draggedItem.quantity);
             InventoryUI.Instance.UpdateSlot(toIndex);
 
             HotBarManager.Instance.slotItems[fromIndex] = null;
@@ -100,12 +100,12 @@ public class SlotFunctions : MonoBehaviour
         //Inventory - Hotbar
         if (fromType == SlotType.Inventory && toType == SlotType.Hotbar)
         {
-            Item item = InventoryUI.Instance.inventoryItems[fromIndex];
+            SlotItem item = InventoryUI.Instance.inventoryItems[fromIndex];
             if (item == null)
             {
                 return;
             }
-            HotBarManager.Instance.slotItems[toIndex] = ScriptableObject.Instantiate(item);
+            HotBarManager.Instance.slotItems[toIndex] = new SlotItem(ScriptableObject.Instantiate(item.itemDetails), item.quantity);
             HotBarManager.Instance.UpdateSlot(toIndex);
 
             InventoryUI.Instance.inventoryItems[fromIndex] = null;

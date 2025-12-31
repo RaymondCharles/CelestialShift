@@ -6,60 +6,61 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     public static Inventory Instance;
-    public List<Item> items = new List<Item>();
+    public List<SlotItem> items = new List<SlotItem>();
+    public HotBarManager hotBarManager;
 
-
+  
 
     public void Awake()
     {
         Instance = this;
     }
 
-    public void addItem(Item item, Vector3 pos)
+    public void addItem(Item item, int quantity, Vector3 pos)
     {
-        if (!items.Contains(item))
+        int leftOver;
+        foreach (SlotItem itemInList in items)
         {
-            item.quantity = 1;
-            items.Add(item);
-        }
-        else
-        {
-            item.quantity += 1;
-            if (item.quantity > item.quantityLimit)
+            if (itemInList.itemDetails.itemName == item.itemName)
             {
-                item.quantity -= 1;
-                GenerateItem(item, pos);
+                itemInList.quantity += quantity;
+                leftOver = itemInList.quantity - item.quantityLimit;
+                if (leftOver > 0)
+                {
+                    itemInList.quantity -= leftOver;
+                    GenerateItem(item, leftOver, pos);
+                }
+                return;
             }
         }
+        leftOver = quantity - item.quantityLimit;
+        if (leftOver > 0)
+        {
+            items.Add(new SlotItem(item, item.quantityLimit));
+            GenerateItem(item, leftOver, pos);
+        }
     }
 
-    public void DropItem(Item item, Vector3 pos)
+    public void DropItem(SlotItem slotItem, Vector3 pos)
     {
-        if (!items.Contains(item)) return;
+        slotItem.quantity--;
 
-        item.quantity--;
-
-        if (item.quantity <= 0)
+        if (slotItem.quantity <= 0)
         {
-            items.Remove(item);
+            items.Remove(slotItem);
         }
 
-        if (item.worldPrefab != null)
-            GenerateItem(item, pos);
+        if (slotItem.itemDetails.worldPrefab != null)
+            GenerateItem(slotItem.itemDetails, slotItem.quantity, pos);
     }
 
 
 
-
-    public void GenerateItem(Item item, Vector3 pos)
+    public void GenerateItem(Item item, int quantity, Vector3 pos)
     {
-        Instantiate(item.worldPrefab, pos, Quaternion.identity);
-    }
-
-    public void DropItemToWorld(Item item, Vector3 pos)
-    {
-        if (item == null ||  item.worldPrefab == null) return;
-        GenerateItem(item, pos);
+        GameObject newItem = Instantiate(item.worldPrefab, pos, Quaternion.identity);
+        newItem.GetComponent<ItemInstance>().hotBarManager = hotBarManager;
+        newItem.GetComponent<ItemInstance>().quantity = quantity;
     }
 
 

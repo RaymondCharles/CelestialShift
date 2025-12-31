@@ -7,3 +7,15 @@ public enum SlotType
         Inventory
     }
 
+public class SlotItem
+{
+    public Item itemDetails;
+    public int quantity = 0;
+    public bool selected;
+
+    public SlotItem(Item itemDetails, int quantity)
+    {
+        this.itemDetails = itemDetails;
+        this.quantity = quantity;
+    }
+}

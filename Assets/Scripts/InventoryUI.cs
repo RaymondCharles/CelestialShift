@@ -9,22 +9,22 @@ public class InventoryUI : MonoBehaviour
     public static InventoryUI Instance;
 
     public Image[] slots;
-    public Item[] inventoryItems;
+    public SlotItem[] inventoryItems;
     public Sprite emptySprite;
 
     private void Awake()
     {
         Instance = this;
-        inventoryItems = new Item[slots.Length];
+        inventoryItems = new SlotItem[slots.Length];
     }
     public void UpdateSlot(int index)
     {
-        slots[index].sprite = inventoryItems[index] != null ? inventoryItems[index].itemImg : emptySprite;
+        slots[index].sprite = inventoryItems[index] != null ? inventoryItems[index].itemDetails.itemImg : emptySprite;
     }
 
     public void SlotSwap(int slot1, int slot2)
     {
-        Item temp = inventoryItems[slot1];
+        SlotItem temp = inventoryItems[slot1];
         inventoryItems[slot1] = inventoryItems[slot2];
         inventoryItems[slot2] = temp;
 

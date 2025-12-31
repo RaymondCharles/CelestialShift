@@ -8,7 +8,7 @@ public class HotBarManager : MonoBehaviour
     public Sprite emptySlotSprite;
     public static HotBarManager Instance;
 
-    public Item[] slotItems;
+    public SlotItem[] slotItems;
     public int selectedSlot = 0;
 
 
@@ -23,7 +23,7 @@ public class HotBarManager : MonoBehaviour
         Instance = this;
 
         // Initialize slots
-        slotItems = new Item[Slots.Length];
+        slotItems = new SlotItem[Slots.Length];
         for (int i = 0; i < Slots.Length; i++)
         {
             Slots[i].image.sprite = emptySlotSprite;
@@ -54,7 +54,7 @@ public class HotBarManager : MonoBehaviour
     //    Slots[slotIndex].image.sprite = item.itemImg;
     //    slotItems[slotIndex] = item;
     //}
-    public void AddItemToSlot(Item item, int slotIndex = -1)
+    public void AddItemToSlot(Item item, int quantity, int slotIndex = -1)
     {
         if (item == null) return;
 
@@ -67,21 +67,38 @@ public class HotBarManager : MonoBehaviour
                 return;
             }
         }
-
+        int leftOver;
+        foreach (SlotItem item2 in slotItems)
+        {
+            if (item2==null) continue;
+            if (item2.itemDetails.itemName == item.itemName)
+            {
+                Debug.Log("Added quantity");
+                item2.quantity+=quantity;
+                leftOver = item2.quantity - item.quantityLimit;
+                return;
+            }
+        }
+        
         // CREATE A NEW INSTANCE FOR THIS SLOT
         Item newItem = ScriptableObject.Instantiate(item);
 
         Slots[slotIndex].image.sprite = newItem.itemImg;
-        slotItems[slotIndex] = newItem;
+        slotItems[slotIndex] = new SlotItem(newItem, quantity);
+        for (int i=0; i<8; i++)
+        {
+            Debug.Log(slotItems[i] + i.ToString());
+        }
+        UpdateSelectedItem();
     }
 
 
 
-    public void ClearSlot(Item item)
+    public void ClearSlot(SlotItem slotItem)
     {
         for (int i = 0; i < slotItems.Length; i++)
         {
-            if (slotItems[i] == item)
+            if (slotItems[i] == slotItem)
             {
                 Slots[i].image.sprite = emptySlotSprite;
                 slotItems[i] = null;
@@ -101,12 +118,12 @@ public class HotBarManager : MonoBehaviour
 
     public void SlotSwap(int slot1, int slot2)
     {
-        Item temp = slotItems[slot1];
+        SlotItem temp = slotItems[slot1];
         slotItems[slot1] = slotItems[slot2];
         slotItems[slot2] = temp;
 
-        Slots[slot1].image.sprite = slotItems[slot1] != null ? slotItems[slot1].itemImg : emptySlotSprite;
-        Slots[slot2].image.sprite = slotItems[slot2] != null ? slotItems[slot2].itemImg : emptySlotSprite;
+        Slots[slot1].image.sprite = slotItems[slot1] != null ? slotItems[slot1].itemDetails.itemImg : emptySlotSprite;
+        Slots[slot2].image.sprite = slotItems[slot2] != null ? slotItems[slot2].itemDetails.itemImg : emptySlotSprite;
         UpdateSelectedItem();
 
     }
@@ -120,7 +137,7 @@ public class HotBarManager : MonoBehaviour
                 slotItems[i].selected = false;
             }
         }
-        Item selectedItem = slotItems[selectedSlot];
+        SlotItem selectedItem = slotItems[selectedSlot];
         if (selectedItem != null) { 
             selectedItem.selected = true;
         }
@@ -128,13 +145,13 @@ public class HotBarManager : MonoBehaviour
 
     public void UpdateSlot(int slot)
     {
-        Slots[slot].image.sprite = slotItems[slot] != null ? slotItems[slot].itemImg : emptySlotSprite;
+        Slots[slot].image.sprite = slotItems[slot] != null ? slotItems[slot].itemDetails.itemImg : emptySlotSprite;
     }
 
     public void DropSelectedItem()
     {
-        Item item = slotItems[selectedSlot];
-        if (item == null) return;
+        SlotItem slotItem = slotItems[selectedSlot];
+        if (slotItem == null) return;
 
         PlayerMotion player = PlayerMotion.Instance;
         if (player == null) return;
@@ -144,10 +161,10 @@ public class HotBarManager : MonoBehaviour
 
         dropPos.y = player.playerTransform.position.y;
 
-        Inventory.Instance.GenerateItem(item, dropPos);
+        Inventory.Instance.GenerateItem(slotItem.itemDetails, slotItem.quantity, dropPos);
 
         // Remove from hotbar
-        ClearSlot(item);
+        ClearSlot(slotItem);
     }
 
 }
