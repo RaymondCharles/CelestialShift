@@ -58,8 +58,10 @@ public class HotBarManager : MonoBehaviour, UIManager
     {
 
         int leftOver = quantity;
+        int index = 0;
         foreach (SlotItem item2 in slotItems)
         {
+            Debug.Log(index);
             if (item2==null) continue;
             if (item2.itemDetails.itemName == item.itemName)
             {
@@ -70,6 +72,11 @@ public class HotBarManager : MonoBehaviour, UIManager
                 {
                     item2.quantity -= leftOver;
                 }
+                else if (leftOver <= 0)
+                {
+                    return 0;
+                }
+                index++;
             }
         }
         

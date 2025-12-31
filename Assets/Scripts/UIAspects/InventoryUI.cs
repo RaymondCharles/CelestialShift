@@ -51,5 +51,14 @@ public class InventoryUI : MonoBehaviour, UIManager
         return;
     }
 
+    public int GetFirstEmptySlot()
+    {
+        for (int i = 0; i < inventoryItems.Length; i++)
+        {
+            if (inventoryItems[i] == null)
+                return i;
+        }
+        return -1;
+    }
 
 }
