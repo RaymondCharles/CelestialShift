@@ -54,20 +54,10 @@ public class HotBarManager : MonoBehaviour, UIManager
     //    Slots[slotIndex].image.sprite = item.itemImg;
     //    slotItems[slotIndex] = item;
     //}
-    public void AddItemToSlot(Item item, int quantity, int slotIndex = -1)
+    public int AddItemToSlot(Item item, int quantity, int slotIndex = -1)
     {
-        if (item == null) return;
 
-        if (slotIndex < 0)
-        {
-            slotIndex = GetFirstEmptySlot();
-            if (slotIndex == -1)
-            {
-                Debug.Log("No empty slots!");
-                return;
-            }
-        }
-        int leftOver;
+        int leftOver = quantity;
         foreach (SlotItem item2 in slotItems)
         {
             if (item2==null) continue;
@@ -76,21 +66,49 @@ public class HotBarManager : MonoBehaviour, UIManager
                 Debug.Log("Added quantity, was " + item2.quantity.ToString() + "and now is " + (item2.quantity + quantity).ToString());
                 item2.quantity+=quantity;
                 leftOver = item2.quantity - item.quantityLimit;
-                return;
+                if (leftOver > 0)
+                {
+                    item2.quantity -= leftOver;
+                }
             }
         }
         
-        // CREATE A NEW INSTANCE FOR THIS SLOT
-        Item newItem = ScriptableObject.Instantiate(item);
-
-        Slots[slotIndex].image.sprite = newItem.itemImg;
-        slotItems[slotIndex] = new SlotItem(newItem, quantity);
-        for (int i=0; i<8; i++)
+        if (slotIndex < 0)
         {
-            Debug.Log(slotItems[i] + i.ToString());
+            slotIndex = GetFirstEmptySlot();
+            if (slotIndex == -1)
+            {
+                Debug.Log("No empty slots!");
+                return leftOver;
+            }
         }
-        UpdateSelectedItem();
-        item.printTrees();
+
+        while ((slotIndex = GetFirstEmptySlot()) != -1 && leftOver > item.quantityLimit)
+        {
+            newInstance(item.quantityLimit);
+            leftOver -= item.quantityLimit;
+        }
+
+        if ((slotIndex = GetFirstEmptySlot()) != -1 && leftOver > 0)
+        {
+            newInstance(leftOver);
+            return 0;
+        }
+        else
+        {
+            return leftOver;
+        }
+
+        void newInstance(int quantity)
+        {
+            // CREATE A NEW INSTANCE FOR THIS SLOT
+            Item newItem = ScriptableObject.Instantiate(item);
+
+            Slots[slotIndex].image.sprite = newItem.itemImg;
+            slotItems[slotIndex] = new SlotItem(newItem, quantity);
+            UpdateSelectedItem();
+            UpdateSlot(slotIndex);
+        }
     }
 
 

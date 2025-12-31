@@ -16,12 +16,8 @@ MonoBehaviour:
   itemImg: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   quantityLimit: 10
   selected: 0
-  craftingTreeLists:
-  - treeName: tree1
-    node:
-      item: {fileID: 11400000}
-      treeName: tree1
-      parent: {fileID: 11400000, guid: cd5d8a7376879d6488f9a10b76739983, type: 2}
-      children: []
+  parentItems:
+  - {fileID: 11400000, guid: cd5d8a7376879d6488f9a10b76739983, type: 2}
+  childrenItems: []
   worldPrefab: {fileID: 6806850328721163496, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
   action: {fileID: 11400000, guid: d786cde816a62944fa8f5bc7ee18d737, type: 2}

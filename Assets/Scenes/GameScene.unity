@@ -1976,6 +1976,7 @@ MonoBehaviour:
   - {fileID: 1396303875}
   - {fileID: 1694831488}
   - {fileID: 37034576}
+  - {fileID: 656925994}
   resultSlot: {fileID: 656925994}
   emptySprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &302595707
@@ -3438,7 +3439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e69b9ab4ddc8dd34c86c767db21e8a00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 7
+  index: 3
   slotType: 2
   canvas: {fileID: 0}
   group: {fileID: 0}
@@ -9799,6 +9800,71 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1893244779}
   m_CullTransparentMesh: 1
+--- !u!1001 &1902130993
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 865302610246411870, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.3995304
+      objectReference: {fileID: 0}
+    - target: {fileID: 865302610246411870, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.186
+      objectReference: {fileID: 0}
+    - target: {fileID: 865302610246411870, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.1814604
+      objectReference: {fileID: 0}
+    - target: {fileID: 865302610246411870, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 865302610246411870, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 865302610246411870, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 865302610246411870, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 865302610246411870, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 865302610246411870, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 865302610246411870, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6806850328721163496, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: m_Name
+      value: Water Bucket
+      objectReference: {fileID: 0}
+    - target: {fileID: 8247635172699097385, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: item
+      value: 
+      objectReference: {fileID: 11400000, guid: a14e1eda2b10d374a813241505cc5b44, type: 2}
+    - target: {fileID: 8247635172699097385, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
+      propertyPath: quantity
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 23a5fa59053b9464888fc2acca4c7b2f, type: 3}
 --- !u!1 &1910188081
 GameObject:
   m_ObjectHideFlags: 0
@@ -10401,3 +10467,4 @@ SceneRoots:
   - {fileID: 358055840}
   - {fileID: 483924941}
   - {fileID: 479541644}
+  - {fileID: 1902130993}

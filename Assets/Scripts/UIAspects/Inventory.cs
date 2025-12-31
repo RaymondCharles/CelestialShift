@@ -16,9 +16,9 @@ public class Inventory : MonoBehaviour
         Instance = this;
     }
 
-    public void addItem(Item item, int quantity, Vector3 pos)
+    public int addItem(Item item, int quantity)
     {
-        int leftOver;
+        int leftOver = quantity;
         foreach (SlotItem itemInList in items)
         {
             if (itemInList.itemDetails.itemName == item.itemName)
@@ -28,16 +28,28 @@ public class Inventory : MonoBehaviour
                 if (leftOver > 0)
                 {
                     itemInList.quantity -= leftOver;
-                    GenerateItem(item, leftOver, pos);
                 }
-                return;
             }
         }
-        leftOver = quantity - item.quantityLimit;
-        if (leftOver > 0)
+        int index;
+        while ((index = GetFirstEmptySlot()) != -1 && leftOver > item.quantityLimit)
         {
-            items.Add(new SlotItem(item, item.quantityLimit));
-            GenerateItem(item, leftOver, pos);
+            items[index] = (new SlotItem(item, item.quantityLimit));
+            InventoryUI.Instance.inventoryItems[index] = items[index];
+            leftOver -= item.quantityLimit;
+            InventoryUI.Instance.UpdateSlot(index);
+        }
+        if ((index = GetFirstEmptySlot()) != -1 && leftOver != 0)
+        {
+            items[index] = (new SlotItem(item, leftOver));
+            InventoryUI.Instance.inventoryItems[index] = items[index];
+            leftOver -= item.quantityLimit;
+            InventoryUI.Instance.UpdateSlot(index);
+            return 0;
+        }
+        else
+        {  
+            return leftOver;
         }
     }
 
@@ -54,9 +66,24 @@ public class Inventory : MonoBehaviour
     public void GenerateItem(Item item, int quantity, Vector3 pos)
     {
         GameObject newItem = Instantiate(item.worldPrefab, pos, Quaternion.identity);
-        Debug.Log(quantity.ToString() + "QUANTITY O PREFAB"); 
+        Debug.Log(quantity.ToString() + "QUANTITY TO PREFAB"); 
         newItem.GetComponent<ItemInstance>().hotBarManager = hotBarManager;
         newItem.GetComponent<ItemInstance>().quantity = quantity;
+    }
+
+    public int GetFirstEmptySlot()
+    {
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i] == null)
+                return i;
+        }
+        if (items.Count < 8)
+        {
+            items.Add(null);
+            return items.Count - 1;
+        }
+        return -1;
     }
 
 

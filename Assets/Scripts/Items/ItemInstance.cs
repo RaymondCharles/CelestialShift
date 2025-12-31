@@ -15,14 +15,14 @@ public class ItemInstance : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Inventory.Instance.addItem(item, quantity, transform.position);
-
-            if (HotBarManager.Instance != null)
+            if (HotBarManager.Instance != null) quantity = HotBarManager.Instance.AddItemToSlot(item, quantity);
+            if (Inventory.Instance != null && quantity > 0) quantity = Inventory.Instance.addItem(item, quantity);
+            if (quantity <= 0) Destroy(gameObject);
+            else
             {
-                HotBarManager.Instance.AddItemToSlot(item, quantity); 
+                Debug.Log("Item picked Up" + item.itemName);
             }
-            Debug.Log("Item picked Up" + item.itemName);
-            Destroy(gameObject);
+        
         }
     }
 

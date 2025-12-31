@@ -16,38 +16,14 @@ public class Item : ScriptableObject
 
     public bool selected;
 
-    // List used in the inspector
-    public List<TreeEntry> craftingTreeLists = new List<TreeEntry>();
+    public List<Item> parentItems;
 
-    public Dictionary<string, CraftingNode> craftingNodes = new Dictionary<string, CraftingNode>();
-
-    public void InitializeDictionary()
-    {
-        Debug.Log(itemName);
-        foreach (TreeEntry craftingTree in craftingTreeLists)
-        {
-            craftingNodes[craftingTree.treeName] = craftingTree.node;
-            printTrees();
-        }
-    }
-
+    public List<ItemGroup> childrenItems;
 
     public GameObject worldPrefab;
 
     public ItemAction action;
 
-    public void printTrees()
-    {
-        Debug.Log(itemName + "CURRENT ITEM");
-        if (craftingNodes[craftingTreeLists[0].treeName].parent) Debug.Log(craftingNodes[craftingTreeLists[0].treeName].parent.itemName + "PARENT");
-        CraftingNode[] children = craftingNodes[craftingTreeLists[0].treeName].getChildren();
-        int x = 0;
-        foreach (CraftingNode node in children)
-        {
-            if (node.item != null) Debug.Log(x.ToString() + " Child: " + node.item.itemName);
-            x++;
-        }
-    }
 
 
     public void Use(GameObject gameManager)
@@ -63,41 +39,11 @@ public class Item : ScriptableObject
         }
     }
 
-    public bool hasTree(string name)
-    {
-        return (craftingNodes.ContainsKey(name));
-    }
 }
 
 [System.Serializable]
-public class TreeEntry
+public class ItemGroup
 {
-    public string treeName;       // Key
-    public CraftingNode node;   // Value
-}
-
-[System.Serializable]
-public class CraftingNode
-{
-
-    public Item item;
-
-    public string treeName;
-
-    // The parent in this tree (null if root)
-    public Item parent = null;
-
-    // The children in this tree
-    public CraftingNode[] children = new CraftingNode[3];
-
-    public CraftingNode[] getChildren()
-    {
-        return children;
-    }
-
-    public List<CraftingNode> getAllChildrenOfParent()
-    {
-        CraftingNode parentNode = this.parent.craftingNodes[treeName];
-        return new List<CraftingNode>(parentNode.children);
-    }
+    public Item[] items = new Item[3];
+    public int[] itemQuantities = new int[3];
 }

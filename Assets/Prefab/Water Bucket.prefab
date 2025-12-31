@@ -121,8 +121,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8f1257943e51974c90b735a482fdf2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 11400000, guid: 4c594391d61b3a243b734ab6fed1c356, type: 2}
+  item: {fileID: 11400000, guid: a14e1eda2b10d374a813241505cc5b44, type: 2}
   hotBarManager: {fileID: 0}
+  quantity: 0
 --- !u!54 &7578426319055596406
 Rigidbody:
   m_ObjectHideFlags: 0
