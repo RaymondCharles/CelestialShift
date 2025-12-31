@@ -15,15 +15,15 @@ MonoBehaviour:
   name: Snow
   terrainType:
   - name: Mountain
-    height: 0.3
+    height: 0.4
     colour: {r: 0.31011412, g: 0.31132078, b: 0.3098523, a: 0}
   - name: Snow
     height: 1
     colour: {r: 1, g: 1, b: 1, a: 0}
-  persistance: 0
-  lacunarity: 0
+  persistance: 0.515
+  lacunarity: 2.6
   biomeColour: {r: 0.742168, g: 0.867702, b: 0.8773585, a: 0}
-  meshHeightMultiplier: 0
+  meshHeightMultiplier: 100
   meshHeightCurve:
     serializedVersion: 2
     m_Curve: []

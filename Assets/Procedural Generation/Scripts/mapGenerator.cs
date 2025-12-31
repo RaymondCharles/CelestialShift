@@ -98,7 +98,7 @@ public class mapGenerator : MonoBehaviour
 
         
         // call noise.GenerateNoiseMap() with parameters to generate noise map
-        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset, biomeGenData, Biomes);
+        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset, biomeGenData, Biomes, biomeDict);
 
         // build a 1d array of colours by looping through the heightmap, checking TerrainType struct, and assigning colours accordingly EXPAND WITH BIOMES - i.e. figure out different structs for different biomes
         Color[] colourMap = new Color[mapChunkSize * mapChunkSize];

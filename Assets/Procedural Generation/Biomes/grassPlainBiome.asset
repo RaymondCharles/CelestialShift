@@ -29,10 +29,10 @@ MonoBehaviour:
   - name: Snow
     height: 1
     colour: {r: 0.97647065, g: 0.8431373, b: 0.7254902, a: 0}
-  persistance: 0.182
-  lacunarity: 6.77
+  persistance: 0.505
+  lacunarity: 2.02
   biomeColour: {r: 0.06403237, g: 0.2830189, b: 0.057404775, a: 0}
-  meshHeightMultiplier: 0
+  meshHeightMultiplier: 101.9
   meshHeightCurve:
     serializedVersion: 2
     m_Curve: []

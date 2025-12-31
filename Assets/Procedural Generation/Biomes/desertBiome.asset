@@ -15,15 +15,15 @@ MonoBehaviour:
   name: Desert
   terrainType:
   - name: rock
-    height: 0.2
-    colour: {r: 0.21568629, g: 0.21568629, b: 0.21568629, a: 0}
+    height: 0.1
+    colour: {r: 0.4716981, g: 0.33634156, b: 0.05562477, a: 0}
   - name: Sand
     height: 1
     colour: {r: 0.754717, g: 0.5373814, b: 0.06051977, a: 0}
-  persistance: 0
-  lacunarity: 0
+  persistance: 0.495
+  lacunarity: 2.41
   biomeColour: {r: 1, g: 0.84106404, b: 0, a: 0}
-  meshHeightMultiplier: 0
+  meshHeightMultiplier: 70
   meshHeightCurve:
     serializedVersion: 2
     m_Curve: []

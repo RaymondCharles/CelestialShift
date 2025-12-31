@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class noise
 {
-    public static float[,] GenerateNoiseMap (int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, BiomeGenData biomeGenData, BiomeScriptableObject[] Biomes){
+    public static float[,] GenerateNoiseMap (int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, BiomeGenData biomeGenData, BiomeScriptableObject[] Biomes, Dictionary<string, BiomeScriptableObject> biomeDict){
         // Create 2d float array, iterate through it and assign noise values
         float [,] noiseMap = new float[mapWidth, mapHeight];
         
@@ -30,31 +30,82 @@ public static class noise
 
         for (int y=0; y < mapHeight; y++){
             for (int x=0; x < mapWidth; x++){
+                // get biomes for this coordinate
+                string firstBiome = biomeGenData.voronoiMap[x,y].getBiome();
+                string secondBiome = biomeGenData.voronoiMap[x,y].getSecondBiome();
+                string thirdBiome = biomeGenData.voronoiMap[x,y].getThirdBiome();
                 
+                // set initial amplitude and frequency values for all biomes
                 float amplitude = 1;
+                float secondAmplitude = 1;
+                float thirdAmplitude = 1;
+
                 float frequency = 1;
+                float secondFrequency = 1;
+                float thirdFrequency = 1;
+
                 float noiseHeight = 0;
+                float secondnoiseHeight = 0;
+                float thirdNoiseHeight = 0;
+                float finalNoiseHeight = 0;
+
+                // set biome specific variables
+                float biomePersistance = biomeDict[firstBiome].persistance;
+                float biomeLacunarity = biomeDict[firstBiome].lacunarity;
+                float biomemeshHeightMultiplier = biomeDict[firstBiome].meshHeightMultiplier;
+
+                float secondBiomePersistance = biomeDict[secondBiome].persistance;
+                float secondBiomeLacunarity = biomeDict[secondBiome].lacunarity;
+                float secondBiomemeshHeightMultiplier = biomeDict[secondBiome].meshHeightMultiplier;
+
+                float thirdBiomePersistance = biomeDict[thirdBiome].persistance;
+                float thirdBiomeLacunarity = biomeDict[thirdBiome].lacunarity;
+                float thirdBiomemeshHeightMultiplier = biomeDict[thirdBiome].meshHeightMultiplier;
 
                 for (int i=0; i < octaves; i++){
                     // Cast int x and y to float, divide by scale to add variety to values
                     float sampleX = (x-halfWidth) / scale * frequency + octaveOffsets[i].x;
                     float sampleY = (y-halfHeight) / scale * frequency + octaveOffsets[i].y;
+                    float sampleX1 = (x - halfWidth) / scale * frequency + octaveOffsets[i].x;
+
+                    float sampleX2 = (x - halfWidth) / scale * secondFrequency + octaveOffsets[i].x;
+                    float sampleY2 = (y - halfHeight) / scale * secondFrequency + octaveOffsets[i].y;
+
+                    float sampleX3 = (x - halfWidth) / scale * thirdFrequency + octaveOffsets[i].x;
+                    float sampleY3 = (y - halfHeight) / scale * thirdFrequency + octaveOffsets[i].y;
 
                     // Set 2d array coordinate to perlin noised value
                     float perlinValue = Mathf.PerlinNoise (sampleX, sampleY) * 2 - 1;
+                    float perlin2 = Mathf.PerlinNoise(sampleX2, sampleY2) * 2 - 1;
+                    float perlin3 = Mathf.PerlinNoise(sampleX3, sampleY3) * 2 - 1;
+
                     noiseHeight += perlinValue * amplitude;
+                    secondnoiseHeight += perlin2 * secondAmplitude;
+                    thirdNoiseHeight += perlin3 * thirdAmplitude;
                     
-                    amplitude *= persistance;
-                    frequency *= lacunarity;
+                    // adjust amplitude and frequency for next octave for each biome
+                    amplitude *= biomePersistance;
+                    frequency *= biomeLacunarity;
+                    secondAmplitude *= secondBiomePersistance;
+                    secondFrequency *= secondBiomeLacunarity;
+                    thirdAmplitude *= thirdBiomePersistance;
+                    thirdFrequency *= thirdBiomeLacunarity;
                 }
 
-                if (noiseHeight > maxNoiseHeight){
-                    maxNoiseHeight = noiseHeight;
-                } else if (noiseHeight < minNoiseHeight){
-                    minNoiseHeight = noiseHeight;
-                }
+                // multiply all 3 biome noise height values by their respective mesh height multipliers, then blend based on voronoi weights
+                noiseHeight = (noiseHeight + 1) / 2f * biomemeshHeightMultiplier;
+                secondnoiseHeight = (secondnoiseHeight + 1) / 2f * secondBiomemeshHeightMultiplier;
+                thirdNoiseHeight = (thirdNoiseHeight + 1) / 2f * thirdBiomemeshHeightMultiplier;
 
-                noiseMap[x,y] = noiseHeight;
+                finalNoiseHeight = Mathf.Lerp(noiseHeight, secondnoiseHeight, biomeGenData.voronoiMap[x,y].getSecondWeight());;
+                finalNoiseHeight = Mathf.Lerp(finalNoiseHeight, thirdNoiseHeight, biomeGenData.voronoiMap[x,y].getThirdWeight());
+
+                if (finalNoiseHeight > maxNoiseHeight){
+                    maxNoiseHeight = finalNoiseHeight;
+                } else if (finalNoiseHeight < minNoiseHeight){
+                    minNoiseHeight = finalNoiseHeight;
+                }
+                noiseMap[x,y] = finalNoiseHeight;
             }
         }
 
