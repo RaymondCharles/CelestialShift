@@ -16,6 +16,7 @@ public class FirstPersonController : MonoBehaviour
     public GameObject PausePanel;
     public Transform playerTransform;
     public static FirstPersonController Instance;
+    public GameObject gameManager;
 
 
 
@@ -117,10 +118,10 @@ public class FirstPersonController : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         defaultYPos = playerCamera.transform.localPosition.y;
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
 
 
         // Instantiate the input actions
@@ -181,7 +182,21 @@ public class FirstPersonController : MonoBehaviour
     }
     public void InventoryPanelShow()
     {
+        if (InventoryPanel.activeSelf)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
         InventoryPanel.SetActive(!InventoryPanel.activeSelf);
+        for (int i=0; i < Inventory.Instance.inventoryItems.Length; i++)
+        {
+            InventoryUI.Instance.UpdateSlot(i);
+        }
     }
     public void PausePanelShow()
     {
@@ -224,6 +239,7 @@ public class FirstPersonController : MonoBehaviour
     {
         if (HotBarManager.Instance == null) return;
         int selectedSlot = HotBarManager.Instance.selectedSlot;
+        if (selectedSlot == -1) return;
         SlotItem slotItem = HotBarManager.Instance.slotItems[selectedSlot];
         if (slotItem == null) return;
 
@@ -241,25 +257,26 @@ public class FirstPersonController : MonoBehaviour
     }
 
 
-    //public void UseSelectedItem()
-    //{
-    //    int selectedSlot = HotBarManager.Instance.selectedSlot;
-    //    SlotItem slotItem = HotBarManager.Instance.slotItems[selectedSlot];
-    //    if (slotItem == null) return;
+    public void UseSelectedItem()
+    {
+        int selectedSlot = HotBarManager.Instance.selectedSlot;
+        if (selectedSlot == -1) return;
+        SlotItem slotItem = HotBarManager.Instance.slotItems[selectedSlot];
+        if (slotItem == null) return;
 
-    //    if (Inventory.Instance == null) return;
-    //    if (slotItem.itemDetails.worldPrefab == null) return;
+        if (Inventory.Instance == null) return;
+        if (slotItem.itemDetails.worldPrefab == null) return;
 
-    //    if (slotItem.quantity > 0)
-    //    {
-    //        slotItem.itemDetails.Use(gameManager);
-    //        slotItem.quantity--;
-    //        if (slotItem.quantity == 0)
-    //        {
-    //            HotBarManager.Instance.ClearSlot(slotItem);
-    //        }
-    //    }
-    //}
+        if (slotItem.quantity > 0)
+        {
+            slotItem.itemDetails.Use(gameManager);
+            slotItem.quantity--;
+            if (slotItem.quantity == 0)
+            {
+                HotBarManager.Instance.ClearSlot(slotItem);
+            }
+        }
+    }
 
 
     // Update is called once per frame
@@ -285,10 +302,10 @@ public class FirstPersonController : MonoBehaviour
         {
             DropSelectedItem();
         }
-        //if (UseAction.triggered)
-        //{
-        //    UseSelectedItem();
-        //}
+        if (UseAction.triggered)
+        {
+            UseSelectedItem();
+        }
 
 
         if (CanMove)
@@ -298,7 +315,6 @@ public class FirstPersonController : MonoBehaviour
 
             if (moveInput.magnitude > 0)
             {
-                Debug.Log("IsMoving");
                 isIdle = false;
             }
             else
@@ -319,7 +335,6 @@ public class FirstPersonController : MonoBehaviour
                 HandleCrouch();
                 if (isCrouching)
                 {
-                    Debug.Log("Crouching");
                     playerAnimator.SetBool("isCrouching", true);
                     isIdle = false;
                 }
@@ -334,19 +349,15 @@ public class FirstPersonController : MonoBehaviour
             // Start slide on press
             if (CanSlide && !isSliding)
             {
-                Debug.Log("Start Slide");
                 StartSlide(characterController.velocity);
                 isSliding = true;
                 isIdle = false;
             }
 
             bool ContinueSlide = inputActions.Player.Slide.IsPressed() && characterController.isGrounded;
-            Debug.Log(ContinueSlide + "ContinueSlide");
-            Debug.Log(isSliding + "isSliding");
             // Stop slide when button no longer held
             if (isSliding && !ContinueSlide)
             {
-                Debug.Log("Stop Slide");
                 isSliding = false;
                 isIdle = true;
             }
@@ -354,14 +365,12 @@ public class FirstPersonController : MonoBehaviour
             // While sliding
             if (isSliding)
             {
-                Debug.Log("Is Sliding");
                 HandleSlide();
                 isIdle = false;
             }
             
             if (!characterController.isGrounded)
             {
-                Debug.Log("Grounded check");
                 isFalling = true;
                 isIdle = false;
             }

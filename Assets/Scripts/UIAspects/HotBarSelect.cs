@@ -32,13 +32,17 @@ public class HotBarSelect : MonoBehaviour
         // Highlight the pressed slot
         for (int i = 0; i < Slots.Length; i++)
             if (Slots[i] != null) { 
-        Slots[i].gameObject.SetActive(i == index);
+        Slots[i].gameObject.SetActive(i== index && !Slots[index].gameObject.activeSelf);
     }
 
         // Tell HotBarManager which slot is currently selected
         if (HotBarManager.Instance != null)
-            HotBarManager.Instance.selectedSlot = index;
-            HotBarManager.Instance.UpdateSelectedItem();
+            if (!Slots[index].gameObject.activeSelf) HotBarManager.Instance.selectedSlot = -1;
+            else
+            {
+                HotBarManager.Instance.selectedSlot = index;
+                HotBarManager.Instance.UpdateSelectedItem();
+            }
 
     }
 

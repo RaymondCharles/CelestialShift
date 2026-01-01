@@ -20,11 +20,11 @@ public class SlotFunctions : MonoBehaviour
         }
         else if (slotType == SlotType.Inventory)
         {
-            if (InventoryUI.Instance == null)
+            if (Inventory.Instance == null)
             {
                 return null;
             }
-            return InventoryUI.Instance.inventoryItems[index];
+            return Inventory.Instance.inventoryItems[index];
         }
         else
         {
@@ -46,7 +46,7 @@ public class SlotFunctions : MonoBehaviour
         }
         else if (slotType == SlotType.Inventory)
         {
-            InventoryUI.Instance.inventoryItems[index] = item;
+            Inventory.Instance.inventoryItems[index] = item;
             InventoryUI.Instance.UpdateSlot(index);
         }
         else

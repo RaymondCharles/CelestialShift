@@ -11,10 +11,11 @@ public class ItemInstance : MonoBehaviour
 
 
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
+            Debug.Log("Colliding");
             if (HotBarManager.Instance != null) quantity = HotBarManager.Instance.AddItemToSlot(item, quantity);
             if (Inventory.Instance != null && quantity > 0) quantity = Inventory.Instance.addItem(item, quantity);
             if (quantity <= 0) Destroy(gameObject);

@@ -120,6 +120,69 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &10606632
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 10606634}
+  - component: {fileID: 10606633}
+  - component: {fileID: 10606635}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &10606633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10606632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9a1297a570e3124180437330a26c6fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hotBarManager: {fileID: 68963099}
+--- !u!4 &10606634
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10606632}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.1183186, y: 1.0973572, z: -1.5638938}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &10606635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10606632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36cdc2ef9717e7e40aac7b9a5820e823, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allItems:
+  - {fileID: 11400000, guid: cd5d8a7376879d6488f9a10b76739983, type: 2}
+  - {fileID: 11400000, guid: 68f8d68dcb7337742a29d74270a74edf, type: 2}
+  - {fileID: 11400000, guid: a14e1eda2b10d374a813241505cc5b44, type: 2}
+  player: {fileID: 919132149081975082}
 --- !u!114 &68963099 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 713017152668223473, guid: c39ea5572abe4884daafcf31a070b0dd, type: 3}
@@ -239,6 +302,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8295026250787495120, guid: 0ec49db3fefb2d547ba10b40734135b4, type: 3}
+      propertyPath: InventoryPanel
+      value: 
+      objectReference: {fileID: 862223381}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -511,6 +578,7 @@ MonoBehaviour:
   InventoryPanel: {fileID: 0}
   PausePanel: {fileID: 0}
   playerTransform: {fileID: 543450652733109136}
+  gameManager: {fileID: 0}
   swordAttack: 0
   shieldDefend: 0
   canSprint: 1
@@ -801,6 +869,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &862223381 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7973574086002077898, guid: 0ec49db3fefb2d547ba10b40734135b4, type: 3}
+  m_PrefabInstance: {fileID: 270644568}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &903206890
 GameObject:
   m_ObjectHideFlags: 3
@@ -1493,6 +1566,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cube
       objectReference: {fileID: 0}
+    - target: {fileID: 2199556516358097983, guid: 460fbc8a258445c49989792500962f59, type: 3}
+      propertyPath: m_TagString
+      value: Item
+      objectReference: {fileID: 0}
     - target: {fileID: 6403339428267612964, guid: 460fbc8a258445c49989792500962f59, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.156
@@ -1532,6 +1609,14 @@ PrefabInstance:
     - target: {fileID: 6403339428267612964, guid: 460fbc8a258445c49989792500962f59, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7225779993302566840, guid: 460fbc8a258445c49989792500962f59, type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7388588766415652047, guid: 460fbc8a258445c49989792500962f59, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1711,6 +1796,7 @@ MonoBehaviour:
   InventoryPanel: {fileID: 1946826848}
   PausePanel: {fileID: 1058778956}
   playerTransform: {fileID: 543450652733109136}
+  gameManager: {fileID: 10606632}
   swordAttack: 0
   shieldDefend: 0
   canSprint: 1
@@ -2415,6 +2501,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HotBar
       objectReference: {fileID: 0}
+    - target: {fileID: 713017152668223473, guid: c39ea5572abe4884daafcf31a070b0dd, type: 3}
+      propertyPath: selectedSlot
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 3181214753319251459, guid: c39ea5572abe4884daafcf31a070b0dd, type: 3}
       propertyPath: playerInput
       value: 
@@ -2905,7 +2995,7 @@ GameObject:
   - component: {fileID: 919132149081975085}
   m_Layer: 7
   m_Name: mainCharacter
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4523,3 +4613,4 @@ SceneRoots:
   - {fileID: 1438075107}
   - {fileID: 1092414416}
   - {fileID: 1247080710}
+  - {fileID: 10606634}

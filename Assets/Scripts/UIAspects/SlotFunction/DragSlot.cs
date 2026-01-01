@@ -15,6 +15,7 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     public Image dragIcon;
 
     private SlotItem draggedItem;
+    public GameObject InventoryPanel;
 
     public void Awake()
     {
@@ -42,6 +43,8 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         //}
 
         //draggedItem = GetItem();
+        if (InventoryUI.Instance==null) return;
+        if (!InventoryUI.Instance.InventoryPanel.activeSelf) return;
         draggedItem = SlotFunctions.GetItem(slotType, index);
         if (draggedItem == null)
         {
@@ -60,7 +63,7 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (dragIcon != null)
+        if (dragIcon != null && InventoryUI.Instance.InventoryPanel.activeSelf)
         {
             dragIcon.transform.position = eventData.position;
         }
@@ -87,6 +90,13 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     //}
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (InventoryUI.Instance==null) return;
+        if (!InventoryUI.Instance.InventoryPanel.activeSelf) 
+        {
+            draggedItem = null;
+            return;
+        }
+        Debug.Log("Happening");
         group.alpha = 1f;
 
         if (dragIcon != null)
@@ -99,10 +109,12 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             HandleSwapSlot(targetSlot);
             return;
         }
-        if (draggedItem != null && Inventory.Instance != null && PlayerMotion.Instance != null)
+        Debug.Log("Made it here 1");
+        if (draggedItem != null && Inventory.Instance != null && FirstPersonController.Instance)
         {
-            Vector3 dropPos = PlayerMotion.Instance.playerTransform.position +
-                              PlayerMotion.Instance.playerTransform.forward * 1.5f +
+            Debug.Log("Made it here 2");
+            Vector3 dropPos = FirstPersonController.Instance.playerTransform.position +
+                              FirstPersonController.Instance.playerTransform.forward * 1.5f +
                               Vector3.up * 0.5f;
 
             // Delegated to Inventory

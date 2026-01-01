@@ -9,7 +9,7 @@ public class HotBarManager : MonoBehaviour, UIManager
     public static HotBarManager Instance;
 
     public SlotItem[] slotItems;
-    public int selectedSlot = 0;
+    public int selectedSlot = -1;
 
 
     private void Awake()
@@ -113,7 +113,6 @@ public class HotBarManager : MonoBehaviour, UIManager
 
             Slots[slotIndex].image.sprite = newItem.itemImg;
             slotItems[slotIndex] = new SlotItem(newItem, quantity);
-            UpdateSelectedItem();
             UpdateSlot(slotIndex);
         }
     }
@@ -156,7 +155,7 @@ public class HotBarManager : MonoBehaviour, UIManager
 
     public void UpdateSelectedItem()
     {
-        for (int i = 0; i < slotItems.Length; i++)
+    for (int i = 0; i < slotItems.Length; i++)
         {
             if (slotItems[i] != null)
             {

@@ -24,16 +24,15 @@ public class ItemEffect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (InventoryUI.Instance != null) if (fpController.InventoryPanel.activeSelf) return;
         if (inputActions.Player.Use.IsPressed() && equippedItem != null)
         {
-            Debug.Log("IsHappening");
             playerAnimator.SetTrigger("useItem");
             playerAnimator.SetBool("shieldDefend", false);
             //equippedItem.use()
         }
         else if (inputActions.Player.Block.IsPressed() && equippedShield != null)
         {
-            Debug.Log("IsHappening 2");
             playerAnimator.SetBool("shieldDefend", true);
         }
         if (inputActions.Player.Use.WasReleasedThisFrame())

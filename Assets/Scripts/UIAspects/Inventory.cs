@@ -7,19 +7,20 @@ public class Inventory : MonoBehaviour
 {
     public static Inventory Instance;
     public HotBarManager hotBarManager;
+    public SlotItem[] inventoryItems;
 
   
 
     public void Awake()
     {
         Instance = this;
+        inventoryItems = new SlotItem[8];
     }
 
     public int addItem(Item item, int quantity)
     {
-        SlotItem[] items = InventoryUI.Instance.inventoryItems;
         int leftOver = quantity;
-        foreach (SlotItem itemInList in items)
+        foreach (SlotItem itemInList in inventoryItems)
         {
             if (itemInList == null) continue;
             if (itemInList.itemDetails.itemName == item.itemName)
@@ -40,15 +41,15 @@ public class Inventory : MonoBehaviour
         int index;
         while ((index = GetFirstEmptySlot()) != -1 && leftOver > item.quantityLimit)
         {
-            items[index] = (new SlotItem(item, item.quantityLimit));;
+            inventoryItems[index] = (new SlotItem(item, item.quantityLimit));;
             leftOver -= item.quantityLimit;
-            InventoryUI.Instance.UpdateSlot(index);
+            if (InventoryUI.Instance != null) InventoryUI.Instance.UpdateSlot(index);
         }
         if ((index = GetFirstEmptySlot()) != -1 && leftOver != 0)
         {
-            items[index] = (new SlotItem(item, leftOver));
+            inventoryItems[index] = (new SlotItem(item, leftOver));
             leftOver -= item.quantityLimit;
-            InventoryUI.Instance.UpdateSlot(index);
+            if (InventoryUI.Instance != null) InventoryUI.Instance.UpdateSlot(index);
             return 0;
         }
         else
@@ -59,13 +60,13 @@ public class Inventory : MonoBehaviour
 
     public void DropItem(SlotItem slotItem, Vector3 pos)
     {
-
-        for (int i=0; i<InventoryUI.Instance.inventoryItems.Length; i++)
+        for (int i=0; i<inventoryItems.Length; i++)
         {
-            if (InventoryUI.Instance.inventoryItems[i] == slotItem)
+            if (inventoryItems[i] == null) continue;
+            if (inventoryItems[i] == slotItem)
             {
-                InventoryUI.Instance.inventoryItems[i] = null;
-                InventoryUI.Instance.UpdateSlot(i);
+                inventoryItems[i] = null;
+                if (InventoryUI.Instance != null) InventoryUI.Instance.UpdateSlot(i);
             }
         }
 
@@ -85,9 +86,9 @@ public class Inventory : MonoBehaviour
 
     public int GetFirstEmptySlot()
     {
-        for (int i = 0; i < InventoryUI.Instance.inventoryItems.Length; i++)
+        for (int i = 0; i < inventoryItems.Length; i++)
         {
-            if (InventoryUI.Instance.inventoryItems[i] == null)
+            if (inventoryItems[i] == null)
                 return i;
         }
         return -1;
