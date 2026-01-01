@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Threading;
 
 public class mapGenerator : MonoBehaviour
 {
@@ -44,7 +46,10 @@ public class mapGenerator : MonoBehaviour
     [Range(0, 240)]
 
     public float blendWidth = 20f;
-    
+
+    Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new Queue<MapThreadInfo<MapData>>();
+    Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new Queue<MapThreadInfo<MeshData>>();
+
     public void GenerateMapDataInEditor(){
         mapDataScriptableObject.mapData = generateMapData();
     }
@@ -57,7 +62,7 @@ public class mapGenerator : MonoBehaviour
             }
 
         // find displayMap object, and draw noisemap
-        mapDisplay display = Object.FindFirstObjectByType<mapDisplay> ();
+        mapDisplay display = UnityEngine.Object.FindFirstObjectByType<mapDisplay> ();
         if (drawMode == DrawMode.NoiseMap) {
             display.DrawTexture (TextureGenerator.TextureFromHeightMap(mapDataScriptableObject.mapData.noiseMap));
         }else if (drawMode == DrawMode.ColourMap){
@@ -79,6 +84,55 @@ public class mapGenerator : MonoBehaviour
         }
     }
 
+    public void RequestMapData(Action<MapData> callback){
+        // start mapGeneration on new thread
+        ThreadStart threadStart = delegate {
+            MapDataThread(callback);
+        };
+
+        new Thread(threadStart).Start();
+    }
+
+    void MapDataThread(Action<MapData> callback){
+        MapData mapData = generateMapData();
+        lock (mapDataThreadInfoQueue){
+            // enqueue the generated map data to be processed on main thread, locked so no conflicts
+            mapDataThreadInfoQueue.Enqueue (new MapThreadInfo<MapData> (callback, mapData));
+        }
+    }
+
+    public void RequestMeshData(Action<MeshData> callback){
+        ThreadStart threadStart = delegate {
+            MeshDataThread(callback);
+        };
+
+        new Thread(threadStart).Start();
+    }
+
+    void MeshDataThread(Action<MeshData> callback){
+        MeshData meshData = meshGenerator.GenerateTerrainMesh(mapDataScriptableObject.mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, levelOfDetail);
+        lock (meshDataThreadInfoQueue){
+            // enqueue the generated mesh data to be processed on main thread, locked so no conflicts
+            meshDataThreadInfoQueue.Enqueue(new MapThreadInfo<MeshData>(callback, meshData));
+        }
+    }
+
+    void Update(){
+        // process any map data that has been generated on other threads
+        if (mapDataThreadInfoQueue.Count > 0){
+            for (int i = 0; i < mapDataThreadInfoQueue.Count; i++){
+                MapThreadInfo<MapData> threadInfo = mapDataThreadInfoQueue.Dequeue();
+                threadInfo.callback(threadInfo.parameter);
+            }
+        }
+        if (meshDataThreadInfoQueue.Count > 0){
+            for (int i = 0; i < meshDataThreadInfoQueue.Count; i++){
+                MapThreadInfo<MeshData> threadInfo = meshDataThreadInfoQueue.Dequeue();
+                threadInfo.callback(threadInfo.parameter);
+            }
+        }
+    }
+    
     public MapData generateMapData(){
         // create biome dictionary for easy access
         Dictionary<string, BiomeScriptableObject> biomeDict = new Dictionary<string, BiomeScriptableObject>();
@@ -171,6 +225,16 @@ public class mapGenerator : MonoBehaviour
             octaves = 0;
         }
     }
+
+    struct MapThreadInfo<T>{
+        public readonly Action<T> callback;
+        public readonly T parameter;
+
+        public MapThreadInfo(Action<T> callback, T parameter){
+            this.callback = callback;
+            this.parameter = parameter;
+        }
+    }
 }
 
 
@@ -195,12 +259,11 @@ public struct Biomes{
 }
 
 public struct MapData{
-    public float[,] noiseMap;
-    public Color[] colourMap;
-    public BiomeGenData biomeGenData;
-    public Dictionary<string, BiomeScriptableObject> biomeDict;
-    public bool[,] buildingsMap;
-
+    public readonly float[,] noiseMap;
+    public readonly Color[] colourMap;
+    public readonly BiomeGenData biomeGenData;
+    public readonly Dictionary<string, BiomeScriptableObject> biomeDict;
+    public readonly bool[,] buildingsMap;
 
     public MapData(float[,] noiseMap, Color[] colourMap, BiomeGenData biomeGenData, Dictionary<string, BiomeScriptableObject> biomeDict, bool[,] buildingsMap){
         this.noiseMap = noiseMap;

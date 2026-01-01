@@ -4,6 +4,7 @@ using UnityEngine;
 
 public static class noise
 {
+    // OPTIMIZATION: can we use a struct for variables?
     public static float[,] GenerateNoiseMap (int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, BiomeGenData biomeGenData, BiomeScriptableObject[] Biomes, Dictionary<string, BiomeScriptableObject> biomeDict){
         // Create 2d float array, iterate through it and assign noise values
         float [,] noiseMap = new float[mapWidth, mapHeight];

@@ -8,6 +8,7 @@ public class EndlessTerrain : MonoBehaviour
     public Transform viewer;
 
     public static Vector2 viewerPosition;
+    static mapGenerator mapGenerator;
     int chunkSize;
     int chunksVisibleInVD;
 
@@ -16,6 +17,7 @@ public class EndlessTerrain : MonoBehaviour
 
     void Start()
     {
+        mapGenerator = FindObjectOfType<mapGenerator>();
         chunkSize = mapGenerator.mapChunkSize - 1;
         // calculate how many chunks are visible in view distance
         chunksVisibleInVD = Mathf.RoundToInt(maxViewDistance / chunkSize);
@@ -60,17 +62,39 @@ public class EndlessTerrain : MonoBehaviour
         public Vector2 position;
         Bounds bounds;
 
+        MapData mapData;
+
+        MeshRenderer meshRenderer;
+        MeshFilter meshFilter;
+        MeshCollider meshCollider;
+
         public TerrainChunk(Vector2 coord, int size, Transform parent){
             position = coord * size;
             bounds = new Bounds(position, Vector2.one * size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
 
-            //create mesh object, set 3d position and scale
-            meshObject = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            //create mesh object, set 3d position and scale, add renderer, filter, collider
+            meshObject = new GameObject("Terrain Chunk");
+            meshRenderer = meshObject.AddComponent<MeshRenderer>();
+            meshFilter = meshObject.AddComponent<MeshFilter>();
+            meshCollider = meshObject.AddComponent<MeshCollider>();
+
             meshObject.transform.position = positionV3;
-            meshObject.transform.localScale = Vector3.one * size / 10f;
             meshObject.transform.parent = parent;
             SetVisible(false); // default to not visible
+
+            // request map data
+            mapGenerator.RequestMapData(OnMapDataReceived);
+        }
+        
+        void OnMapDataReceived(MapData mapData){
+            // request mesh data
+            mapGenerator.RequestMeshData(mapData, OnMeshDataReceived);
+        }
+
+        void OnMeshDataReceived(MeshData meshData){
+            meshFilter.mesh = meshData.CreateMesh();
+            meshCollider.sharedMesh = meshFilter.mesh;
         }
 
         public void UpdateTerrainChunk(){
@@ -87,5 +111,11 @@ public class EndlessTerrain : MonoBehaviour
         public bool IsVisible(){
             return meshObject.activeSelf;
         }
+    }
+
+    class LODmesh{
+        public Mesh mesh;
+        public bool hasRequestedMesh;
+        public bool hasMesh;
     }
 }
