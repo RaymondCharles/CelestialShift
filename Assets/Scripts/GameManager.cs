@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     public void NewGame()
     {
         loadGame = false;
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene("SampleScene");
     }
 
     //public void LoadGame()
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
 
         loadGame = true;
 
-        string sceneName = "GameScene"; // EXACT name from Build Settings
+        string sceneName = "SampleScene"; // EXACT name from Build Settings
         Debug.Log("Loading scene: " + sceneName);
 
         // Use async to be sure it’s called

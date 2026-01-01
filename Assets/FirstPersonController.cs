@@ -115,8 +115,11 @@ public class FirstPersonController : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         defaultYPos = playerCamera.transform.localPosition.y;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
 
         // Instantiate the input actions
         inputActions = new PlayerInputActions();
@@ -130,6 +133,12 @@ public class FirstPersonController : MonoBehaviour
         UseAction = playerInput.actions.FindAction("Use");
 
     }
+    void LateUpdate()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
 
     private void OnEnable()
     {
@@ -151,6 +160,17 @@ public class FirstPersonController : MonoBehaviour
     public void PausePanelHideOnClick()
     {
         PausePanel.SetActive(false);
+    }
+    public void OnClick()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SaveAndQuit();
+        }
+        else
+        {
+            Debug.LogError("GameManager instance not found!");
+        }
     }
     public void DropSelectedItem()
     {
