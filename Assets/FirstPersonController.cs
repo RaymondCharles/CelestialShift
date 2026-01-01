@@ -7,6 +7,19 @@ public class FirstPersonController : MonoBehaviour
 {
     // New Input System object
     public PlayerInputActions inputActions;
+    PlayerInput playerInput;
+    InputAction InventoryAction;
+    InputAction PauseAction;
+    InputAction DropAction;
+    InputAction UseAction;
+    public GameObject InventoryPanel;
+    public GameObject PausePanel;
+    public Transform playerTransform;
+
+
+
+
+
 
     //Determine whether a player/character is in control
     public bool CanMove { get; private set; } = true;
@@ -16,6 +29,7 @@ public class FirstPersonController : MonoBehaviour
     private bool ShouldJump => canJump && inputActions.Player.Jump.triggered && characterController.isGrounded;
     private bool ShouldCrouch => canCrouch && inputActions.Player.Crouch.triggered && !duringCrouchAnimation && characterController.isGrounded;
     private bool CanSlide => inputActions.Player.Slide.triggered && characterController.isGrounded;
+   
     private bool isSliding = false; //check if you can slide
     public bool swordAttack = false;
     public bool shieldDefend = false;
@@ -107,6 +121,15 @@ public class FirstPersonController : MonoBehaviour
         // Instantiate the input actions
         inputActions = new PlayerInputActions();
     }
+    private void Start()
+    {
+        playerInput = GetComponent<PlayerInput>();
+        InventoryAction = playerInput.actions.FindAction("Inventory");
+        PauseAction = playerInput.actions.FindAction("Pause");
+        DropAction = playerInput.actions.FindAction("Drop");
+        UseAction = playerInput.actions.FindAction("Use");
+
+    }
 
     private void OnEnable()
     {
@@ -117,6 +140,59 @@ public class FirstPersonController : MonoBehaviour
     {
         inputActions.Disable();
     }
+    public void InventoryPanelShow()
+    {
+        InventoryPanel.SetActive(!InventoryPanel.activeSelf);
+    }
+    public void PausePanelShow()
+    {
+        PausePanel.SetActive(!PausePanel.activeSelf);
+    }
+    public void PausePanelHideOnClick()
+    {
+        PausePanel.SetActive(false);
+    }
+    public void DropSelectedItem()
+    {
+        if (HotBarManager.Instance == null) return;
+        int selectedSlot = HotBarManager.Instance.selectedSlot;
+        SlotItem slotItem = HotBarManager.Instance.slotItems[selectedSlot];
+        if (slotItem == null) return;
+
+        if (Inventory.Instance == null) return;
+        if (slotItem.itemDetails.worldPrefab == null) return;
+
+
+        Vector3 dropPos = playerTransform.position + playerTransform.forward * 1.5f + Vector3.up * 0.5f;
+
+        // Spawn the world item
+        Inventory.Instance.GenerateItem(slotItem.itemDetails, slotItem.quantity, dropPos);
+
+        // Remove from hotbar
+        HotBarManager.Instance.ClearSlot(slotItem);
+    }
+
+
+    //public void UseSelectedItem()
+    //{
+    //    int selectedSlot = HotBarManager.Instance.selectedSlot;
+    //    SlotItem slotItem = HotBarManager.Instance.slotItems[selectedSlot];
+    //    if (slotItem == null) return;
+
+    //    if (Inventory.Instance == null) return;
+    //    if (slotItem.itemDetails.worldPrefab == null) return;
+
+    //    if (slotItem.quantity > 0)
+    //    {
+    //        slotItem.itemDetails.Use(gameManager);
+    //        slotItem.quantity--;
+    //        if (slotItem.quantity == 0)
+    //        {
+    //            HotBarManager.Instance.ClearSlot(slotItem);
+    //        }
+    //    }
+    //}
+
 
     // Update is called once per frame
     void Update()
@@ -126,6 +202,26 @@ public class FirstPersonController : MonoBehaviour
         lookInput = inputActions.Player.Look.ReadValue<Vector2>();
         bool isIdle = true;
         bool isFalling = false;
+
+        //Inventory 
+        if (InventoryAction.triggered)
+        {
+            InventoryPanelShow();
+        }
+
+        if (PauseAction.triggered)
+        {
+            PausePanelShow();
+        }
+        if (DropAction.triggered)
+        {
+            DropSelectedItem();
+        }
+        //if (UseAction.triggered)
+        //{
+        //    UseSelectedItem();
+        //}
+
 
         if (CanMove)
         {
