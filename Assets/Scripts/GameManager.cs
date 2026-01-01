@@ -1,10 +1,11 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public bool loadGame;
+    public bool loadGame = false;
 
     private void Awake()
     {
@@ -17,47 +18,52 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (loadGame && scene.name == "SampleScene")
+        {
+            StartCoroutine(LoadPlayerWhenReady());
+        }
+    }
+
+    private IEnumerator LoadPlayerWhenReady()
+    {
+        // Wait until FirstPersonController exists
+        while (FirstPersonController.Instance == null)
+        {
+            yield return null; 
+        }
+
+        FirstPersonController.Instance.LoadPlayer();
+        loadGame = false;
+        Debug.Log("Player loaded at saved position.");
+    }
+
     public void NewGame()
     {
         loadGame = false;
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("SampleScene"); 
     }
 
-    //public void LoadGame()
-    //{
-    //    Debug.Log("Load button pressed");
-
-    //    if (!SaveSystem.SaveExists())
-    //    {
-    //        Debug.Log("No save found!");
-    //        return;
-    //    }
-
-    //    loadGame = true;
-    //    SceneManager.LoadScene("GameScene");
-    //}
     public void LoadGame()
     {
         if (!SaveSystem.SaveExists())
         {
-            Debug.Log("No save found!");
+            Debug.LogWarning("No save found!");
             return;
         }
 
         loadGame = true;
-
-        string sceneName = "SampleScene"; // EXACT name from Build Settings
-        Debug.Log("Loading scene: " + sceneName);
-
-        // Use async to be sure it’s called
-        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
-    }
-
-    public void SaveAndQuit()
-    {
-        if (PlayerMotion.Instance != null)
-            PlayerMotion.Instance.SavePlayer();
-
-        SceneManager.LoadScene("MenuScene");
+        SceneManager.LoadScene("SampleScene");
     }
 }

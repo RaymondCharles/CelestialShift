@@ -24,12 +24,12 @@ public class PlayerMotion : MonoBehaviour
 
     public GameObject gameManager;
 
-    public void SavePlayer()
-    {
-        SaveSystem.SavePlayer(this);
-        SceneManager.LoadScene("MenuScene");
+    //public void SavePlayer()
+    //{
+    //    SaveSystem.SavePlayer(this);
+    //    SceneManager.LoadScene("MenuScene");
 
-    }
+    //}
     //public void LoadPlayer()
     //{
     //    PlayerData data = SaveSystem.LoadPlayer();
@@ -137,17 +137,17 @@ public class PlayerMotion : MonoBehaviour
     //    Vector2 direction = moveAction.ReadValue<Vector2>();
     //    transform.position += new Vector3(direction.x, 0, direction.y) * Time.deltaTime * speed;
     //}
-    public void OnClick()
-    {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.SaveAndQuit();
-        }
-        else
-        {
-            Debug.LogError("GameManager instance not found!");
-        }
-    }
+    //public void OnClick()
+    //{
+    //    if (GameManager.Instance != null)
+    //    {
+    //        GameManager.Instance.SaveAndQuit();
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("GameManager instance not found!");
+    //    }
+    //}
     //public void OnClickPlay()
     //{
     //    LoadingManager.Instance.ChangeToGameScene(0);

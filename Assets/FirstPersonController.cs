@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;   // NEW INPUT SYSTEM
-
+using UnityEngine.SceneManagement;
 public class FirstPersonController : MonoBehaviour
 {
     // New Input System object
@@ -15,6 +15,8 @@ public class FirstPersonController : MonoBehaviour
     public GameObject InventoryPanel;
     public GameObject PausePanel;
     public Transform playerTransform;
+    public static FirstPersonController Instance;
+
 
 
 
@@ -123,7 +125,35 @@ public class FirstPersonController : MonoBehaviour
 
         // Instantiate the input actions
         inputActions = new PlayerInputActions();
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+
+
     }
+    public void SavePlayer()
+    {
+        SaveSystem.SavePlayer(this);
+        Debug.Log("Player saved at position: " + playerTransform.position);
+    }
+
+    public void LoadPlayer()
+    {
+        PlayerData data = SaveSystem.LoadPlayer();
+        if (data == null)
+        {
+            Debug.LogError("No saved player data found!");
+            return;
+        }
+
+        playerTransform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
+        Debug.Log("Player loaded at position: " + playerTransform.position);
+    }
+
     private void Start()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -161,17 +191,35 @@ public class FirstPersonController : MonoBehaviour
     {
         PausePanel.SetActive(false);
     }
-    public void OnClick()
+    public void OnClickSaveAndQuit()
     {
-        if (GameManager.Instance != null)
+        // Only save if this scene has the player
+        if (FirstPersonController.Instance != null)
         {
-            GameManager.Instance.SaveAndQuit();
+            FirstPersonController.Instance.SavePlayer();
         }
         else
         {
-            Debug.LogError("GameManager instance not found!");
+            Debug.LogWarning("Save skipped: FirstPersonController instance not found in this scene.");
+        }
+
+        // Set GameManager flag
+        if (GameManager.Instance != null)
+            GameManager.Instance.loadGame = true;
+
+        // Go to MenuScene via LoadingManager
+        if (LoadingManager.Instance != null)
+        {
+            int menuSceneIndex = 0; // your MenuScene index
+            LoadingManager.Instance.ChangeToGameScene(menuSceneIndex);
+        }
+        else
+        {
+            SceneManager.LoadScene("MenuScene");
         }
     }
+
+
     public void DropSelectedItem()
     {
         if (HotBarManager.Instance == null) return;

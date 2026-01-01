@@ -1268,7 +1268,7 @@ PrefabInstance:
       objectReference: {fileID: 1376318064}
     - target: {fileID: 2257739987000824222, guid: de8c9b2135c3c42448ac23216656bed7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClick
+      value: OnClickSaveAndQuit
       objectReference: {fileID: 0}
     - target: {fileID: 2257739987000824222, guid: de8c9b2135c3c42448ac23216656bed7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -2717,7 +2717,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144748341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.111738265, y: 0.004340593, z: -0.011106511, w: 0.9936661}
+  m_LocalRotation: {x: 0.111738265, y: 0.0043406277, z: -0.011106514, w: 0.9936661}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

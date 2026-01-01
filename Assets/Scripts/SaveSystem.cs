@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 public static class SaveSystem
 {
-    public static void SavePlayer(PlayerMotion player)
+    public static void SavePlayer(FirstPersonController player)
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "/player.data";

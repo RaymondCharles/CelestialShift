@@ -2,11 +2,31 @@ using UnityEngine;
 
 public class LoadButton : MonoBehaviour
 {
-    public void OnClick()
+    public int gameSceneIndex = 1; 
+
+    public void OnClickLoadGame()
     {
-        if (GameManager.Instance != null)
-            GameManager.Instance.LoadGame();
-        else
+        if (GameManager.Instance == null)
+        {
             Debug.LogError("GameManager instance not found!");
+            return;
+        }
+
+        if (!SaveSystem.SaveExists())
+        {
+            Debug.LogWarning("No save found!");
+            return;
+        }
+
+        GameManager.Instance.loadGame = true;
+
+        if (LoadingManager.Instance != null)
+        {
+            LoadingManager.Instance.ChangeToGameScene(gameSceneIndex);
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(gameSceneIndex);
+        }
     }
 }

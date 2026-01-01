@@ -9,9 +9,9 @@ public class PlayerData
     public int level;
     public float[] position;
 
-    public PlayerData (PlayerMotion player)
+    public PlayerData (FirstPersonController player)
     {
-        level = player.level;
+    //    level = player.level;
         position = new float[3];
 
         position[0] = player.transform.position.x;
