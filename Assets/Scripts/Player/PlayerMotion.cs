@@ -27,9 +27,19 @@ public class PlayerMotion : MonoBehaviour
     public void SavePlayer()
     {
         SaveSystem.SavePlayer(this);
-        SceneManager.LoadScene("MenuScene");
 
+        if (LoadingManager.Instance != null)
+        {
+            // Menu scene index (change if needed)
+            LoadingManager.Instance.ChangeToGameScene(0);
+        }
+        else
+        {
+            Debug.LogError("LoadingManager instance not found!");
+            SceneManager.LoadScene("MenuScene"); // fallback
+        }
     }
+
     //public void LoadPlayer()
     //{
     //    PlayerData data = SaveSystem.LoadPlayer();
