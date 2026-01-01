@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
+  m_Name: basicSword
+  m_EditorClassIdentifier: 
+  itemName: basicSword
+  itemImg: {fileID: 21300000, guid: 36c1f77886c7830459e4b6973bf699be, type: 3}
+  quantityLimit: 1
+  selected: 0
+  parentItems: []
+  childrenItems: []
+  worldPrefab: {fileID: 1601993921236731519, guid: 4dd769bcbc63dde4e9b2ffc6fe9cce85, type: 3}
+  action: {fileID: 11400000, guid: 46f6878b98c75bb4bae62aeef645a0e1, type: 2}

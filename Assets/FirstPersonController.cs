@@ -269,7 +269,7 @@ public class FirstPersonController : MonoBehaviour
         if (slotItem.quantity > 0)
         {
             slotItem.itemDetails.Use(gameManager);
-            slotItem.quantity--;
+            if (slotItem.itemDetails.usable) slotItem.quantity--;
             if (slotItem.quantity == 0)
             {
                 HotBarManager.Instance.ClearSlot(slotItem);
