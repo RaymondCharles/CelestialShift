@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public bool loadGame;
+    public bool loadGame = false; // flag to know when to load player
 
     private void Awake()
     {
@@ -13,51 +13,55 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // Called when new scene loads
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (loadGame && scene.name == "GameScene")
+        {
+            if (PlayerMotion.Instance != null)
+            {
+                PlayerMotion.Instance.LoadPlayer();
+                loadGame = false; // reset flag
+            }
+            else
+            {
+                Debug.LogError("PlayerMotion instance not found in GameScene!");
+            }
+        }
+    }
+
+    // Start a new game
     public void NewGame()
     {
         loadGame = false;
         SceneManager.LoadScene("GameScene");
     }
 
-    //public void LoadGame()
-    //{
-    //    Debug.Log("Load button pressed");
-
-    //    if (!SaveSystem.SaveExists())
-    //    {
-    //        Debug.Log("No save found!");
-    //        return;
-    //    }
-
-    //    loadGame = true;
-    //    SceneManager.LoadScene("GameScene");
-    //}
+    // Load a saved game
     public void LoadGame()
     {
         if (!SaveSystem.SaveExists())
         {
-            Debug.Log("No save found!");
+            Debug.LogWarning("No save found!");
             return;
         }
 
         loadGame = true;
-
-        string sceneName = "GameScene"; // EXACT name from Build Settings
-        Debug.Log("Loading scene: " + sceneName);
-
-        // Use async to be sure it’s called
-        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
-    }
-
-    public void SaveAndQuit()
-    {
-        if (PlayerMotion.Instance != null)
-            PlayerMotion.Instance.SavePlayer();
-
-        SceneManager.LoadScene("MenuScene");
+        SceneManager.LoadScene("GameScene");
     }
 }

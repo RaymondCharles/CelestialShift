@@ -24,21 +24,21 @@ public class PlayerMotion : MonoBehaviour
 
     public GameObject gameManager;
 
-    public void SavePlayer()
-    {
-        SaveSystem.SavePlayer(this);
+    //public void SavePlayer()
+    //{
+    //    SaveSystem.SavePlayer(this);
 
-        if (LoadingManager.Instance != null)
-        {
-            // Menu scene index (change if needed)
-            LoadingManager.Instance.ChangeToGameScene(0);
-        }
-        else
-        {
-            Debug.LogError("LoadingManager instance not found!");
-            SceneManager.LoadScene("MenuScene"); // fallback
-        }
-    }
+    //    if (LoadingManager.Instance != null)
+    //    {
+    //        // Menu scene index (change if needed)
+    //        LoadingManager.Instance.ChangeToGameScene(0);
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("LoadingManager instance not found!");
+    //        SceneManager.LoadScene("MenuScene"); // fallback
+    //    }
+    //}
 
     //public void LoadPlayer()
     //{
@@ -50,19 +50,24 @@ public class PlayerMotion : MonoBehaviour
     //    position.z = data.position[2];
     //    transform.position = position;
     //}
+    public void SavePlayer()
+    {
+        SaveSystem.SavePlayer(this);
+        Debug.Log("Player saved at position: " + playerTransform.position);
+    }
+
     public void LoadPlayer()
     {
         PlayerData data = SaveSystem.LoadPlayer();
         if (data == null)
         {
-            Debug.LogError("No saved player data found!");
+            Debug.LogError("No save data found!");
             return;
         }
 
         level = data.level;
-        Vector3 position = new Vector3(data.position[0], data.position[1], data.position[2]);
-        Debug.Log("Loading position: " + position);
-        transform.position = position;
+        playerTransform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
+        Debug.Log("Player loaded at position: " + playerTransform.position);
     }
 
 
@@ -147,17 +152,28 @@ public class PlayerMotion : MonoBehaviour
         Vector2 direction = moveAction.ReadValue<Vector2>();
         transform.position += new Vector3(direction.x, 0, direction.y) * Time.deltaTime * speed;
     }
-    public void OnClick()
+    public void OnClickSaveAndQuit()
     {
+        // Save player
+        PlayerMotion.Instance.SavePlayer();
+
+
         if (GameManager.Instance != null)
+            GameManager.Instance.loadGame = true;
+
+        if (LoadingManager.Instance != null)
         {
-            GameManager.Instance.SaveAndQuit();
+            int menuSceneIndex = 0;
+            LoadingManager.Instance.ChangeToGameScene(menuSceneIndex);
         }
         else
         {
-            Debug.LogError("GameManager instance not found!");
+            Debug.LogError("LoadingManager instance not found! Loading MenuScene directly.");
+            SceneManager.LoadScene("MenuScene"); 
         }
     }
+
+
     //public void OnClickPlay()
     //{
     //    LoadingManager.Instance.ChangeToGameScene(0);
@@ -176,7 +192,7 @@ public class PlayerMotion : MonoBehaviour
     //        HotBarManager.Instance.RemoveSpriteFromSlot(0);
     //    }
     //}
-    
+
     public void DropSelectedItem()
     {
         if (HotBarManager.Instance == null) return;

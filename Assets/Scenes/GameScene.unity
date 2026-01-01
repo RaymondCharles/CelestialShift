@@ -7734,7 +7734,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1267610579333056973, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClick
+      value: OnClickSaveAndQuit
       objectReference: {fileID: 0}
     - target: {fileID: 1267610579333056973, guid: 7a0b31d7dfd23e64d8f5041e25559de0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

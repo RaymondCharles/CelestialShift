@@ -2,17 +2,11 @@ using UnityEngine;
 
 public class LoadButton : MonoBehaviour
 {
-    [SerializeField] private int sceneIndexToLoad = 1; // Game scene index
-
-    public void OnClick()
+    public void OnClickLoadGame()
     {
-        if (LoadingManager.Instance != null)
-        {
-            LoadingManager.Instance.ChangeToGameScene(sceneIndexToLoad);
-        }
+        if (GameManager.Instance != null)
+            GameManager.Instance.LoadGame();
         else
-        {
-            Debug.LogError("LoadingManager instance not found!");
-        }
+            Debug.LogError("GameManager instance not found!");
     }
 }
