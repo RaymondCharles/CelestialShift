@@ -136,6 +136,20 @@ public class FirstPersonController : MonoBehaviour
 
 
     }
+
+    void LateUpdate()
+    {
+        if (InventoryPanel.activeSelf)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
     public void SavePlayer()
     {
         SaveSystem.SavePlayer(this);
@@ -164,11 +178,6 @@ public class FirstPersonController : MonoBehaviour
         UseAction = playerInput.actions.FindAction("Use");
 
     }
-    void LateUpdate()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
 
 
     private void OnEnable()
@@ -182,16 +191,6 @@ public class FirstPersonController : MonoBehaviour
     }
     public void InventoryPanelShow()
     {
-        if (InventoryPanel.activeSelf)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
         InventoryPanel.SetActive(!InventoryPanel.activeSelf);
         for (int i=0; i < Inventory.Instance.inventoryItems.Length; i++)
         {
