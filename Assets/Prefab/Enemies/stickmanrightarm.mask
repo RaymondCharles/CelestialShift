@@ -6,7 +6,7 @@ AvatarMask:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: stickmanArms
+  m_Name: stickmanrightarm
   m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
   m_Elements:
   - m_Path: 
@@ -40,11 +40,11 @@ AvatarMask:
   - m_Path: metarig/Quartile5/Quartile4/Quartile3
     m_Weight: 0
   - m_Path: metarig/Quartile5/Quartile4/Quartile3/LeftAQuartile1
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: metarig/Quartile5/Quartile4/Quartile3/LeftAQuartile1/LeftAQuartile2
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: metarig/Quartile5/Quartile4/Quartile3/LeftAQuartile1/LeftAQuartile2/LeftAQuartile3
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: metarig/Quartile5/Quartile4/Quartile3/LeftAQuartile1/LeftAQuartile2/LeftAQuartile3/1
     m_Weight: 0
   - m_Path: metarig/Quartile5/Quartile4/Quartile3/LeftAQuartile1/LeftAQuartile2/LeftAQuartile3/1/1.001
@@ -110,11 +110,11 @@ AvatarMask:
   - m_Path: metarig/Quartile5/Quartile4/Quartile3/Quartile2/Quartile1/Quartile1_end
     m_Weight: 0
   - m_Path: metarig/Quartile5/Quartile4/Quartile3/RightAQuartile1
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: metarig/Quartile5/Quartile4/Quartile3/RightAQuartile1/RightAQuartile2
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: metarig/Quartile5/Quartile4/Quartile3/RightAQuartile1/RightAQuartile2/RightAQuartile3
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: metarig/Quartile5/Quartile4/Quartile3/RightAQuartile1/RightAQuartile2/RightAQuartile3/NewRightAQuartile4
     m_Weight: 0
   - m_Path: metarig/Quartile5/Quartile4/Quartile3/RightAQuartile1/RightAQuartile2/RightAQuartile3/NewRightAQuartile4/RightF2.1
