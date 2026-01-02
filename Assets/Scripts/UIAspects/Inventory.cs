@@ -9,13 +9,19 @@ public class Inventory : MonoBehaviour
     public HotBarManager hotBarManager;
     public SlotItem[] inventoryItems;
 
-  
+
 
     public void Awake()
     {
         Instance = this;
-        inventoryItems = new SlotItem[8];
+
+        // Ensure inventory array is always initialized
+        if (inventoryItems == null || inventoryItems.Length != 8)
+        {
+            inventoryItems = new SlotItem[8];
+        }
     }
+
 
     public int addItem(Item item, int quantity)
     {

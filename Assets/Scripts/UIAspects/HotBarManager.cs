@@ -173,24 +173,24 @@ public class HotBarManager : MonoBehaviour, UIManager
         Slots[slotIndex].image.sprite = slotItems[slotIndex] != null ? slotItems[slotIndex].itemDetails.itemImg : emptySlotSprite;
     }
 
-    public void DropSelectedItem()
-    {
-        SlotItem slotItem = slotItems[selectedSlot];
-        if (slotItem == null) return;
+    //public void DropSelectedItem()
+    //{
+    //    SlotItem slotItem = slotItems[selectedSlot];
+    //    if (slotItem == null) return;
 
-        PlayerMotion player = PlayerMotion.Instance;
-        if (player == null) return;
+    //    PlayerMotion player = PlayerMotion.Instance;
+    //    if (player == null) return;
 
-        Vector3 dropPos = player.playerTransform.position + player.playerTransform.forward;
+    //    Vector3 dropPos = player.playerTransform.position + player.playerTransform.forward;
 
 
-        dropPos.y = player.playerTransform.position.y;
+    //    dropPos.y = player.playerTransform.position.y;
 
-        Inventory.Instance.GenerateItem(slotItem.itemDetails, slotItem.quantity, dropPos);
+    //    Inventory.Instance.GenerateItem(slotItem.itemDetails, slotItem.quantity, dropPos);
 
-        // Remove from hotbar
-        ClearSlot(slotItem);
-    }
+    //    // Remove from hotbar
+    //    ClearSlot(slotItem);
+    //}
 
     public SlotItem GetItem(int slotIndex)
     {

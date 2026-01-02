@@ -137,6 +137,22 @@ public class FirstPersonController : MonoBehaviour
 
 
     }
+    private void Start()
+    {
+        playerInput = GetComponent<PlayerInput>();
+        InventoryAction = playerInput.actions.FindAction("Inventory");
+        PauseAction = playerInput.actions.FindAction("Pause");
+        DropAction = playerInput.actions.FindAction("Drop");
+        UseAction = playerInput.actions.FindAction("Use");
+
+        if (GameManager.Instance.loadGame)
+        {
+            LoadPlayer();
+        }
+
+
+
+    }
 
     void LateUpdate()
     {
@@ -160,25 +176,42 @@ public class FirstPersonController : MonoBehaviour
     public void LoadPlayer()
     {
         PlayerData data = SaveSystem.LoadPlayer();
-        if (data == null)
+        if (data == null) return;
+
+        // Position
+        transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
+
+        // Inventory
+        for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
         {
-            Debug.LogError("No saved player data found!");
-            return;
+            Inventory.Instance.inventoryItems[i] = null; // clear old
         }
 
-        playerTransform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
-        Debug.Log("Player loaded at position: " + playerTransform.position);
+        foreach (InventorySlotData slotData in data.inventorySlots)
+        {
+            Item item = ItemDatabase.Instance.GetItemByName(slotData.itemName);
+            if (item == null) continue;
+
+            Inventory.Instance.inventoryItems[slotData.slotIndex] = new SlotItem(item, slotData.quantity);
+        }
+
+        // Update UI immediately
+        if (InventoryUI.Instance != null)
+        {
+            for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
+            {
+                InventoryUI.Instance.UpdateSlot(i);
+            }
+        }
+
+        Debug.Log("Player + Inventory loaded");
     }
 
-    private void Start()
-    {
-        playerInput = GetComponent<PlayerInput>();
-        InventoryAction = playerInput.actions.FindAction("Inventory");
-        PauseAction = playerInput.actions.FindAction("Pause");
-        DropAction = playerInput.actions.FindAction("Drop");
-        UseAction = playerInput.actions.FindAction("Use");
 
-    }
+
+
+
+
 
 
     private void OnEnable()

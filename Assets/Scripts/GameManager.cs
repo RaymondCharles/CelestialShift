@@ -36,18 +36,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator LoadPlayerWhenReady()
+    IEnumerator LoadPlayerWhenReady()
     {
-        // Wait until FirstPersonController exists
-        while (FirstPersonController.Instance == null)
+        // Wait for scene load
+        yield return null;
+
+        // Wait until inventory exists
+        while (Inventory.Instance == null ||
+               InventoryUI.Instance == null ||
+               ItemDatabase.Instance == null)
         {
-            yield return null; 
+            yield return null;
         }
 
         FirstPersonController.Instance.LoadPlayer();
-        loadGame = false;
-        Debug.Log("Player loaded at saved position.");
     }
+
 
     public void NewGame()
     {
