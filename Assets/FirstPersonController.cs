@@ -14,6 +14,7 @@ public class FirstPersonController : MonoBehaviour
     InputAction UseAction;
     public GameObject InventoryPanel;
     public GameObject PausePanel;
+    public GameObject RecipePanel;
     public Transform playerTransform;
     public static FirstPersonController Instance;
     public GameObject gameManager;
@@ -200,6 +201,10 @@ public class FirstPersonController : MonoBehaviour
     public void PausePanelShow()
     {
         PausePanel.SetActive(!PausePanel.activeSelf);
+    }
+    public void RecipePanelShow()
+    {
+        RecipePanel.SetActive(!RecipePanel.activeSelf);
     }
     public void PausePanelHideOnClick()
     {
