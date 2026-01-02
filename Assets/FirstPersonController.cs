@@ -62,11 +62,11 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float gravity = 30.0f;
 
     //Crouch Parameters
-    [SerializeField] private float crouchHeight = 0.5f;
-    [SerializeField] private float standingHeight = 2f;
+    [SerializeField] private float crouchHeight = 2f;
+    [SerializeField] private float standingHeight = 11f;
     [SerializeField] private float timeToCrouch = 0.25f;
-    [SerializeField] private Vector3 crouchingCenter = new Vector3(0, 0.5f, 0);
-    [SerializeField] private Vector3 standingCenter = new Vector3(0, 0, 0);
+    [SerializeField] private Vector3 crouchingCenter = new Vector3(0, 5f, 0);
+    [SerializeField] private Vector3 standingCenter = new Vector3(0, 5f, 0);
     private bool isCrouching;
     private bool duringCrouchAnimation;
 
@@ -156,7 +156,7 @@ public class FirstPersonController : MonoBehaviour
 
     void LateUpdate()
     {
-        if (InventoryPanel.activeSelf)
+        if (InventoryPanel.activeSelf || PausePanel.activeSelf)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -325,6 +325,7 @@ public class FirstPersonController : MonoBehaviour
         bool isIdle = true;
         bool isFalling = false;
 
+
         //Inventory 
         if (InventoryAction.triggered)
         {
@@ -349,8 +350,9 @@ public class FirstPersonController : MonoBehaviour
         {
             HandleMovementInput();
             //HandleMouseLook();
+            
 
-            if (moveInput.magnitude > 0)
+            if (moveInput.magnitude > 0 || isSliding || isCrouching || !characterController.isGrounded)
             {
                 isIdle = false;
             }
@@ -362,18 +364,21 @@ public class FirstPersonController : MonoBehaviour
                 isIdle = true;
             }
 
-            if (canJump)
+            if (canJump && !isCrouching)
             {
                 HandleJump();
             }
 
-            if (canCrouch)
+            if (canCrouch && !isSliding)
             {
                 HandleCrouch();
                 if (isCrouching)
                 {
                     playerAnimator.SetBool("isCrouching", true);
-                    isIdle = false;
+                }
+                else
+                {
+                    playerAnimator.SetBool("isCrouching", false);
                 }
             }
 
@@ -384,11 +389,10 @@ public class FirstPersonController : MonoBehaviour
             }*/
 
             // Start slide on press
-            if (CanSlide && !isSliding)
+            if (CanSlide && !isSliding && !isCrouching)
             {
                 StartSlide(characterController.velocity);
                 isSliding = true;
-                isIdle = false;
             }
 
             bool ContinueSlide = inputActions.Player.Slide.IsPressed() && characterController.isGrounded;
@@ -403,7 +407,6 @@ public class FirstPersonController : MonoBehaviour
             if (isSliding)
             {
                 HandleSlide();
-                isIdle = false;
             }
             
             if (!characterController.isGrounded)
@@ -427,7 +430,7 @@ public class FirstPersonController : MonoBehaviour
         if (moveInput.magnitude > 0)
         {
             playerAnimator.SetBool("isWalking", !isCrouching && !IsSprinting);
-            playerAnimator.SetBool("isRunning", IsSprinting);
+            playerAnimator.SetBool("isRunning", !isCrouching && IsSprinting);
             playerAnimator.SetBool("isCrouching", isCrouching);
         }
 
@@ -502,7 +505,6 @@ public class FirstPersonController : MonoBehaviour
         {
             yield break;
         }
-
         duringCrouchAnimation = true;
 
         float timeElapsed = 0;

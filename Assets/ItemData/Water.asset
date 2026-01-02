@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Water
   itemImg: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  usable: 1
   quantityLimit: 10
   selected: 0
   parentItems:

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: red sphere
   itemImg: {fileID: 1557730168, guid: e78b3d820b1142d4293528cf016ae6d8, type: 3}
+  usable: 1
   quantityLimit: 10
   selected: 0
   parentItems:
