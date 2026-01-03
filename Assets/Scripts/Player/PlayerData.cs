@@ -6,6 +6,9 @@ public class PlayerData
 {
     public float[] position;
     public List<InventorySlotData> inventorySlots;
+    public List<InventorySlotData> HotBarSlots;
+
+
 
     public PlayerData(FirstPersonController player)
     {
@@ -17,6 +20,8 @@ public class PlayerData
 
         // Save inventory
         inventorySlots = new List<InventorySlotData>();
+        
+
 
         Inventory inv = Inventory.Instance;
 
@@ -38,6 +43,25 @@ public class PlayerData
                         i
                     )
                 );
+            }
+        }
+        HotBarSlots = new List<InventorySlotData>();
+        HotBarManager hotbar = HotBarManager.Instance;
+        if (hotbar != null)
+        {
+            for (int i = 0; i < hotbar.slotItems.Length; i++)
+            {
+                SlotItem slot = hotbar.slotItems[i];
+                if (slot != null)
+                {
+                    HotBarSlots.Add(
+                        new InventorySlotData(
+                            slot.itemDetails.itemName,
+                            slot.quantity,
+                            i
+                        )
+                    );
+                }
             }
         }
     }

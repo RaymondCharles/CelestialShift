@@ -155,18 +155,22 @@ public class HotBarManager : MonoBehaviour, UIManager
 
     public void UpdateSelectedItem()
     {
-    for (int i = 0; i < slotItems.Length; i++)
+        for (int i = 0; i < slotItems.Length; i++)
         {
             if (slotItems[i] != null)
-            {
                 slotItems[i].selected = false;
-            }
         }
+
+        if (selectedSlot < 0 || selectedSlot >= slotItems.Length)
+            return;
+
         SlotItem selectedItem = slotItems[selectedSlot];
-        if (selectedItem != null) { 
+        if (selectedItem != null)
+        {
             selectedItem.selected = true;
         }
     }
+
 
     public void UpdateSlot(int slotIndex)
     {

@@ -203,8 +203,26 @@ public class FirstPersonController : MonoBehaviour
                 InventoryUI.Instance.UpdateSlot(i);
             }
         }
+        for (int i = 0; i < HotBarManager.Instance.slotItems.Length; i++)
+        {
+            HotBarManager.Instance.slotItems[i] = null;
+            HotBarManager.Instance.UpdateSlot(i);
+        }
 
-        Debug.Log("Player + Inventory loaded");
+        foreach (InventorySlotData slotData in data.HotBarSlots)
+        {
+            Item item = ItemDatabase.Instance.GetItemByName(slotData.itemName);
+            if (item == null) continue;
+
+            // IMPORTANT: do NOT Instantiate ScriptableObject here
+            HotBarManager.Instance.slotItems[slotData.slotIndex] =
+                new SlotItem(item, slotData.quantity);
+
+            HotBarManager.Instance.UpdateSlot(slotData.slotIndex);
+        }
+
+
+        Debug.Log("Player + Inventory/HotBar loaded");
     }
 
 
