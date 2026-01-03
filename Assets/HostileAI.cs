@@ -9,7 +9,7 @@ public class HostileAI : MonoBehaviour
     [SerializeField] private NavMeshAgent navAgent;
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform firePoint;
-    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] public GameObject projectilePrefab;
 
     // Layers
     [SerializeField] private LayerMask terrainLayer;
@@ -40,6 +40,24 @@ public class HostileAI : MonoBehaviour
     [SerializeField] private float visionRange = 20f;
     [SerializeField] private float engagementRange = 10f;
 
+    // Animation
+    [SerializeField] private Animator animator;
+
+    // Parameter names (keep same across all controllers if possible)
+    [SerializeField] private string speedA = "Speed";
+    [SerializeField] private string meleeTrigger = "Melee";
+    [SerializeField] private string rangedTrigger = "Ranged";
+
+    // Movement thresholds (tune per-enemy)
+    [SerializeField] private float walkSpeedThreshold = 0.1f;
+    [SerializeField] private float runSpeedThreshold = 3.0f;
+
+    // What type of attacks this enemy uses
+    public enum AttackMode { MeleeOnly, RangedOnly, Both }
+    [SerializeField] private AttackMode attackMode = AttackMode.Both;
+
+
+
     private bool isPlayerVisible;
     private bool isPlayerInRange;
 
@@ -48,7 +66,8 @@ public class HostileAI : MonoBehaviour
         if (playerTransform == null)
         {
             // Make sure this matches your player object name in the scene
-            GameObject playerObj = GameObject.Find("FirstPersonController");
+            //GameObject playerObj = GameObject.Find("FirstPersonController");
+            GameObject playerObj = GameObject.Find("mainCharacter");
             if (playerObj != null)
             {
                 playerTransform = playerObj.transform;
@@ -59,6 +78,12 @@ public class HostileAI : MonoBehaviour
         {
             navAgent = GetComponent<NavMeshAgent>();
         }
+
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+
 
         // We will control rotation manually for fast tracking
         if (navAgent != null)
@@ -84,6 +109,8 @@ public class HostileAI : MonoBehaviour
 
         DetectPlayer();
         UpdateBehaviourState();
+        UpdateMovementAnimation();
+
     }
 
     private void OnDrawGizmosSelected()
@@ -125,10 +152,11 @@ public class HostileAI : MonoBehaviour
 
         Vector3 shootDir = (aimPos - firePoint.position).normalized;
 
+        Quaternion newRotation = Quaternion.LookRotation(shootDir) * Quaternion.Euler(-90f, 180f, 0f);
         Rigidbody projectileRb = Instantiate(
             projectilePrefab,
             firePoint.position,
-            Quaternion.LookRotation(shootDir)
+            newRotation
         ).GetComponent<Rigidbody>();
 
         // Fire straight at predicted position
@@ -190,6 +218,23 @@ public class HostileAI : MonoBehaviour
         }
     }
 
+    //private void PerformAttack()
+    //{
+    //    // Stop moving while attacking
+    //    if (navAgent != null)
+    //    {
+    //        navAgent.SetDestination(transform.position);
+    //    }
+
+    //    RotateTowardsPlayer(); // fast tracking while firing
+
+    //    if (!isOnAttackCooldown)
+    //    {
+    //        FireProjectile();
+    //        StartCoroutine(AttackCooldownRoutine());
+    //    }
+    //}
+
     private void PerformAttack()
     {
         // Stop moving while attacking
@@ -198,14 +243,42 @@ public class HostileAI : MonoBehaviour
             navAgent.SetDestination(transform.position);
         }
 
-        RotateTowardsPlayer(); // fast tracking while firing
+        RotateTowardsPlayer();
 
-        if (!isOnAttackCooldown)
+        if (isOnAttackCooldown) return;
+
+        // Decide attack based on AttackMode
+        switch (attackMode)
         {
-            FireProjectile();
-            StartCoroutine(AttackCooldownRoutine());
+            case AttackMode.MeleeOnly:
+                TriggerMelee();
+                break;
+
+            case AttackMode.RangedOnly:
+                TriggerRanged();
+                FireProjectile(); // for now fires immediately (we'll sync later)
+                break;
+
+            case AttackMode.Both:
+                // For Snowman: if close enough do melee, otherwise ranged
+                // We'll add a meleeRange field next step (for now use engagementRange * 0.5f)
+                float dist = Vector3.Distance(transform.position, playerTransform.position);
+
+                if (dist <= engagementRange * 0.5f)
+                {
+                    TriggerMelee();
+                }
+                else
+                {
+                    TriggerRanged();
+                    FireProjectile(); // for now fires immediately
+                }
+                break;
         }
+
+        StartCoroutine(AttackCooldownRoutine());
     }
+
 
     private void UpdateBehaviourState()
     {
@@ -223,7 +296,7 @@ public class HostileAI : MonoBehaviour
         }
     }
 
-    // ----- Rotation helpers -----
+    // Rotation helpers
 
     private void RotateTowardsPlayer()
     {
@@ -259,4 +332,28 @@ public class HostileAI : MonoBehaviour
             rotationSpeed * Time.deltaTime
         );
     }
+
+    private void UpdateMovementAnimation()
+    {
+        if (animator == null || navAgent == null) return;
+
+        float speed = navAgent.velocity.magnitude;
+        animator.SetFloat(speedA, speed);
+    }
+
+    // Snowman
+    private void TriggerMelee()
+    {
+        if (animator == null) return;
+        animator.ResetTrigger(rangedTrigger);
+        animator.SetTrigger(meleeTrigger);
+    }
+
+    private void TriggerRanged()
+    {
+        if (animator == null) return;
+        animator.ResetTrigger(meleeTrigger);
+        animator.SetTrigger(rangedTrigger);
+    }
+
 }
