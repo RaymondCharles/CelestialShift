@@ -19,12 +19,6 @@ public class FirstPersonController : MonoBehaviour
     public static FirstPersonController Instance;
     public GameObject gameManager;
 
-
-
-
-
-
-
     //Determine whether a player/character is in control
     public bool CanMove { get; private set; } = true;
 
@@ -214,9 +208,7 @@ public class FirstPersonController : MonoBehaviour
             Item item = ItemDatabase.Instance.GetItemByName(slotData.itemName);
             if (item == null) continue;
 
-            // IMPORTANT: do NOT Instantiate ScriptableObject here
-            HotBarManager.Instance.slotItems[slotData.slotIndex] =
-                new SlotItem(item, slotData.quantity);
+            HotBarManager.Instance.slotItems[slotData.slotIndex] = new SlotItem(item, slotData.quantity);
 
             HotBarManager.Instance.UpdateSlot(slotData.slotIndex);
         }
@@ -263,7 +255,7 @@ public class FirstPersonController : MonoBehaviour
     }
     public void OnClickSaveAndQuit()
     {
-        // Only save if this scene has the player
+        
         if (FirstPersonController.Instance != null)
         {
             FirstPersonController.Instance.SavePlayer();
@@ -273,14 +265,14 @@ public class FirstPersonController : MonoBehaviour
             Debug.LogWarning("Save skipped: FirstPersonController instance not found in this scene.");
         }
 
-        // Set GameManager flag
+ 
         if (GameManager.Instance != null)
             GameManager.Instance.loadGame = true;
 
         // Go to MenuScene via LoadingManager
         if (LoadingManager.Instance != null)
         {
-            int menuSceneIndex = 0; // your MenuScene index
+            int menuSceneIndex = 0; 
             LoadingManager.Instance.ChangeToGameScene(menuSceneIndex);
         }
         else
