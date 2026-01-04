@@ -333,6 +333,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 48972672}
   m_CullTransparentMesh: 1
+--- !u!1 &65371063 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5646248360413477306, guid: 636ec3cc3edf2274da6d8ce3271a91ac, type: 3}
+  m_PrefabInstance: {fileID: 7101301239489048843}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &65371066
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65371063}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!114 &68963099 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 713017152668223473, guid: c39ea5572abe4884daafcf31a070b0dd, type: 3}
@@ -2638,7 +2670,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494344952}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14775936, y: 0.0039343317, z: -0.011256859, w: 0.98895144}
+  m_LocalRotation: {x: 0.1477594, y: 0.003934302, z: -0.011256853, w: 0.98895144}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2856,6 +2888,7 @@ MonoBehaviour:
   rotationSpeed: 1000
   visionRange: 20
   engagementRange: 10
+  meleeRange: 2.2
   animator: {fileID: 0}
   speedA: Speed
   meleeTrigger: Melee
@@ -2863,6 +2896,9 @@ MonoBehaviour:
   walkSpeedThreshold: 0.1
   runSpeedThreshold: 3
   attackMode: 2
+  meleeDamage: 10
+  meleeAngle: 90
+  meleeHitDelay: 0.2
 --- !u!65 &1567202152
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3550,7 +3586,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144748341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.111738265, y: 0.0043406277, z: -0.011106514, w: 0.9936661}
+  m_LocalRotation: {x: 0.111738265, y: 0.004340593, z: -0.011106511, w: 0.9936661}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3839,6 +3875,7 @@ MonoBehaviour:
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
+  meleeRange: 2.2
   animator: {fileID: 246310837196016456}
   speedA: Speed
   meleeTrigger: Melee
@@ -3846,6 +3883,9 @@ MonoBehaviour:
   walkSpeedThreshold: 0.1
   runSpeedThreshold: 3
   attackMode: 2
+  meleeDamage: 10
+  meleeAngle: 90
+  meleeHitDelay: 0.2
 --- !u!54 &246310837196016453
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6038,6 +6078,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 195113774662206582, guid: 636ec3cc3edf2274da6d8ce3271a91ac, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8885239134424181197}
+    - targetCorrespondingSourceObject: {fileID: 5646248360413477306, guid: 636ec3cc3edf2274da6d8ce3271a91ac, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 65371066}
   m_SourcePrefab: {fileID: 100100000, guid: 636ec3cc3edf2274da6d8ce3271a91ac, type: 3}
 --- !u!4 &7102597628618932302
 Transform:
@@ -6739,6 +6782,7 @@ MonoBehaviour:
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
+  meleeRange: 2.2
   animator: {fileID: 8885239134424181201}
   speedA: Speed
   meleeTrigger: Melee
@@ -6746,6 +6790,9 @@ MonoBehaviour:
   walkSpeedThreshold: 0.1
   runSpeedThreshold: 3
   attackMode: 2
+  meleeDamage: 10
+  meleeAngle: 90
+  meleeHitDelay: 0.2
 --- !u!54 &8885239134424181198
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6957,6 +7004,7 @@ MonoBehaviour:
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
+  meleeRange: 2.2
   animator: {fileID: 9168741766838315609}
   speedA: Speed
   meleeTrigger: Melee
@@ -6964,6 +7012,9 @@ MonoBehaviour:
   walkSpeedThreshold: 0.1
   runSpeedThreshold: 3
   attackMode: 2
+  meleeDamage: 10
+  meleeAngle: 90
+  meleeHitDelay: 0.2
 --- !u!54 &9168741766838315611
 Rigidbody:
   m_ObjectHideFlags: 0

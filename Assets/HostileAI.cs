@@ -40,6 +40,9 @@ public class HostileAI : MonoBehaviour
     [SerializeField] private float visionRange = 20f;
     [SerializeField] private float engagementRange = 10f;
 
+    // Attack Ranges
+    [SerializeField] private float meleeRange = 2.2f;
+
     // Animation
     [SerializeField] private Animator animator;
 
@@ -55,6 +58,11 @@ public class HostileAI : MonoBehaviour
     // What type of attacks this enemy uses
     public enum AttackMode { MeleeOnly, RangedOnly, Both }
     [SerializeField] private AttackMode attackMode = AttackMode.Both;
+
+    // Melee Damage Settings
+    [SerializeField] private int meleeDamage = 10;
+    [SerializeField] private float meleeAngle = 90f;   // total cone angle
+    [SerializeField] private float meleeHitDelay = 0.2f; // optional: makes it hit during the swing
 
 
 
@@ -252,6 +260,7 @@ public class HostileAI : MonoBehaviour
         {
             case AttackMode.MeleeOnly:
                 TriggerMelee();
+                StartCoroutine(MeleeHitRoutine());
                 break;
 
             case AttackMode.RangedOnly:
@@ -264,9 +273,10 @@ public class HostileAI : MonoBehaviour
                 // We'll add a meleeRange field next step (for now use engagementRange * 0.5f)
                 float dist = Vector3.Distance(transform.position, playerTransform.position);
 
-                if (dist <= engagementRange * 0.5f)
+                if (dist <= meleeRange)
                 {
                     TriggerMelee();
+                    StartCoroutine(MeleeHitRoutine());
                 }
                 else
                 {
@@ -349,11 +359,50 @@ public class HostileAI : MonoBehaviour
         animator.SetTrigger(meleeTrigger);
     }
 
+    private void DoMeleeDamage()
+    {
+        if (playerTransform == null) return;
+
+        // Distance check
+        float dist = Vector3.Distance(transform.position, playerTransform.position);
+        if (dist > meleeRange) return;
+
+        // Facing / cone check so it doesn't hit behind
+        Vector3 toPlayer = playerTransform.position - transform.position;
+        toPlayer.y = 0f;
+
+        Vector3 forward = transform.forward;
+        forward.y = 0f;
+
+        float angle = Vector3.Angle(forward, toPlayer);
+        if (angle > meleeAngle * 0.5f) return;
+
+        // Apply damage
+        PlayerStats stats = playerTransform.GetComponent<PlayerStats>();
+        if (stats == null) stats = playerTransform.GetComponentInParent<PlayerStats>();
+
+        if (stats != null)
+        {
+            stats.TakeDamage(meleeDamage);
+            Debug.Log($"MELEE HIT -> dealt {meleeDamage} damage. Player health now: {stats.Health}");
+        }
+    }
+
+    private IEnumerator MeleeHitRoutine()
+    {
+        if (meleeHitDelay > 0f)
+            yield return new WaitForSeconds(meleeHitDelay);
+
+        DoMeleeDamage();
+    }
+
+
     private void TriggerRanged()
     {
         if (animator == null) return;
         animator.ResetTrigger(meleeTrigger);
         animator.SetTrigger(rangedTrigger);
     }
+
 
 }
