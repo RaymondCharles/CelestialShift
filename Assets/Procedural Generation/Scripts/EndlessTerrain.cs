@@ -6,6 +6,7 @@ public class EndlessTerrain : MonoBehaviour
 {
     public const float maxViewDistance = 450;
     public Transform viewer;
+    public Material mapMaterial;
 
     public static Vector2 viewerPosition;
     static mapGenerator mapGenerator;
@@ -50,7 +51,7 @@ public class EndlessTerrain : MonoBehaviour
                         visibleTerrainChunksLastUpdate.Add(terrainChunkDictionary[viewedChunkCoord]);
                     }
                 } else {
-                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, transform));
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, transform, mapMaterial));
                 }
             }
         }
@@ -68,7 +69,7 @@ public class EndlessTerrain : MonoBehaviour
         MeshFilter meshFilter;
         MeshCollider meshCollider;
 
-        public TerrainChunk(Vector2 coord, int size, Transform parent){
+        public TerrainChunk(Vector2 coord, int size, Transform parent, Material material){
             position = coord * size;
             bounds = new Bounds(position, Vector2.one * size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
@@ -78,6 +79,7 @@ public class EndlessTerrain : MonoBehaviour
             meshRenderer = meshObject.AddComponent<MeshRenderer>();
             meshFilter = meshObject.AddComponent<MeshFilter>();
             meshCollider = meshObject.AddComponent<MeshCollider>();
+            meshRenderer.material = material;
 
             meshObject.transform.position = positionV3;
             meshObject.transform.parent = parent;

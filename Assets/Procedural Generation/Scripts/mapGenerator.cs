@@ -101,7 +101,7 @@ public class mapGenerator : MonoBehaviour
         }
     }
 
-    public void RequestMeshData(Action<MeshData> callback){
+    public void RequestMeshData(MapData  mapData,Action<MeshData> callback){
         ThreadStart threadStart = delegate {
             MeshDataThread(callback);
         };
