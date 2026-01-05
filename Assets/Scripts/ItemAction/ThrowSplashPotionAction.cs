@@ -1,95 +1,98 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Item System/Actions/Throw Splash Potion")]
+[CreateAssetMenu(menuName = "Items/Actions/Throw Splash Potion Action")]
 public class ThrowSplashPotionAction : ItemAction
 {
     // Projectile
-    public GameObject projectilePrefab;
-    public float throwSpeed = 18f;
+    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private float throwSpeed = 18f;
 
     // Damage
-    public float damage = 20f;
-    public float splashRadius = 1.75f;
+    [SerializeField] private float damage = 20f;
+    [SerializeField] private float splashRadius = 1.75f;
 
     // Spawn
-    public Vector3 spawnOffset = new Vector3(0f, 0.1f, 0.6f);
+    [SerializeField] private Vector3 spawnOffset = new Vector3(0f, 1.4f, 0.6f);
+    [SerializeField] private float spawnForwardPush = 0.25f; // helps avoid spawning inside colliders
 
     public override void Execute(Item item, GameObject gameManager)
     {
         if (projectilePrefab == null)
         {
-            Debug.LogWarning("ThrowSplashPotionAction: No projectilePrefab assigned.");
+            Debug.LogWarning("ThrowSplashPotionAction: projectilePrefab is NULL (assign it in the asset).");
             return;
         }
 
-        // Try to get player
-        Transform playerT = null;
-        var gm = gameManager.GetComponent<GameManagerTemp>();
-        if (gm != null && gm.player != null) playerT = gm.player.transform;
-
-        // Get a camera transform without depending purely on Camera.main
-        Transform camT = null;
-
-        // 1) Camera.main if available
-        if (Camera.main != null) camT = Camera.main.transform;
-
-        // 2) Fallback: any enabled camera in scene
-        if (camT == null)
+        var player = GameObject.FindWithTag("Player");
+        if (player == null)
         {
-            var anyCam = Object.FindFirstObjectByType<Camera>();
-            if (anyCam != null) camT = anyCam.transform;
+            Debug.LogWarning("ThrowSplashPotionAction: Player (tag=Player) not found.");
+            return;
         }
 
-        // If still no camera, fallback to player forward
-        Vector3 forward = (camT != null) ? camT.forward : (playerT != null ? playerT.forward : Vector3.forward);
+        Camera cam = Camera.main;
 
-        Vector3 spawnPos;
-        if (camT != null)
-            spawnPos = camT.position + camT.TransformDirection(spawnOffset);
-        else if (playerT != null)
-            spawnPos = playerT.position + playerT.TransformDirection(spawnOffset);
-        else
-            spawnPos = Vector3.zero;
+        // 1) Find hand fire point
+        Transform firePoint = FindFirePoint(player.transform);
 
+        // 2) Spawn pos from hand (fallback to offset)
+        Vector3 spawnPos = (firePoint != null)
+            ? firePoint.position
+            : player.transform.position + player.transform.TransformDirection(spawnOffset);
+
+        // 3) Aim point from camera center (shoot where you look)
+        Vector3 aimPoint = spawnPos + player.transform.forward * 10f;
+        if (cam != null)
+        {
+            Ray r = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+            if (Physics.Raycast(r, out RaycastHit hit, 500f, ~0, QueryTriggerInteraction.Ignore))
+                aimPoint = hit.point;
+            else
+                aimPoint = r.origin + r.direction * 50f;
+        }
+
+        // 4) Direction from HAND -> aim point
+        Vector3 forward = (aimPoint - spawnPos).normalized;
+        if (forward.sqrMagnitude < 0.0001f)
+            forward = player.transform.forward;
+
+        // push forward so it doesn't spawn inside hand/player collider
+        spawnPos += forward * spawnForwardPush;
+
+        // 5) Spawn projectile
         GameObject proj = Object.Instantiate(projectilePrefab, spawnPos, Quaternion.LookRotation(forward));
 
-        // Configure splash script
+        // 6) Configure projectile
         var splash = proj.GetComponent<SplashPotionProjectile>();
         if (splash != null)
         {
             splash.SetDamage(damage);
             splash.SetRadius(splashRadius);
+            splash.Init(player); // ignore self-collisions
         }
         else
         {
             Debug.LogWarning("ThrowSplashPotionAction: Projectile prefab has no SplashPotionProjectile attached.");
         }
 
-        // Physics throw
+        // 7) Launch
         Rigidbody rb = proj.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.isKinematic = false;               // IMPORTANT: projectile should NOT be kinematic
-            rb.useGravity = true;
-            rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            rb.velocity = forward.normalized * throwSpeed;
-        }
-        else
-        {
-            Debug.LogWarning("ThrowSplashPotionAction: Projectile prefab has no Rigidbody.");
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
+            rb.velocity = forward * throwSpeed;
         }
 
-        // Prevent immediate self-hit (ignore collisions with player)
-        if (playerT != null)
-        {
-            Collider[] playerCols = playerT.GetComponentsInChildren<Collider>();
-            Collider[] projCols = proj.GetComponentsInChildren<Collider>();
+        Debug.Log($"Threw splash potion: {item.itemName} (spawn={(firePoint ? "PotionFirePoint" : "offset")})");
+    }
 
-            for (int i = 0; i < playerCols.Length; i++)
-                for (int j = 0; j < projCols.Length; j++)
-                    Physics.IgnoreCollision(projCols[j], playerCols[i], true);
-        }
-
-        Debug.Log($"Threw splash potion: {item.itemName}");
+    private Transform FindFirePoint(Transform playerRoot)
+    {
+        var all = playerRoot.GetComponentsInChildren<Transform>(true);
+        foreach (var t in all)
+            if (t.name == "PotionFirePoint")
+                return t;
+        return null;
     }
 }
