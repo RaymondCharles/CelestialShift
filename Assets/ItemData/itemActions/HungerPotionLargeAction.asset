@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3e41a097032d854081f856846e8377f, type: 3}
   m_Name: HungerPotionLargeAction
   m_EditorClassIdentifier: 
-  potionType: 0
-  amount: 50
+  potionType: 1
+  amount: 100

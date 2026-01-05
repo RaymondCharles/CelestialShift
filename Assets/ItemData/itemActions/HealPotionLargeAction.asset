@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: HealPotionLargeAction
   m_EditorClassIdentifier: 
   potionType: 0
-  amount: 50
+  amount: 100

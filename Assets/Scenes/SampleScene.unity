@@ -3203,7 +3203,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494344952}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.1477594, y: 0.003934302, z: -0.011256853, w: 0.98895144}
+  m_LocalRotation: {x: 0.14775936, y: 0.0039343317, z: -0.011256859, w: 0.98895144}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4946,6 +4946,10 @@ PrefabInstance:
       value: Small Health Potion
       objectReference: {fileID: 0}
     - target: {fileID: 4357641912868288710, guid: 5c212e7cbdb956d4eb75c0707aaf907b, type: 3}
+      propertyPath: quantity
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 4357641912868288710, guid: 5c212e7cbdb956d4eb75c0707aaf907b, type: 3}
       propertyPath: hotBarManager
       value: 
       objectReference: {fileID: 68963099}
@@ -4992,10 +4996,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 958547734467315665, guid: 5c212e7cbdb956d4eb75c0707aaf907b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8796641450730276165}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c212e7cbdb956d4eb75c0707aaf907b, type: 3}
 --- !u!1 &732163412445511944
 GameObject:
@@ -5556,7 +5557,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4733574947775439551, guid: 9d9a794b417a12a49b3c78fb73822305, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8931814408955941133}
   m_SourcePrefab: {fileID: 100100000, guid: 9d9a794b417a12a49b3c78fb73822305, type: 3}
 --- !u!1001 &2600116251949686059
 PrefabInstance:
@@ -5774,10 +5778,10 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &3702897967430255638 stripped
+--- !u!1 &3640185298320347227 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 958547734467315665, guid: 5c212e7cbdb956d4eb75c0707aaf907b, type: 3}
-  m_PrefabInstance: {fileID: 684879012291089559}
+  m_CorrespondingSourceObject: {fileID: 4733574947775439551, guid: 9d9a794b417a12a49b3c78fb73822305, type: 3}
+  m_PrefabInstance: {fileID: 2545003543768004608}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &3761351660088868258
 Transform:
@@ -6001,6 +6005,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Large Health Potion
       objectReference: {fileID: 0}
+    - target: {fileID: 3610676730845110115, guid: 4adf6b74c2eeaf348af884ba3112b479, type: 3}
+      propertyPath: hotBarManager
+      value: 
+      objectReference: {fileID: 68963099}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7815,48 +7823,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!23 &8796641450730276165
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3702897967430255638}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!4 &8879528567448773390
 Transform:
   m_ObjectHideFlags: 0
@@ -8030,6 +7996,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4076164684737633631, guid: 636ec3cc3edf2274da6d8ce3271a91ac, type: 3}
   m_PrefabInstance: {fileID: 7101301239489048843}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8931814408955941133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3640185298320347227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f1257943e51974c90b735a482fdf2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 0}
+  hotBarManager: {fileID: 0}
+  quantity: 0
 --- !u!4 &8998794175241496555
 Transform:
   m_ObjectHideFlags: 0

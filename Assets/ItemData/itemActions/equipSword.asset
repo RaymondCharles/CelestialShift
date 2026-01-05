@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b927142ec04f3949b53a952ebf7576d, type: 3}
   m_Name: equipSword
   m_EditorClassIdentifier: 
-  ItemAnimator: {fileID: 0}
-  rightHandEnd: {fileID: 0}
   sword: {fileID: 0}
+  swordToSpawn: {fileID: 967905765742540190, guid: 8adc890f7b787f44fa0fd482990cf67d, type: 3}
