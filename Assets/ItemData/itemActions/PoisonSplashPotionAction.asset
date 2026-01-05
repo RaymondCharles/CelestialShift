@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3411c186f7ab140a0478917591dec8, type: 3}
+  m_Name: PoisonSplashPotionAction
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 5840516064035930387, guid: ba7ec9862fe14734c8fe973ec07b86ff, type: 3}
+  throwSpeed: 18
+  damage: 20
+  splashRadius: 1.75
+  spawnOffset: {x: 0, y: 1.4, z: 0.6}

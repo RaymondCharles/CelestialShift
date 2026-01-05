@@ -512,6 +512,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f96af5a0a6c304aa3e59081354f07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &125578050
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3060892077514671475, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -30.761765
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060892077514671475, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0000009536743
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060892077514671475, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 30.108679
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060892077514671475, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060892077514671475, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060892077514671475, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060892077514671475, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060892077514671475, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060892077514671475, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060892077514671475, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840516064035930387, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: m_Name
+      value: Poison Splash Potion
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
 --- !u!1 &134359398
 GameObject:
   m_ObjectHideFlags: 0
@@ -5963,7 +6020,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2807465357875843303, guid: 4adf6b74c2eeaf348af884ba3112b479, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -32.851116
+      value: -38.14
       objectReference: {fileID: 0}
     - target: {fileID: 2807465357875843303, guid: 4adf6b74c2eeaf348af884ba3112b479, type: 3}
       propertyPath: m_LocalPosition.y
@@ -7927,10 +7984,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1
+  m_Radius: 2.8900003
+  m_Height: 20.74085
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: -2.0414114, y: 9.870423, z: 0}
 --- !u!195 &8885239134424181200
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -8255,3 +8312,4 @@ SceneRoots:
   - {fileID: 4628051942707874309}
   - {fileID: 2545003543768004608}
   - {fileID: 1307461779298267015}
+  - {fileID: 125578050}
