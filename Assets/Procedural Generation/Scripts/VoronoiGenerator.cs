@@ -10,10 +10,11 @@ using UnityEngine.UI;
 // 4. Maybe tie noiseScale to no of cells
 // 5. Add biome warpFreq and warpStrength parameters, blendWidth parameter for biome blending
 public static class VoronoiGenerator{
-    public static BiomeGenData GenerateVDiagram(int width, int height, Color[] cellColours, int numOfCells, int seed, BiomeScriptableObject[] biomes, float blendWidth)
+    public static BiomeGenData GenerateVDiagram(int width, int height, Vector2 offset, Color[] cellColours, int numOfCells, int seed, BiomeScriptableObject[] biomes, float blendWidth)
     {
         // Create ColourMap, loop through pixels, assign colour according to Voronoi logic
         // Ensure we have at least one cell and at least one pixel per cell
+        offset = Vector2.zero; // TEMPORARY FIX FOR THREADING ISSUES
         int cells = Mathf.Max(1, numOfCells);
         int pixelsPerCell = Mathf.Max(1, width / cells);
 
@@ -58,12 +59,12 @@ public static class VoronoiGenerator{
         Vector2Int secondClosestCell;
         Vector2Int thirdClosestCell;
         // Loop through each pixel to determine its closest point, and assign color accordingly
-        for (int x = 0; x < width; x++)
+        for (int x = 0+(int)offset.x; x < width+(int)offset.x; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0+(int)offset.y; y < height+(int)offset.y; y++)
             {
                 // Get the grid position of the current pixel
-                int gridX = x / pixelsPerCell;
+                int gridX = x  / pixelsPerCell;
                 int gridY = y / pixelsPerCell;
 
                 // Reset closest distance and cell for each pixel

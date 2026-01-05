@@ -14,7 +14,7 @@ public class mapGenerator : MonoBehaviour
     
     public const int mapChunkSize = 241;
     [Range(0,6)] // clamped to 0-6 to prevent LOD errors
-    public int levelOfDetail;
+    public int editorLevelOfDetail;
     public float noiseScale;
 
     public int octaves;
@@ -51,7 +51,7 @@ public class mapGenerator : MonoBehaviour
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new Queue<MapThreadInfo<MeshData>>();
 
     public void GenerateMapDataInEditor(){
-        mapDataScriptableObject.mapData = generateMapData();
+        mapDataScriptableObject.mapData = generateMapData(Vector2.zero);
     }
     
     public void DrawMapInEditor(){
@@ -69,7 +69,7 @@ public class mapGenerator : MonoBehaviour
             display.DrawTexture (TextureGenerator.TextureFromColourMap(mapDataScriptableObject.mapData.colourMap, mapChunkSize, mapChunkSize));
         }else if (drawMode == DrawMode.Mesh){
             // draw mesh, spawn buildings at building points
-            display.DrawMesh (meshGenerator.GenerateTerrainMesh(mapDataScriptableObject.mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, levelOfDetail), TextureGenerator.TextureFromColourMap(mapDataScriptableObject.mapData.colourMap, mapChunkSize, mapChunkSize));
+            display.DrawMesh (meshGenerator.GenerateTerrainMesh(mapDataScriptableObject.mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, editorLevelOfDetail), TextureGenerator.TextureFromColourMap(mapDataScriptableObject.mapData.colourMap, mapChunkSize, mapChunkSize));
             if (generateBuildings){
                 foreach (Vector2Int coord in mapDataScriptableObject.mapData.biomeGenData.buildingPointsArray){
                     if (!mapDataScriptableObject.mapData.buildingsMap[coord.x, coord.y]){ // only spawn if not already spawned
@@ -84,33 +84,33 @@ public class mapGenerator : MonoBehaviour
         }
     }
 
-    public void RequestMapData(Action<MapData> callback){
+    public void RequestMapData(Vector2 centre, Action<MapData> callback){
         // start mapGeneration on new thread
         ThreadStart threadStart = delegate {
-            MapDataThread(callback);
+            MapDataThread(centre, callback);
         };
 
         new Thread(threadStart).Start();
     }
 
-    void MapDataThread(Action<MapData> callback){
-        MapData mapData = generateMapData();
+    void MapDataThread(Vector2 centre, Action<MapData> callback){
+        MapData mapData = generateMapData(centre);
         lock (mapDataThreadInfoQueue){
             // enqueue the generated map data to be processed on main thread, locked so no conflicts
             mapDataThreadInfoQueue.Enqueue (new MapThreadInfo<MapData> (callback, mapData));
         }
     }
 
-    public void RequestMeshData(MapData  mapData,Action<MeshData> callback){
+    public void RequestMeshData(MapData  mapData, int lod, Action<MeshData> callback){
         ThreadStart threadStart = delegate {
-            MeshDataThread(callback);
+            MeshDataThread(mapData, lod, callback);
         };
 
         new Thread(threadStart).Start();
     }
 
-    void MeshDataThread(Action<MeshData> callback){
-        MeshData meshData = meshGenerator.GenerateTerrainMesh(mapDataScriptableObject.mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, levelOfDetail);
+    void MeshDataThread(MapData mapData, int lod, Action<MeshData> callback){
+        MeshData meshData = meshGenerator.GenerateTerrainMesh(mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, lod);
         lock (meshDataThreadInfoQueue){
             // enqueue the generated mesh data to be processed on main thread, locked so no conflicts
             meshDataThreadInfoQueue.Enqueue(new MapThreadInfo<MeshData>(callback, meshData));
@@ -133,7 +133,7 @@ public class mapGenerator : MonoBehaviour
         }
     }
     
-    public MapData generateMapData(){
+    public MapData generateMapData(Vector2 centre){
         // create biome dictionary for easy access
         Dictionary<string, BiomeScriptableObject> biomeDict = new Dictionary<string, BiomeScriptableObject>();
         bool[,] buildingsMap = new bool[mapChunkSize, mapChunkSize]; // OPTIMIZE WE DO NOT NEED A FULL MAP HERE
@@ -148,11 +148,11 @@ public class mapGenerator : MonoBehaviour
             }
 
         //BiomeCoord[,] voronoiMap = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes, blendWidth);
-        BiomeGenData biomeGenData = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes, blendWidth);
+        BiomeGenData biomeGenData = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, centre + offset, voronoiColours, numOfCells, seed, Biomes, blendWidth);
 
         
         // call noise.GenerateNoiseMap() with parameters to generate noise map
-        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset, biomeGenData, Biomes, biomeDict);
+        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, centre + offset, biomeGenData, Biomes, biomeDict);
 
         // build a 1d array of colours by looping through the heightmap, checking TerrainType struct, and assigning colours accordingly EXPAND WITH BIOMES - i.e. figure out different structs for different biomes
         Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
@@ -217,7 +217,7 @@ public class mapGenerator : MonoBehaviour
         return new MapData (noiseMap, colourMap, biomeGenData, biomeDict, buildingsMap);
     }
 
-    void onValidate (){
+    void OnValidate (){
         if (lacunarity < 1){
             lacunarity = 1;
         }
