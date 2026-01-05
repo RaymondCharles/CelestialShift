@@ -1,46 +1,38 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Item System/Actions/Throw Splash Potion Action")]
-public class ThrowSplashPotionAction : ItemAction
+[CreateAssetMenu(menuName = "Item System/Actions/Throw Freeze Potion Action")]
+public class ThrowFreezePotionAction : ItemAction
 {
-    // Projectile
+    [Header("Projectile")]
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private float throwSpeed = 18f;
 
-    // Damage
-    [SerializeField] private float damage = 20f;
-    [SerializeField] private float splashRadius = 1.75f;
+    [Header("Damage + Freeze")]
+    [SerializeField] private float damage = 5f;
+    [SerializeField] private float splashRadius = 2f;
+    [SerializeField] private float freezeSeconds = 7f;
 
-    // Spawn
+    [Header("Spawn")]
     [SerializeField] private Vector3 spawnOffset = new Vector3(0f, 1.4f, 0.6f);
-    [SerializeField] private float spawnForwardPush = 0.25f; // helps avoid spawning inside colliders
+    [SerializeField] private float spawnForwardPush = 0.25f;
 
     public override void Execute(Item item, GameObject gameManager)
     {
-        if (projectilePrefab == null)
-        {
-            Debug.LogWarning("ThrowSplashPotionAction: projectilePrefab is NULL (assign it in the asset).");
-            return;
-        }
-
         var player = GameObject.FindWithTag("Player");
         if (player == null)
         {
-            Debug.LogWarning("ThrowSplashPotionAction: Player (tag=Player) not found.");
+            Debug.LogWarning("ThrowFreezePotionAction: Player not found.");
             return;
         }
 
         Camera cam = Camera.main;
-
-        // 1) Find hand fire point
         Transform firePoint = FindFirePoint(player.transform);
 
-        // 2) Spawn pos from hand (fallback to offset)
-        Vector3 spawnPos = (firePoint != null)
+        Vector3 spawnPos = firePoint != null
             ? firePoint.position
             : player.transform.position + player.transform.TransformDirection(spawnOffset);
 
-        // 3) Aim point from camera center (shoot where you look)
+        // Aim from camera center
         Vector3 aimPoint = spawnPos + player.transform.forward * 10f;
         if (cam != null)
         {
@@ -51,31 +43,29 @@ public class ThrowSplashPotionAction : ItemAction
                 aimPoint = r.origin + r.direction * 50f;
         }
 
-        // 4) Direction from HAND -> aim point
         Vector3 forward = (aimPoint - spawnPos).normalized;
-        if (forward.sqrMagnitude < 0.0001f)
-            forward = player.transform.forward;
+        if (forward.sqrMagnitude < 0.0001f) forward = player.transform.forward;
 
-        // push forward so it doesn't spawn inside hand/player collider
+        // Push forward so it doesn't spawn inside the player
         spawnPos += forward * spawnForwardPush;
 
-        // 5) Spawn projectile
         GameObject proj = Object.Instantiate(projectilePrefab, spawnPos, Quaternion.LookRotation(forward));
 
-        // 6) Configure projectile
-        var splash = proj.GetComponent<SplashPotionProjectile>();
-        if (splash != null)
+        // Configure freeze projectile
+        var freezeProj = proj.GetComponent<FreezePotionProjectile>();
+        if (freezeProj != null)
         {
-            splash.SetDamage(damage);
-            splash.SetRadius(splashRadius);
-            splash.Init(player); // ignore self-collisions
+            freezeProj.SetDamage(damage);
+            freezeProj.SetRadius(splashRadius);
+            freezeProj.SetFreezeSeconds(freezeSeconds);
+            freezeProj.Init(player);
         }
         else
         {
-            Debug.LogWarning("ThrowSplashPotionAction: Projectile prefab has no SplashPotionProjectile attached.");
+            Debug.LogWarning("ThrowFreezePotionAction: Projectile prefab has no FreezePotionProjectile attached.");
         }
 
-        // 7) Launch
+        // Launch
         Rigidbody rb = proj.GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -84,7 +74,7 @@ public class ThrowSplashPotionAction : ItemAction
             rb.velocity = forward * throwSpeed;
         }
 
-        Debug.Log($"Threw splash potion: {item.itemName} (spawn={(firePoint ? "PotionFirePoint" : "offset")})");
+        Debug.Log($"Threw FREEZE potion: {item.itemName}");
     }
 
     private Transform FindFirePoint(Transform playerRoot)
