@@ -8,18 +8,14 @@ public class Inventory : MonoBehaviour
     public static Inventory Instance;
     public HotBarManager hotBarManager;
     public SlotItem[] inventoryItems;
+    private int inventorySize = 40;
 
 
 
     public void Awake()
     {
         Instance = this;
-
-        // Ensure inventory array is always initialized
-        if (inventoryItems == null || inventoryItems.Length != 8)
-        {
-            inventoryItems = new SlotItem[8];
-        }
+        inventoryItems = new SlotItem[inventorySize];
     }
 
 
