@@ -22,45 +22,45 @@ AvatarMask:
   - m_Path: Armature/pelvis/hip/abs/lower chest
     m_Weight: 0
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/Bone.004
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/Bone.004/Bone.005
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/Bone.004/Bone.005/Bone.005_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/left collar
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/left collar/left shoulder
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/left collar/left shoulder/left
       bicep
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/left collar/left shoulder/left
       bicep/left forearm
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/left collar/left shoulder/left
       bicep/left forearm/left hand
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/left collar/left shoulder/left
       bicep/left forearm/left hand/left hand_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/right collar
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/right collar/right shoulder
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/right collar/right shoulder/right
       bicep
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/right collar/right shoulder/right
       bicep/right forearm
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/right collar/right shoulder/right
       bicep/right forearm/right hand
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/hip/abs/lower chest/upper chest/right collar/right shoulder/right
       bicep/right forearm/right hand/right hand_end
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/pelvis/left hip
     m_Weight: 0
   - m_Path: Armature/pelvis/left hip/left upper leg

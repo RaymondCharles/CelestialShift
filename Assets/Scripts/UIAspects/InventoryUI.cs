@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 
 
 public class InventoryUI : MonoBehaviour, UIManager
@@ -19,6 +21,7 @@ public class InventoryUI : MonoBehaviour, UIManager
     public void UpdateSlot(int slotIndex)
     {
         slots[slotIndex].sprite = Inventory.Instance.inventoryItems[slotIndex] != null ? Inventory.Instance.inventoryItems[slotIndex].itemDetails.itemImg : emptySprite;
+        slots[slotIndex].GetComponentInChildren<TMP_Text>().text = Inventory.Instance.inventoryItems[slotIndex] != null ? Inventory.Instance.inventoryItems[slotIndex].quantity.ToString() : "";
     }
 
     public void SlotSwap(int slot1, int slot2)

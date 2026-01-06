@@ -25,26 +25,30 @@ public class Inventory : MonoBehaviour
 
     public int addItem(Item item, int quantity)
     {
+        int index = -1;
         int leftOver = quantity;
         foreach (SlotItem itemInList in inventoryItems)
         {
+            index++;
             if (itemInList == null) continue;
             if (itemInList.itemDetails.itemName == item.itemName)
             {
-                itemInList.quantity += quantity;
+                itemInList.quantity += leftOver;
                 leftOver = itemInList.quantity - item.quantityLimit;
                 if (leftOver > 0)
                 {
                     itemInList.quantity -= leftOver;
+                    InventoryUI.Instance.UpdateSlot(index);
                 }
                 else if (leftOver <= 0)
                 {
+                    InventoryUI.Instance.UpdateSlot(index);
                     return 0;
                 }
                 Debug.Log(leftOver);
             }
         }
-        int index;
+        index = -1;
         while ((index = GetFirstEmptySlot()) != -1 && leftOver > item.quantityLimit)
         {
             inventoryItems[index] = (new SlotItem(item, item.quantityLimit));;

@@ -53,15 +53,19 @@ public class HotBarSelect : MonoBehaviour
         {
             if (!Slots[i])
                 continue;
+            
 
-            Slots[i].gameObject.SetActive(i == index);
+            Slots[i].gameObject.SetActive(i == index && !Slots[i].gameObject.active);
         }
 
-        if (HotBarManager.Instance == null)
-            return;
-
-        HotBarManager.Instance.selectedSlot = index;
-        HotBarManager.Instance.UpdateSelectedItem();
+        // Tell HotBarManager which slot is currently selected
+        if (HotBarManager.Instance != null)
+            if (!Slots[index].gameObject.activeSelf) HotBarManager.Instance.selectedSlot = -1;
+            else
+            {
+                HotBarManager.Instance.selectedSlot = index;
+            }
+            HotBarManager.Instance.UpdateSelectedItem();
     }
 
     //}

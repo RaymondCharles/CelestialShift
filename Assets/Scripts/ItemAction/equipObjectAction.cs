@@ -2,30 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(
-fileName = "NewItemData",
-menuName = "New Item Data"
-)]
-
-public class Item : ScriptableObject
+[CreateAssetMenu(menuName = "Item System/Actions/equipObject")]
+public class equipObjectAction : ItemAction
 {
-    public string itemName;
-    public Sprite itemImg;
-    public bool usable;
-    public string itemID;
-
-    public int quantityLimit;
-
-    public bool selected;
-
-    public List<Item> parentItems;
-
-    public List<ItemGroup> childrenItems;
-
-    public GameObject worldPrefab;
-
-    public ItemAction action;
-
     private GameObject ItemAnimator;
     private Transform positionalTransform;
     public GameObject newObject;
@@ -35,7 +14,7 @@ public class Item : ScriptableObject
     public bool throwable = false;
     public bool consumable = false;
 
-    public void Equip()
+    public override void Execute(Item item, GameObject gameManager)
     {
         Debug.Log("Made it here");
         if (newObject == null)
@@ -53,26 +32,8 @@ public class Item : ScriptableObject
             ItemAnimator.GetComponent<ItemEffect>().throwable = throwable;
             ItemAnimator.GetComponent<ItemEffect>().consumable = consumable;
         }
+    
     }
-
-    public void UnEquip()
-    {
-        if (newObject!=null) Destroy(newObject);
-    }
-
-    public void Use(GameObject gameManager)
-    {
-        Debug.Log("Trying to use");
-        if (action!=null)
-        {
-            action.Execute(this, gameManager);
-        }
-        else
-        {
-            Debug.Log("Did not execute item action");
-        }
-    }
-
 
     Transform FindChildRecursive(Transform parent, string name)
     {
@@ -87,11 +48,4 @@ public class Item : ScriptableObject
         }
         return null;
     }
-}
-
-[System.Serializable]
-public class ItemGroup
-{
-    public Item[] items = new Item[3];
-    public int[] itemQuantities = new int[3];
 }

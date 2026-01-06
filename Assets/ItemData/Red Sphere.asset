@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: red sphere
   itemImg: {fileID: 1557730168, guid: e78b3d820b1142d4293528cf016ae6d8, type: 3}
-  usable: 1
+  usable: 0
+  itemID: 
   quantityLimit: 10
   selected: 0
   parentItems:
@@ -22,3 +23,9 @@ MonoBehaviour:
   childrenItems: []
   worldPrefab: {fileID: 1511610720200220097, guid: 333e561fa06c9de44b5667f8cad08949, type: 3}
   action: {fileID: 11400000, guid: d786cde816a62944fa8f5bc7ee18d737, type: 2}
+  newObject: {fileID: 0}
+  objectToSpawn: {fileID: 1511610720200220097, guid: d5595e707efa55c4c8c6afa1b8e64afc, type: 3}
+  positionalGameObjectName: right hand_end
+  swingable: 0
+  throwable: 1
+  consumable: 0
