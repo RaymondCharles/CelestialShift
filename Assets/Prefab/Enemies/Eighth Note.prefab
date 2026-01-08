@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 1845736119219578232}
   - component: {fileID: 2772034701752440499}
   - component: {fileID: 4826643453262964036}
+  - component: {fileID: 2525751234875176973}
+  - component: {fileID: 8844490854438806525}
   m_Layer: 0
   m_Name: Eighth Note
   m_TagString: Untagged
@@ -112,3 +114,39 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!135 &2525751234875176973
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5612508923652305481}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.0563272
+  m_Center: {x: 0.46662888, y: -0.032266825, z: 0.19547735}
+--- !u!114 &8844490854438806525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5612508923652305481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7277222617cf464c9ca5b3285b00d6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
+  lifeTime: 3
+  destroyOnHit: 1

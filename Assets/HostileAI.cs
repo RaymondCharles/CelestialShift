@@ -152,13 +152,43 @@ public class HostileAI : MonoBehaviour
             shootDir = transform.forward;
 
         Quaternion newRotation = Quaternion.LookRotation(shootDir) * Quaternion.Euler(-90f, 180f, 0f);
-        Rigidbody projectileRb = Instantiate(projectilePrefab, firePoint.position, newRotation).GetComponent<Rigidbody>();
 
+        // Instantiate GO first (so we can ignore collisions using colliders)
+        GameObject projGO = Instantiate(projectilePrefab, firePoint.position, newRotation);
+
+        // IMPORTANT: ignore collisions between THIS ENEMY and the projectile
+        IgnoreCollisionsWithSelf(projGO);
+
+        Rigidbody projectileRb = projGO.GetComponent<Rigidbody>();
         if (projectileRb != null)
             projectileRb.velocity = shootDir * projectileSpeed;
 
-        Destroy(projectileRb.gameObject, 3f);
+        Destroy(projGO, 3f);
     }
+
+    private void IgnoreCollisionsWithSelf(GameObject projectile)
+    {
+        if (projectile == null) return;
+
+        // Collect colliders on enemy (shooter) + projectile
+        var enemyCols = GetComponentsInChildren<Collider>(true);
+        var projCols = projectile.GetComponentsInChildren<Collider>(true);
+
+        for (int i = 0; i < projCols.Length; i++)
+        {
+            var p = projCols[i];
+            if (p == null) continue;
+
+            for (int j = 0; j < enemyCols.Length; j++)
+            {
+                var e = enemyCols[j];
+                if (e == null) continue;
+
+                Physics.IgnoreCollision(p, e, true);
+            }
+        }
+    }
+
 
     private void FindPatrolPoint()
     {
