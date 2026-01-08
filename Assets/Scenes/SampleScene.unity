@@ -625,6 +625,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 33676129972278853, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: cccac719dfe5a3b4ab89823be544987d, type: 2}
     - target: {fileID: 3060892077514671475, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
       propertyPath: m_LocalPosition.x
       value: -30.761765
@@ -8228,7 +8232,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494344952}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.1477594, y: 0.003934302, z: -0.011256853, w: 0.98895144}
+  m_LocalRotation: {x: 0.14775936, y: 0.0039343317, z: -0.011256859, w: 0.98895144}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -8446,7 +8450,8 @@ MonoBehaviour:
   rotationSpeed: 1000
   visionRange: 20
   engagementRange: 10
-  meleeRange: 2.2
+  meleeEnterRange: 2.2
+  meleeExitRange: 3
   animator: {fileID: 0}
   speedA: Speed
   meleeTrigger: Melee
@@ -9419,7 +9424,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144748341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.111738265, y: 0.0043406277, z: -0.011106514, w: 0.9936661}
+  m_LocalRotation: {x: 0.111738265, y: 0.004340593, z: -0.011106511, w: 0.9936661}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -9708,7 +9713,8 @@ MonoBehaviour:
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
-  meleeRange: 2.2
+  meleeEnterRange: 2.2
+  meleeExitRange: 3
   animator: {fileID: 246310837196016456}
   speedA: Speed
   meleeTrigger: Melee
@@ -9997,13 +10003,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 100461474857637009, guid: 5c212e7cbdb956d4eb75c0707aaf907b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f08629c14467bb34489617ec9fcd015a, type: 2}
     - target: {fileID: 958547734467315665, guid: 5c212e7cbdb956d4eb75c0707aaf907b, type: 3}
       propertyPath: m_Name
       value: Small Health Potion
       objectReference: {fileID: 0}
     - target: {fileID: 4357641912868288710, guid: 5c212e7cbdb956d4eb75c0707aaf907b, type: 3}
       propertyPath: quantity
-      value: 60
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4357641912868288710, guid: 5c212e7cbdb956d4eb75c0707aaf907b, type: 3}
       propertyPath: hotBarManager
@@ -10704,6 +10714,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2098911445408878987, guid: e81262b1d65750a40a6dbb77a1a6e359, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f4efc6d251958d54e88156b6dd09f45b, type: 2}
     - target: {fileID: 6222550808402539069, guid: e81262b1d65750a40a6dbb77a1a6e359, type: 3}
       propertyPath: m_LocalPosition.x
       value: -31.705833
@@ -11404,7 +11418,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 8cdccd34ada66ae4ebe1c2ab32f0285a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -13112,7 +13126,8 @@ MonoBehaviour:
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
-  meleeRange: 2.2
+  meleeEnterRange: 2.2
+  meleeExitRange: 3
   animator: {fileID: 8885239134424181201}
   speedA: Speed
   meleeTrigger: Melee
@@ -13383,7 +13398,8 @@ MonoBehaviour:
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
-  meleeRange: 2.2
+  meleeEnterRange: 2.2
+  meleeExitRange: 3
   animator: {fileID: 9168741766838315609}
   speedA: Speed
   meleeTrigger: Melee
