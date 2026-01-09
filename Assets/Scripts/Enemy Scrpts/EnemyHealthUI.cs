@@ -3,16 +3,18 @@ using UnityEngine.UI;
 
 public class EnemyHealthUI : MonoBehaviour
 {
-    [Header("Refs")]
+    // References
+    
     [SerializeField] private EnemyHealth enemyHealth;
     [SerializeField] private Slider slider;
 
-    [Header("Status (optional)")]
+    // Status
     [SerializeField] private EnemyStatusEffects status;
     [SerializeField] private GameObject freezeIcon;
     [SerializeField] private GameObject poisonIcon;
+    [SerializeField] private GameObject burnIcon;
 
-    [Header("Billboard")]
+    // Camera
     [SerializeField] private bool faceCamera = true;
     [SerializeField] private Camera targetCamera;
 
@@ -48,6 +50,7 @@ public class EnemyHealthUI : MonoBehaviour
         // start hidden (optional safety)
         if (freezeIcon != null) freezeIcon.SetActive(false);
         if (poisonIcon != null) poisonIcon.SetActive(false);
+        if (burnIcon != null) burnIcon.SetActive(false);
     }
 
     private void LateUpdate()
@@ -62,12 +65,13 @@ public class EnemyHealthUI : MonoBehaviour
         {
             if (freezeIcon != null) freezeIcon.SetActive(status.IsFrozen);
             if (poisonIcon != null) poisonIcon.SetActive(status.IsPoisoned);
+            if (burnIcon != null) burnIcon.SetActive(status.IsBurning);
         }
         else
         {
-            // If no status component exists, keep icons off
             if (freezeIcon != null) freezeIcon.SetActive(false);
             if (poisonIcon != null) poisonIcon.SetActive(false);
+            if (burnIcon != null) burnIcon.SetActive(false);
         }
 
         // Face camera
