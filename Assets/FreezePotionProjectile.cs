@@ -95,8 +95,15 @@ public class FreezePotionProjectile : MonoBehaviour
         if (damage > 0f)
             eh.TakeDamage(damage);
 
-        // Apply freeze
+        // For UI icon: set "frozen" timer
+        var status = eh.GetComponent<EnemyStatusEffects>();
+        if (status == null) status = eh.GetComponentInParent<EnemyStatusEffects>();
+        if (status != null)
+            status.ApplyFreeze(freezeSeconds);
+
+        // For gameplay freeze: keep your existing freeze component
         EnemyFreeze freeze = eh.GetComponent<EnemyFreeze>();
+        if (freeze == null) freeze = eh.GetComponentInParent<EnemyFreeze>();
         if (freeze != null)
             freeze.Freeze(freezeSeconds);
 

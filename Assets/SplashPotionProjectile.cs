@@ -3,12 +3,16 @@ using UnityEngine;
 
 public class SplashPotionProjectile : MonoBehaviour
 {
-    
     // Damage
     [SerializeField] private float damage = 20f;
     [SerializeField] private float splashRadius = 5f;
+
     [Tooltip("Which layers count as enemies for splash overlap.")]
     [SerializeField] private LayerMask enemyLayers = ~0;
+
+    // Poison status duration (for UI icon)
+    [Header("Poison Status (optional)")]
+    [SerializeField] private float poisonSeconds = 6f;
 
     // Lifetime
     [SerializeField] private float lifeTime = 5f;
@@ -19,6 +23,9 @@ public class SplashPotionProjectile : MonoBehaviour
 
     public void SetDamage(float value) => damage = value;
     public void SetRadius(float value) => splashRadius = value;
+
+    // new
+    public void SetPoisonSeconds(float value) => poisonSeconds = value;
 
     public void Init(GameObject ownerGO)
     {
@@ -53,21 +60,19 @@ public class SplashPotionProjectile : MonoBehaviour
     {
         if (exploded) return;
 
-        // If triggers are used (some enemies / hitboxes), explode here too
         Explode(transform.position, other);
     }
 
-    // Make directHit optional so you can call Explode(center) if you ever want
     private void Explode(Vector3 center, Collider directHit = null)
     {
         exploded = true;
 
         var damaged = new HashSet<EnemyHealth>();
 
-        // Apply damage to the direct collider (if it's an enemy)
+        // Direct collider (if enemy)
         TryDamageEnemy(directHit, damaged);
 
-        // Apply splash damage (but HashSet prevents double-damage + multi-colliders)
+        // Splash
         Collider[] hits = Physics.OverlapSphere(center, splashRadius, enemyLayers, QueryTriggerInteraction.Collide);
         for (int i = 0; i < hits.Length; i++)
             TryDamageEnemy(hits[i], damaged);
@@ -87,10 +92,22 @@ public class SplashPotionProjectile : MonoBehaviour
         EnemyHealth eh = col.GetComponentInParent<EnemyHealth>();
         if (eh == null) return;
 
-        // Prevent double damage (direct + splash) and prevent multi-collider spam
+        // Prevent double damage & multi-collider spam
         if (!damaged.Add(eh)) return;
 
-        eh.TakeDamage(damage);
+        // Damage
+        if (damage > 0f)
+            eh.TakeDamage(damage);
+
+        // Poison icon timer
+        if (poisonSeconds > 0f)
+        {
+            var status = eh.GetComponent<EnemyStatusEffects>();
+            if (status == null) status = eh.GetComponentInParent<EnemyStatusEffects>();
+            if (status != null)
+                status.ApplyPoison(poisonSeconds);
+        }
+
         Debug.Log($"SplashPotion -> {eh.gameObject.name} took {damage}. HP now: {eh.CurrentHealth}");
     }
 }

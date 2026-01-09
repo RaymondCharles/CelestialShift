@@ -7,19 +7,25 @@ public class EnemyHealthUI : MonoBehaviour
     [SerializeField] private EnemyHealth enemyHealth;
     [SerializeField] private Slider slider;
 
+    [Header("Status (optional)")]
+    [SerializeField] private EnemyStatusEffects status;
+    [SerializeField] private GameObject freezeIcon;
+    [SerializeField] private GameObject poisonIcon;
+
     [Header("Billboard")]
     [SerializeField] private bool faceCamera = true;
     [SerializeField] private Camera targetCamera;
 
     private void Awake()
     {
-        // Auto-find slider if not set
         if (slider == null)
             slider = GetComponentInChildren<Slider>();
 
-        // Auto-find EnemyHealth in parent if not set
         if (enemyHealth == null)
             enemyHealth = GetComponentInParent<EnemyHealth>();
+
+        if (status == null)
+            status = GetComponentInParent<EnemyStatusEffects>();
     }
 
     private void Start()
@@ -31,25 +37,38 @@ public class EnemyHealthUI : MonoBehaviour
             return;
         }
 
-        // IMPORTANT: set slider range to real health values
         slider.minValue = 0f;
         slider.maxValue = enemyHealth.MaxHealth;
         slider.value = enemyHealth.CurrentHealth;
-
-        // Optional: if you want smooth visuals, keep Whole Numbers off
         slider.wholeNumbers = false;
 
         if (targetCamera == null)
             targetCamera = Camera.main;
+
+        // start hidden (optional safety)
+        if (freezeIcon != null) freezeIcon.SetActive(false);
+        if (poisonIcon != null) poisonIcon.SetActive(false);
     }
 
     private void LateUpdate()
     {
         if (enemyHealth == null || slider == null) return;
 
-        // Update value every frame
-        slider.maxValue = enemyHealth.MaxHealth;       // in case max changes
+        slider.maxValue = enemyHealth.MaxHealth;
         slider.value = enemyHealth.CurrentHealth;
+
+        // Show status icons
+        if (status != null)
+        {
+            if (freezeIcon != null) freezeIcon.SetActive(status.IsFrozen);
+            if (poisonIcon != null) poisonIcon.SetActive(status.IsPoisoned);
+        }
+        else
+        {
+            // If no status component exists, keep icons off
+            if (freezeIcon != null) freezeIcon.SetActive(false);
+            if (poisonIcon != null) poisonIcon.SetActive(false);
+        }
 
         // Face camera
         if (faceCamera && targetCamera != null)
