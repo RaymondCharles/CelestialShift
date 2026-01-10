@@ -35,6 +35,7 @@ public static class noise
                 string firstBiome = biomeGenData.voronoiMap[x,y].getBiome();
                 string secondBiome = biomeGenData.voronoiMap[x,y].getSecondBiome();
                 string thirdBiome = biomeGenData.voronoiMap[x,y].getThirdBiome();
+                //Debug.Log("First Biome: " + firstBiome + " Second Biome: " + secondBiome + " Third Biome: " + thirdBiome);
                 
                 // set initial amplitude and frequency values for all biomes
                 float amplitude = 1;
@@ -140,3 +141,4 @@ public static class noise
         return noiseMap;
     }
 }
+ 

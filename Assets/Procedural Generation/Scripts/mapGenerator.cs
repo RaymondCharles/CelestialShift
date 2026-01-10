@@ -86,6 +86,7 @@ public class mapGenerator : MonoBehaviour
 
     public void RequestMapData(Vector2 centre, Action<MapData> callback){
         // start mapGeneration on new thread
+        //Debug.Log("Requesting map data at centre: " + centre);
         ThreadStart threadStart = delegate {
             MapDataThread(centre, callback);
         };
@@ -148,9 +149,60 @@ public class mapGenerator : MonoBehaviour
             }
 
         //BiomeCoord[,] voronoiMap = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, voronoiColours, numOfCells, seed, Biomes, blendWidth);
-        BiomeGenData biomeGenData = VoronoiGenerator.GenerateVDiagram(mapChunkSize, mapChunkSize, centre + offset, voronoiColours, numOfCells, seed, Biomes, blendWidth);
-
+        BiomeGenData biomeGenData;
+        try
+        {
+            biomeGenData = VoronoiGenerator.GenerateVDiagram(
+            mapChunkSize,
+            mapChunkSize,
+            centre + offset,
+            voronoiColours,
+            numOfCells,
+            seed,
+            Biomes,
+            blendWidth
+            );
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Failed to generate Voronoi diagram: " + e);
+            throw;
+        }
         
+        /*// DEBUG: write biome map to file
+        try
+        {
+            var sb = new System.Text.StringBuilder();
+
+            for (int y = 0; y < mapChunkSize; y++)
+            {
+            for (int x = 0; x < mapChunkSize; x++)
+            {
+                sb.Append(biomeGenData.voronoiMap[x, y].getBiome());
+                if (x < mapChunkSize - 1)
+                {
+                sb.Append('\t');
+                }
+            }
+            sb.AppendLine();
+            }
+
+            string directory = System.IO.Path.Combine(Application.dataPath, "GeneratedMaps");
+            if (!System.IO.Directory.Exists(directory))
+            {
+            System.IO.Directory.CreateDirectory(directory);
+            }
+
+            string fileName = $"BiomeMap_{centre.x}_{centre.y}.txt";
+            string filePath = System.IO.Path.Combine(directory, fileName);
+
+            System.IO.File.WriteAllText(filePath, sb.ToString());
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Failed to write biome map file: " + e);
+        }*/
+
         // call noise.GenerateNoiseMap() with parameters to generate noise map
         float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, centre + offset, biomeGenData, Biomes, biomeDict);
 
