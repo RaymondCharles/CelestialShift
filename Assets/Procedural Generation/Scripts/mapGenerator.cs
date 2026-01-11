@@ -41,11 +41,12 @@ public class mapGenerator : MonoBehaviour
 
     public GameObject mesh; // parent object to hold spawned buildings
 
-    public int numOfCells;
+    public int biomeSize;
 
     [Range(0, 240)]
 
-    public float blendWidth = 20f;
+    public float blendWidth;
+    public float warpStrength;
 
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new Queue<MapThreadInfo<MapData>>();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new Queue<MapThreadInfo<MeshData>>();
@@ -135,6 +136,7 @@ public class mapGenerator : MonoBehaviour
     }
     
     public MapData generateMapData(Vector2 centre){
+        Debug.Log($"MapData centre={centre} (should be multiples of {mapChunkSize-1})");
         // create biome dictionary for easy access
         Dictionary<string, BiomeScriptableObject> biomeDict = new Dictionary<string, BiomeScriptableObject>();
         bool[,] buildingsMap = new bool[mapChunkSize, mapChunkSize]; // OPTIMIZE WE DO NOT NEED A FULL MAP HERE
@@ -155,12 +157,12 @@ public class mapGenerator : MonoBehaviour
             biomeGenData = VoronoiGenerator.GenerateVDiagram(
             mapChunkSize,
             mapChunkSize,
-            centre + offset,
-            voronoiColours,
-            numOfCells,
+            centre,
+            biomeSize,
             seed,
             Biomes,
-            blendWidth
+            blendWidth,
+            warpStrength
             );
         }
         catch (Exception e)
@@ -204,12 +206,13 @@ public class mapGenerator : MonoBehaviour
         }*/
 
         // call noise.GenerateNoiseMap() with parameters to generate noise map
-        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, centre + offset, biomeGenData, Biomes, biomeDict);
+        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, centre, biomeGenData, Biomes, biomeDict);
 
         // build a 1d array of colours by looping through the heightmap, checking TerrainType struct, and assigning colours accordingly EXPAND WITH BIOMES - i.e. figure out different structs for different biomes
         Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
         for (int y=0; y < mapChunkSize; y++){
             for (int x=0; x < mapChunkSize; x++){
+                
                 float currentHeight = noiseMap[x,y];
                 string currentBiome = biomeGenData.voronoiMap[x,y].getBiome();
 
@@ -275,6 +278,9 @@ public class mapGenerator : MonoBehaviour
         }
         if (octaves < 0){
             octaves = 0;
+        }
+        if (biomeSize < 1){
+            biomeSize = 20;
         }
     }
 

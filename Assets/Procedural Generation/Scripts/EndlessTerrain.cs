@@ -18,7 +18,7 @@ public class EndlessTerrain : MonoBehaviour
     int chunkSize;
     int chunksVisibleInVD;
 
-    Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
+    Dictionary<Vector2Int, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2Int, TerrainChunk>();
     List<TerrainChunk> visibleTerrainChunksLastUpdate = new List<TerrainChunk>();
 
     void Start()
@@ -49,13 +49,13 @@ public class EndlessTerrain : MonoBehaviour
         }
         visibleTerrainChunksLastUpdate.Clear();
 
-        int currentChunkCoordX = Mathf.RoundToInt(viewerPosition.x / chunkSize);    
-        int currentChunkCoordY = Mathf.RoundToInt(viewerPosition.y / chunkSize);
+        int currentChunkCoordX = Mathf.FloorToInt(viewerPosition.x / chunkSize);
+        int currentChunkCoordY = Mathf.FloorToInt(viewerPosition.y / chunkSize);
 
         // loop through visible chunks
         for (int yOffset = -chunksVisibleInVD; yOffset <= chunksVisibleInVD; yOffset++){
             for (int xOffset = -chunksVisibleInVD; xOffset <= chunksVisibleInVD; xOffset++){
-                Vector2 viewedChunkCoord = new Vector2(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
+                Vector2Int viewedChunkCoord = new Vector2Int(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
                 // using viewedChunkCoord, check if chunk exists in dictionary, else, create it
                 if (terrainChunkDictionary.ContainsKey(viewedChunkCoord)){
                     terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
@@ -72,6 +72,7 @@ public class EndlessTerrain : MonoBehaviour
     public class TerrainChunk {
         // constructs a terrain chunk at given coord with given size
         GameObject meshObject;
+        public Vector2Int coord;
         public Vector2 position;
         Bounds bounds;
 
@@ -85,13 +86,19 @@ public class EndlessTerrain : MonoBehaviour
         bool mapDataReceived;
         int previousLODIndex = -1;
 
-        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen){
+        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen){
+            this.coord = coord;
             this.detailLevels = detailLevels;
+            this.mapGenerator = mapGen;
 
-            position = coord * size;
-            bounds = new Bounds(position, Vector2.one * size);
-            Vector3 positionV3 = new Vector3(position.x, 0, position.y);
-            mapGenerator = mapGen;
+            // World origin (x,z)
+            position = new Vector2(coord.x * size, coord.y * size);
+            Vector3 positionV3 = new Vector3(position.x, 0f, position.y);
+
+            // IMPORTANT: bounds must be in XZ
+            Vector3 boundsCenter = positionV3 + new Vector3(size * 0.5f, 0f, size * 0.5f);
+            Vector3 boundsSize   = new Vector3(size, 10000f, size); // tall Y so height doesn't matter
+            bounds = new Bounds(boundsCenter, boundsSize);
             
 
             //create mesh object, set 3d position and scale, add renderer, filter, collider
@@ -112,6 +119,7 @@ public class EndlessTerrain : MonoBehaviour
             }
 
             // request map data
+            Debug.Log($"Requesting map data for chunk coord {coord} at world origin {position}");
             mapGenerator.RequestMapData(position, OnMapDataReceived);
         }
         
@@ -119,7 +127,17 @@ public class EndlessTerrain : MonoBehaviour
             // request mesh data
             this.mapData = mapData;
             mapDataReceived = true;
+            
+            /*
+            // DEBUG: color by chunk row (Z)
+            int size = mapGenerator.mapChunkSize;
+            Color[] debug = new Color[size * size];
 
+            // Alternate rows: even Y = dark, odd Y = bright
+            Color c = (coord.y % 2 == 0) ? new Color(0.2f,0.2f,0.2f) : new Color(0.8f,0.8f,0.8f);
+            for (int i = 0; i < debug.Length; i++) debug[i] = c;
+            */
+            //Texture2D texture = TextureGenerator.TextureFromColourMap(debug, size, size);
             Texture2D texture = TextureGenerator.TextureFromColourMap(mapData.colourMap, mapGenerator.mapChunkSize, mapGenerator.mapChunkSize);
             meshRenderer.material.mainTexture = texture;
 
@@ -129,7 +147,9 @@ public class EndlessTerrain : MonoBehaviour
         public void UpdateTerrainChunk(){
             // determine if chunk is visible based on viewer position, visible true if within maxViewDistance
             if (mapDataReceived){
-                float viewerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(viewerPosition));
+                Vector3 viewerPos3 = new Vector3(viewerPosition.x, 0f, viewerPosition.y);
+                float viewerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(viewerPos3));
+                
                 bool visible = viewerDstFromNearestEdge <= maxViewDistance;
                 
                 if (visible){
