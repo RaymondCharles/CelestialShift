@@ -173,43 +173,19 @@ public class mapGenerator : MonoBehaviour
             Debug.LogError("Failed to generate Voronoi diagram: " + e);
             throw;
         }
-        
-        /*// DEBUG: write biome map to file
-        try
-        {
-            var sb = new System.Text.StringBuilder();
-
-            for (int y = 0; y < mapChunkSize; y++)
-            {
-            for (int x = 0; x < mapChunkSize; x++)
-            {
-                sb.Append(biomeGenData.voronoiMap[x, y].getBiome());
-                if (x < mapChunkSize - 1)
-                {
-                sb.Append('\t');
-                }
-            }
-            sb.AppendLine();
-            }
-
-            string directory = System.IO.Path.Combine(Application.dataPath, "GeneratedMaps");
-            if (!System.IO.Directory.Exists(directory))
-            {
-            System.IO.Directory.CreateDirectory(directory);
-            }
-
-            string fileName = $"BiomeMap_{centre.x}_{centre.y}.txt";
-            string filePath = System.IO.Path.Combine(directory, fileName);
-
-            System.IO.File.WriteAllText(filePath, sb.ToString());
-        }
-        catch (Exception e)
-        {
-            Debug.LogError("Failed to write biome map file: " + e);
-        }*/
 
         // call noise.GenerateNoiseMap() with parameters to generate noise map
-        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, centre + offset, biomeGenData, Biomes, biomeDict, normalizeMode);
+        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, centre, biomeGenData, Biomes, biomeDict, normalizeMode);
+
+        if (centre == Vector2.zero || centre == new Vector2(0, mapChunkSize - 1)) {
+            int edgeY = (centre.y == 0) ? (mapChunkSize - 1) : 0;
+            var sb = new System.Text.StringBuilder();
+            sb.Append($"centre={centre} noise edgeY={edgeY}: ");
+            for (int x = 0; x < mapChunkSize; x += 16) {
+                sb.Append($"{noiseMap[x, edgeY]:0.000}, ");
+            }
+            Debug.Log(sb.ToString());
+        }
 
         // build a 1d array of colours by looping through the heightmap, checking TerrainType struct, and assigning colours accordingly EXPAND WITH BIOMES - i.e. figure out different structs for different biomes
         Color[] colourMap = new Color[mapChunkSize * mapChunkSize];

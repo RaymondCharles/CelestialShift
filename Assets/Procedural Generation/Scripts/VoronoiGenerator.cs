@@ -27,7 +27,7 @@ public static class VoronoiGenerator{
         BiomeCoord[,] biomeMap = new BiomeCoord [chunkWidth , chunkHeight];
         Vector2Int[,] buildingPointsArray = new Vector2Int[biomeSize, biomeSize];
 
-        float warpFreq = (float)biomeSize / (float)chunkWidth;
+        float warpFreq = 1f / pixelsPerCell;
         //float warpStrength = biomeSize / 2f;
 
         float closestDist;
@@ -43,19 +43,19 @@ public static class VoronoiGenerator{
         int cellSize = pixelsPerCell;
 
         
-        int originX = Mathf.FloorToInt(offset.x);
-        int originY = Mathf.FloorToInt(offset.y);
+        float originX = offset.x;
+        float originY = -offset.y;
 
         int r = 1 + Mathf.CeilToInt(warpStrength / cellSize);
         int pad = r + 2;
 
         // chunk spans worldX: [offset.x, offset.x + chunkWidth)
         // same for Y
-        int minCellX = FloorDiv(originX, cellSize) - pad;
-        int minCellY = FloorDiv(originY, cellSize) - pad;
+        int minCellX = Mathf.FloorToInt(originX / cellSize) - pad;
+        int minCellY = Mathf.FloorToInt(originY / cellSize) - pad;
 
-        int maxCellX = FloorDiv(originX + (chunkWidth  - 1), cellSize) + pad;
-        int maxCellY = FloorDiv(originY + (chunkHeight - 1), cellSize) + pad;
+        int maxCellX = Mathf.FloorToInt((originX + (chunkWidth  - 1)) / cellSize) + pad;
+        int maxCellY = Mathf.FloorToInt((originY + (chunkHeight - 1)) / cellSize) + pad;
 
         int cellsX = maxCellX - minCellX + 1;
         int cellsY = maxCellY - minCellY + 1;
@@ -88,15 +88,15 @@ public static class VoronoiGenerator{
                 thirdClosestCell = new Vector2Int();
 
                 // add noise before biome assignment to avoid straight lines
-                int wx = originX + x;
-                int wy = originY + y;
+                float wx = originX + x;
+                float wy = originY + y;
 
                 float nx = Mathf.PerlinNoise(wx * warpFreq, wy * warpFreq) - 0.5f;
                 float ny = Mathf.PerlinNoise((wx + 1000f) * warpFreq, (wy + 1000f) * warpFreq) - 0.5f;
 
                 Vector2 warpedSample = new Vector2(
-                            x + offset.x + nx * warpStrength,
-                            y + offset.y + ny * warpStrength
+                            x + originX + nx * warpStrength,
+                            y + originY + ny * warpStrength
                         );
 
                 // Get the world grid position of the current pixel

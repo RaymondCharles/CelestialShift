@@ -94,7 +94,7 @@ public class EndlessTerrain : MonoBehaviour
             position = new Vector2(coord.x * size, coord.y * size);
             Vector3 positionV3 = new Vector3(position.x, 0f, position.y);
 
-            // IMPORTANT: bounds must be in XZ
+            // bounds must be in Z
             Vector3 boundsCenter = positionV3 + new Vector3(size * 0.5f, 0f, size * 0.5f);
             Vector3 boundsSize   = new Vector3(size, 10000f, size); // tall Y so height doesn't matter
             bounds = new Bounds(boundsCenter, boundsSize);
@@ -120,6 +120,11 @@ public class EndlessTerrain : MonoBehaviour
 
             // request map data
             Debug.Log($"Requesting map data for chunk coord {coord} at world origin {position}");
+
+            Vector2 chunkOrigin = new Vector2(coord.x * size, coord.y * size);
+            Vector2 chunkCentre = chunkOrigin + Vector2.one * (size * 0.5f);
+
+            //mapGenerator.RequestMapData(chunkCentre, OnMapDataReceived);
             mapGenerator.RequestMapData(position, OnMapDataReceived);
         }
         
@@ -127,17 +132,58 @@ public class EndlessTerrain : MonoBehaviour
             // request mesh data
             this.mapData = mapData;
             mapDataReceived = true;
-            
-            /*
-            // DEBUG: color by chunk row (Z)
-            int size = mapGenerator.mapChunkSize;
-            Color[] debug = new Color[size * size];
 
-            // Alternate rows: even Y = dark, odd Y = bright
-            Color c = (coord.y % 2 == 0) ? new Color(0.2f,0.2f,0.2f) : new Color(0.8f,0.8f,0.8f);
-            for (int i = 0; i < debug.Length; i++) debug[i] = c;
+            /*
+            int size = mapGenerator.mapChunkSize;
+
+            
+            int size = mapGenerator.mapChunkSize;
+            Color[] debugColourMap = new Color[size * size];
+            
+            // "Row" along X: darkest at x=0, lighter as we go outward
+            float maxBands = 10f; // number of chunk-columns until near white
+            float t = Mathf.Clamp01(Mathf.Abs(coord.x) / maxBands);
+            Color c = Color.Lerp(Color.black, Color.white, t);
+
+            for (int i = 0; i < debugColourMap.Length; i++){
+                debugColourMap[i] = c;
+            }
+            
+
+            // Horizontal bands: darkest at y=0, lighter outward
+            float maxBands = 10f; // number of chunk-rows until near white
+            float t = Mathf.Clamp01(Mathf.Abs(coord.y) / maxBands);
+            Color c = Color.Lerp(Color.black, Color.white, t);
+            for (int i = 0; i < debugColourMap.Length; i++){
+                debugColourMap[i] = c;
+            }
+        
+            for (int y = 0; y < size; y++){
+                for (int x = 0; x < size; x++){
+                    float u = x / (float)(size - 1);
+                    float v = y / (float)(size - 1);
+                    debugColourMap[y * size + x] = new Color(u, v, 0f, 1f);
+                }
+            }
+
+            Texture2D texture = TextureGenerator.TextureFromColourMap(
+                debugColourMap,
+                size,
+                size
+            );
+            
+
+            // Flip the colour map vertically (y)
+            Color[] flipped = new Color[size * size];
+            for (int y = 0; y < size; y++){
+                for (int x = 0; x < size; x++){
+                    flipped[y * size + x] =
+                        mapData.colourMap[(size - 1 - y) * size + x];
+                }
+            }
+
+            Texture2D texture = TextureGenerator.TextureFromColourMap(flipped, size, size);
             */
-            //Texture2D texture = TextureGenerator.TextureFromColourMap(debug, size, size);
             Texture2D texture = TextureGenerator.TextureFromColourMap(mapData.colourMap, mapGenerator.mapChunkSize, mapGenerator.mapChunkSize);
             meshRenderer.material.mainTexture = texture;
 

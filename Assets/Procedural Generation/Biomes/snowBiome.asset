@@ -23,7 +23,7 @@ MonoBehaviour:
   persistance: 0.57566065
   lacunarity: 2.14
   biomeColour: {r: 0.742168, g: 0.867702, b: 0.8773585, a: 0}
-  meshHeightMultiplier: 1
+  biomeHeightMultiplier: 1.2
   meshHeightCurve:
     serializedVersion: 2
     m_Curve: []
