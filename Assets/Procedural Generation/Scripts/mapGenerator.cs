@@ -11,6 +11,8 @@ public class mapGenerator : MonoBehaviour
         NoiseMap, ColourMap, Mesh, Voronoi
     }
     public DrawMode drawMode;
+
+    public noise.NormalizeMode normalizeMode;
     
     public const int mapChunkSize = 241;
     [Range(0,6)] // clamped to 0-6 to prevent LOD errors
@@ -70,7 +72,7 @@ public class mapGenerator : MonoBehaviour
             display.DrawTexture (TextureGenerator.TextureFromColourMap(mapDataScriptableObject.mapData.colourMap, mapChunkSize, mapChunkSize));
         }else if (drawMode == DrawMode.Mesh){
             // draw mesh, spawn buildings at building points
-            display.DrawMesh (meshGenerator.GenerateTerrainMesh(mapDataScriptableObject.mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, editorLevelOfDetail), TextureGenerator.TextureFromColourMap(mapDataScriptableObject.mapData.colourMap, mapChunkSize, mapChunkSize));
+            display.DrawMesh (meshGenerator.GenerateTerrainMesh(mapDataScriptableObject.mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, editorLevelOfDetail, mapDataScriptableObject.mapData.biomeGenData.voronoiMap, mapDataScriptableObject.mapData.biomeDict), TextureGenerator.TextureFromColourMap(mapDataScriptableObject.mapData.colourMap, mapChunkSize, mapChunkSize));
             if (generateBuildings){
                 foreach (Vector2Int coord in mapDataScriptableObject.mapData.biomeGenData.buildingPointsArray){
                     if (!mapDataScriptableObject.mapData.buildingsMap[coord.x, coord.y]){ // only spawn if not already spawned
@@ -81,6 +83,7 @@ public class mapGenerator : MonoBehaviour
                 }
             }
         }else if (drawMode == DrawMode.Voronoi){
+            mapDataScriptableObject.mapData = generateMapData(offset);
             display.DrawTexture (TextureGenerator.TextureFromBiomeMap(mapDataScriptableObject.mapData.biomeGenData, Biomes));
         }
     }
@@ -112,7 +115,7 @@ public class mapGenerator : MonoBehaviour
     }
 
     void MeshDataThread(MapData mapData, int lod, Action<MeshData> callback){
-        MeshData meshData = meshGenerator.GenerateTerrainMesh(mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, lod);
+        MeshData meshData = meshGenerator.GenerateTerrainMesh(mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, lod, mapData.biomeGenData.voronoiMap, mapData.biomeDict);
         lock (meshDataThreadInfoQueue){
             // enqueue the generated mesh data to be processed on main thread, locked so no conflicts
             meshDataThreadInfoQueue.Enqueue(new MapThreadInfo<MeshData>(callback, meshData));
@@ -206,7 +209,7 @@ public class mapGenerator : MonoBehaviour
         }*/
 
         // call noise.GenerateNoiseMap() with parameters to generate noise map
-        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, centre, biomeGenData, Biomes, biomeDict);
+        float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, centre + offset, biomeGenData, Biomes, biomeDict, normalizeMode);
 
         // build a 1d array of colours by looping through the heightmap, checking TerrainType struct, and assigning colours accordingly EXPAND WITH BIOMES - i.e. figure out different structs for different biomes
         Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
@@ -224,11 +227,17 @@ public class mapGenerator : MonoBehaviour
                 int s = 0;
                 int t = 0;
 
-                while (currentHeight > firstBiomeRegions[f].height || currentHeight > secondBiomeRegions[s].height || currentHeight > thirdBiomeRegions[t].height) {
-                    if (currentHeight > firstBiomeRegions[f].height) {f++;}
-                    if (currentHeight > secondBiomeRegions[s].height) {s++;}
-                    if (currentHeight > thirdBiomeRegions[t].height) {t++;}     
+                while ((f < firstBiomeRegions.Length && currentHeight > firstBiomeRegions[f].height) || 
+                       (s < secondBiomeRegions.Length && currentHeight > secondBiomeRegions[s].height) || 
+                       (t < thirdBiomeRegions.Length && currentHeight > thirdBiomeRegions[t].height)) {
+                    if (f < firstBiomeRegions.Length && currentHeight > firstBiomeRegions[f].height) {f++;}
+                    if (s < secondBiomeRegions.Length && currentHeight > secondBiomeRegions[s].height) {s++;}
+                    if (t < thirdBiomeRegions.Length && currentHeight > thirdBiomeRegions[t].height) {t++;}     
                 }
+
+                f = Mathf.Min(f, firstBiomeRegions.Length - 1);
+                s = Mathf.Min(s, secondBiomeRegions.Length - 1);
+                t = Mathf.Min(t, thirdBiomeRegions.Length - 1);
 
                 Color firstColour = firstBiomeRegions[f].colour;
                 Color secondColour = secondBiomeRegions[s].colour;

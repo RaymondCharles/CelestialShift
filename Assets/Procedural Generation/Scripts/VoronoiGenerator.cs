@@ -42,16 +42,20 @@ public static class VoronoiGenerator{
 
         int cellSize = pixelsPerCell;
 
-        int originX = Mathf.RoundToInt(offset.x);
-        int originY = Mathf.RoundToInt(offset.y);
+        
+        int originX = Mathf.FloorToInt(offset.x);
+        int originY = Mathf.FloorToInt(offset.y);
+
+        int r = 1 + Mathf.CeilToInt(warpStrength / cellSize);
+        int pad = r + 2;
 
         // chunk spans worldX: [offset.x, offset.x + chunkWidth)
         // same for Y
-        int minCellX = FloorDiv(originX, cellSize) - 2;
-        int minCellY = FloorDiv(originY, cellSize) - 2;
+        int minCellX = FloorDiv(originX, cellSize) - pad;
+        int minCellY = FloorDiv(originY, cellSize) - pad;
 
-        int maxCellX = FloorDiv(originX + (chunkWidth  - 1), cellSize) + 2;
-        int maxCellY = FloorDiv(originY + (chunkHeight - 1), cellSize) + 2;
+        int maxCellX = FloorDiv(originX + (chunkWidth  - 1), cellSize) + pad;
+        int maxCellY = FloorDiv(originY + (chunkHeight - 1), cellSize) + pad;
 
         int cellsX = maxCellX - minCellX + 1;
         int cellsY = maxCellY - minCellY + 1;
@@ -98,8 +102,6 @@ public static class VoronoiGenerator{
                 // Get the world grid position of the current pixel
                 int gridX = Mathf.FloorToInt(warpedSample.x / pixelsPerCell);
                 int gridY = Mathf.FloorToInt(warpedSample.y / pixelsPerCell);
-                
-                int r = 1 + Mathf.CeilToInt(warpStrength / pixelsPerCell);
 
                 for (int i = -r; i <= r; i++){
                     for (int j = -r; j <= r; j++)
@@ -195,9 +197,9 @@ public static class VoronoiGenerator{
 
                     weight = Mathf.Lerp(0.3333f, 1f, t);
                     float t2 = 1f - weight;
-                    float sum = secondWeight + thirdWeight;
-                    secondWeight = t2 * (secondWeight / sum);
-                    thirdWeight = t2 * (thirdWeight / sum);
+                    float sum23 = secondWeight + thirdWeight;
+                    secondWeight = t2 * (secondWeight / sum23);
+                    thirdWeight = t2 * (thirdWeight / sum23);
                 }
 
                 /*

@@ -10,7 +10,7 @@ public class BiomeScriptableObject : ScriptableObject
     public float persistance;
     public float lacunarity;
     public Color biomeColour;
-    public float meshHeightMultiplier;
+    public float biomeHeightMultiplier;
     public AnimationCurve meshHeightCurve;
     public GameObject buildingPrefab;
 }

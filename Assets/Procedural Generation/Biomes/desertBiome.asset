@@ -20,10 +20,10 @@ MonoBehaviour:
   - name: Sand
     height: 1
     colour: {r: 0.754717, g: 0.5373814, b: 0.06051977, a: 0}
-  persistance: 0.495
-  lacunarity: 2.41
+  persistance: 0.491
+  lacunarity: 1.85
   biomeColour: {r: 1, g: 0.84106404, b: 0, a: 0}
-  meshHeightMultiplier: 70
+  meshHeightMultiplier: 1
   meshHeightCurve:
     serializedVersion: 2
     m_Curve: []

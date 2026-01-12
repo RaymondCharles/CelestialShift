@@ -15,10 +15,10 @@ MonoBehaviour:
   name: Grass Plains
   terrainType:
   - name: Water
-    height: 0.4
+    height: 0.25
     colour: {r: 0.14901961, g: 0.4156863, b: 0.45882356, a: 0}
   - name: Sand
-    height: 0.45
+    height: 0.3
     colour: {r: 0.7137255, g: 0.4431373, b: 0.10588236, a: 0}
   - name: Grass
     height: 0.7
@@ -29,10 +29,10 @@ MonoBehaviour:
   - name: Snow
     height: 1
     colour: {r: 0.97647065, g: 0.8431373, b: 0.7254902, a: 0}
-  persistance: 0.505
-  lacunarity: 2.02
+  persistance: 0.5
+  lacunarity: 2
   biomeColour: {r: 0.06403237, g: 0.2830189, b: 0.057404775, a: 0}
-  meshHeightMultiplier: 150
+  meshHeightMultiplier: 1
   meshHeightCurve:
     serializedVersion: 2
     m_Curve: []
