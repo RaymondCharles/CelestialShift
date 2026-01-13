@@ -108,6 +108,7 @@ public class EndlessTerrain : MonoBehaviour
             meshFilter = meshObject.AddComponent<MeshFilter>();
             meshCollider = meshObject.AddComponent<MeshCollider>();
             meshRenderer.material = material;
+            
 
             meshObject.transform.position = positionV3 * scale;
             meshObject.transform.parent = parent;
