@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 // TODO
 // 1. Add Noise to edges DONE
-// 2. Change to make voronoi generic, i.e. return VoronoiMap of floats, then move colour logic to perlin one DONEaaaa
+// 2. Change to make voronoi generic, i.e. return VoronoiMap of floats, then move colour logic to perlin one DONE
 // 3. Optimise points generation code - generate in main method or see if needed for other return
 // 4. Maybe tie noiseScale to no of cells
 // 5. Add biome warpFreq and warpStrength parameters, blendWidth parameter for biome blending
@@ -42,6 +42,9 @@ public static class VoronoiGenerator{
         string closestBiome = "";
         string secondClosestBiome = "";
         string thirdClosestBiome = "";
+
+        // Store Dungeon position for closest cell
+        int closestLx = 0, closestLy = 0;
 
         int cellSize = pixelsPerCell;
 
@@ -146,6 +149,9 @@ public static class VoronoiGenerator{
                             closestDist  = distance;
                             closestCell  = currentSeed;
                             closestBiome = currentBiome;
+
+                            closestLx = lx;
+                            closestLy = ly;
                         }
                         else if (distance < secondClosestDist)
                         {
@@ -168,10 +174,15 @@ public static class VoronoiGenerator{
                 
                 // if this pixel is the dungeon position for the closest cell, assign dungeon position to dungeon array
                 // only one dungeon per cell, so only need to check closest cell, only around point so not possible for a single pixel to be dungeon for any cell other than closest
-                if (wx == closestCell.x && wy == closestCell.y) {
-                    int dungeonX = closestCell.x / pixelsPerCell;
-                    int dungeonY = closestCell.y / pixelsPerCell;
-                    dungeonArray.Add(dungeonPos[(closestCell.x - minCellX * pixelsPerCell) / pixelsPerCell, (closestCell.y - minCellY * pixelsPerCell) / pixelsPerCell]);
+                Vector2Int closestDungeonPos = dungeonPos[closestLx, closestLy];// closest cell dungeon position(world coords)
+                
+                // obtain pixel world coords
+                int localDungeonX = closestDungeonPos.x - Mathf.RoundToInt(originX);
+                int localDungeonY = closestDungeonPos.y + Mathf.RoundToInt(originY);
+
+                // add dungeon position to array if matches current pixel
+                if (localDungeonX == x && localDungeonY == y) {
+                    dungeonArray.Add(new Vector2Int(x, y));// add dungeon position in local space
                 }
 
                 float weight = 1f;

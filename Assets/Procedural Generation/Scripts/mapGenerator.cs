@@ -36,7 +36,7 @@ public class mapGenerator : MonoBehaviour
     public TerrainType[] regions;
 
     //public Biomes[] biomes;
-    // efficiency improvement: use dict?
+    //efficiency improvement: use dict?
     public BiomeScriptableObject[] Biomes;
     public MapDataScriptableObject mapDataScriptableObject;
     //public Dictionary<string, BiomeScriptableObject> biomeDict = new Dictionary<string, BiomeScriptableObject>();
@@ -136,7 +136,7 @@ public class mapGenerator : MonoBehaviour
     }
     
     public MapData generateMapData(Vector2 centre, int chunkSize){
-        Debug.Log($"MapData centre={centre} (should be multiples of {mapChunkSize-1})");
+        //Debug.Log($"MapData centre={centre} (should be multiples of {mapChunkSize-1})");
         // create biome dictionary for easy access
         Dictionary<string, BiomeScriptableObject> biomeDict = new Dictionary<string, BiomeScriptableObject>();
         //bool[,] buildingsMap = new bool[, mapChunkSize]; // OPTIMIZE WE DO NOT NEED A FULL MAP HERE
