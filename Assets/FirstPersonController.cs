@@ -109,6 +109,11 @@ public class FirstPersonController : MonoBehaviour
     private Vector2 currentMouseDelta;
     private Vector2 currentMouseDeltaVelocity;
 
+
+    public CameraController cameraController;
+    [SerializeField] private float turnSpeed = 12f; // degrees per second
+
+
     void Awake()
     {
         characterController = GetComponent<CharacterController>();
@@ -360,6 +365,7 @@ public class FirstPersonController : MonoBehaviour
         if (CanMove)
         {
             HandleMovementInput();
+            HandleRotation();
             //HandleMouseLook();
             
 
@@ -433,6 +439,28 @@ public class FirstPersonController : MonoBehaviour
             
         }
     }
+    
+    private void HandleRotation()
+    {
+        Vector3 cameraYaw = new Vector3(0f, cameraController.playerCam.eulerAngles.y, 0f);
+        if (cameraController.cameraLock)
+        {
+            transform.rotation = Quaternion.Euler(cameraYaw);
+        }
+        else
+        {
+            if (moveInput.magnitude > 0.01f)
+            {
+                float offsetDeg = Mathf.Atan2(moveInput.x, moveInput.y) * Mathf.Rad2Deg;
+                float targetYaw = cameraYaw.y + offsetDeg;
+                float currentYaw = transform.eulerAngles.y;
+
+                float smoothYaw = Mathf.LerpAngle(currentYaw,targetYaw,turnSpeed * Time.deltaTime);
+
+                transform.rotation = Quaternion.Euler(new Vector3(0f, smoothYaw, 0f));
+            }
+        }
+    }
 
     private void HandleMovementInput()
     {
@@ -444,7 +472,6 @@ public class FirstPersonController : MonoBehaviour
             playerAnimator.SetBool("isRunning", !isCrouching && IsSprinting);
             playerAnimator.SetBool("isCrouching", isCrouching);
         }
-
         // moveInput.y = Vertical (W/S), moveInput.x = Horizontal (A/D)
         float targetX = currentSpeed * moveInput.y;   // forward/back
         float targetZ = currentSpeed * moveInput.x;   // left/right
@@ -452,9 +479,13 @@ public class FirstPersonController : MonoBehaviour
         // Keep existing y velocity (for jump / gravity)
         float moveDirectionY = moveDirection.y;
 
-        // Convert local input into world space movement
         Vector3 forwardMovement = transform.TransformDirection(Vector3.forward) * targetX;
         Vector3 rightMovement = transform.TransformDirection(Vector3.right) * targetZ;
+        if (!cameraController.cameraLock)
+        {
+            forwardMovement = cameraController.followTarget.TransformDirection(Vector3.forward) * targetX;
+            rightMovement = cameraController.followTarget.transform.TransformDirection(Vector3.right) * targetZ;
+        }
 
         moveDirection = forwardMovement + rightMovement;
         moveDirection.y = moveDirectionY;
