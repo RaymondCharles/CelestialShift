@@ -9,27 +9,30 @@ using UnityEngine.UI;
 // 3. Optimise points generation code - generate in main method or see if needed for other return
 // 4. Maybe tie noiseScale to no of cells
 // 5. Add biome warpFreq and warpStrength parameters, blendWidth parameter for biome blending
+// 6. PixelsPerCell, change to just chunkSize as we use this
 
 // OPTMIZATION IDEAS
 // 1. In seedBiome and Voronoi seed position, move away from using Random class, use hash function to generate random values based on cell coords and seed
 public static class VoronoiGenerator{
     public static BiomeGenData GenerateVDiagram(int chunkWidth, int chunkHeight, Vector2 offset, int biomeSize, int seed, BiomeScriptableObject[] biomes, float blendWidth, float warpStrength)
     {
-        
-        // Create ColourMap, loop through pixels, assign colour according to Voronoi logic
         // Ensure we have at least one cell and at least one pixel per cell
         int cells = Mathf.Max(1, biomeSize);
         int pixelsPerCell = Mathf.Max(1, chunkWidth / cells);
 
+        Vector2Int currSeedPos;
+
+        // pseud random number generator using seed for deterministic results
         System.Random prng = new System.Random (seed);
 
-        // Create Maps to be returned
+        // Create Map, dungeonArray to be returned
         BiomeCoord[,] biomeMap = new BiomeCoord [chunkWidth , chunkHeight];
-        Vector2Int[,] buildingPointsArray = new Vector2Int[biomeSize, biomeSize];
+        List<Vector2Int> dungeonArray = new List<Vector2Int>();
 
         float warpFreq = 1f / pixelsPerCell;
         //float warpStrength = biomeSize / 2f;
 
+        // track 3 closest cell biomes and distances for blending
         float closestDist;
         float secondClosestDist;
         float thirdClosestDist;
@@ -42,15 +45,13 @@ public static class VoronoiGenerator{
 
         int cellSize = pixelsPerCell;
 
-        
+        // tracks world origin of chunk - we sample in world space and construct map based on chunkspace
         float originX = offset.x;
         float originY = -offset.y;
 
         int r = 1 + Mathf.CeilToInt(warpStrength / cellSize);
         int pad = r + 2;
 
-        // chunk spans worldX: [offset.x, offset.x + chunkWidth)
-        // same for Y
         int minCellX = Mathf.FloorToInt(originX / cellSize) - pad;
         int minCellY = Mathf.FloorToInt(originY / cellSize) - pad;
 
@@ -60,8 +61,11 @@ public static class VoronoiGenerator{
         int cellsX = maxCellX - minCellX + 1;
         int cellsY = maxCellY - minCellY + 1;
 
+        // precompute seed positions, biomes and dungeon positions for each cell in range
         Vector2Int[,] seedPos = new Vector2Int[cellsX, cellsY];
+        Vector2Int[,] dungeonPos = new Vector2Int[cellsX, cellsY];
         string[,] biomeLookup = new string[cellsX, cellsY];
+        float dungeonRange = 0.2f * biomeSize;
 
         for (int cx = 0; cx < cellsX; cx++) {
             for (int cy = 0; cy < cellsY; cy++) {
@@ -69,8 +73,14 @@ public static class VoronoiGenerator{
                 int cellX = minCellX + cx;
                 int cellY = minCellY + cy;
 
-                seedPos[cx, cy] = VoronoiSeedPosition(cellX, cellY, seed, pixelsPerCell);
+                currSeedPos = VoronoiSeedPosition(cellX, cellY, seed, pixelsPerCell);
+                seedPos[cx, cy] = currSeedPos;
                 biomeLookup[cx, cy] = SeedBiome(cellX, cellY, seed, biomes);
+                dungeonPos[cx, cy] = new Vector2Int(
+                    // dungeons placed randomly in a 30x30 area around the seed point
+                    currSeedPos.x + prng.Next(0, (int)dungeonRange),
+                    currSeedPos.y + prng.Next(0, (int)dungeonRange)
+                );
             }
         }
         
@@ -87,10 +97,11 @@ public static class VoronoiGenerator{
                 secondClosestCell = new Vector2Int();
                 thirdClosestCell = new Vector2Int();
 
-                // add noise before biome assignment to avoid straight lines
+                // world position of current pixel
                 float wx = originX + x;
                 float wy = originY + y;
 
+                // add noise before biome assignment to avoid straight lines
                 float nx = Mathf.PerlinNoise(wx * warpFreq, wy * warpFreq) - 0.5f;
                 float ny = Mathf.PerlinNoise((wx + 1000f) * warpFreq, (wy + 1000f) * warpFreq) - 0.5f;
 
@@ -103,6 +114,7 @@ public static class VoronoiGenerator{
                 int gridX = Mathf.FloorToInt(warpedSample.x / pixelsPerCell);
                 int gridY = Mathf.FloorToInt(warpedSample.y / pixelsPerCell);
 
+                // Check neighboring cells within range r to find the closest seed point
                 for (int i = -r; i <= r; i++){
                     for (int j = -r; j <= r; j++)
                     {
@@ -114,15 +126,15 @@ public static class VoronoiGenerator{
 
                         if (lx < 0 || lx >= cellsX || ly < 0 || ly >= cellsY) continue;
 
+                        // Get the seed position and biome of the current cell
                         var currentSeed = seedPos[lx, ly];
                         var currentBiome = biomeLookup[lx, ly];
 
                         float distance = Vector2.Distance(warpedSample, currentSeed);
 
-                        // Once loop exits, we have the closest 2 cells, atm just using 2 closest for blending - 3 is broken, can fix later
+                        // Once loop exits, we have the closest 3 cells, we use these to determine biome and blending
                         if (distance < closestDist)
                         {
-                            // shift closest → second, second → third
                             thirdClosestDist  = secondClosestDist;
                             thirdClosestCell  = secondClosestCell;
                             thirdClosestBiome = secondClosestBiome;
@@ -137,7 +149,6 @@ public static class VoronoiGenerator{
                         }
                         else if (distance < secondClosestDist)
                         {
-                            // shift second → third
                             thirdClosestDist  = secondClosestDist;
                             thirdClosestCell  = secondClosestCell;
                             thirdClosestBiome = secondClosestBiome;
@@ -155,6 +166,14 @@ public static class VoronoiGenerator{
                     }
                 }
                 
+                // if this pixel is the dungeon position for the closest cell, assign dungeon position to dungeon array
+                // only one dungeon per cell, so only need to check closest cell, only around point so not possible for a single pixel to be dungeon for any cell other than closest
+                if (wx == closestCell.x && wy == closestCell.y) {
+                    int dungeonX = closestCell.x / pixelsPerCell;
+                    int dungeonY = closestCell.y / pixelsPerCell;
+                    dungeonArray.Add(dungeonPos[(closestCell.x - minCellX * pixelsPerCell) / pixelsPerCell, (closestCell.y - minCellY * pixelsPerCell) / pixelsPerCell]);
+                }
+
                 float weight = 1f;
                 float secondWeight = 0f;
                 float thirdWeight = 0f;
@@ -227,8 +246,7 @@ public static class VoronoiGenerator{
                 //if ((x % 64 == 0) && (y % 64 == 0)) {Debug.Log("Assigned biome: " + newBiomeCoord.getBiome() + " at (" + x + "," + y + ") with weight " + newBiomeCoord.getWeight() + " and second biome: " + newBiomeCoord.getSecondBiome() + " with weight " + newBiomeCoord.getSecondWeight());}
             }
         }
-        buildingPointsArray = GeneratePoints(biomeSize, pixelsPerCell, prng, 3, Vector2Int.zero); // Generate building points to be used later
-        BiomeGenData biomeGenData = new BiomeGenData(biomeMap, buildingPointsArray);
+        BiomeGenData biomeGenData = new BiomeGenData(biomeMap, dungeonArray);
         return biomeGenData;
     }
 
@@ -268,7 +286,7 @@ public static class VoronoiGenerator{
     }
 
     private static string SeedBiome(int cellX, int cellY, int seed, BiomeScriptableObject[] biomes){
-        // MUST CHANGE TO INDEX OR ENUM LATER ON
+        // MUST CHANGE biome TO INDEX OR ENUM LATER ON
         // for this and above - find new approach not using random
 
         int hash = seed
@@ -280,13 +298,6 @@ public static class VoronoiGenerator{
         string biome = biomes[prng.Next(0, biomes.Length)].name;
 
         return biome;
-    }
-
-    static int FloorDiv(int a, int b) {
-    int q = a / b;
-    int r = a % b;
-    if (r != 0 && ((r > 0) != (b > 0))) q--;
-    return q;
     }
 }
 
@@ -318,11 +329,11 @@ public class BiomeCoord{
 
 public struct BiomeGenData{
     public BiomeCoord[,] voronoiMap;
-    public Vector2Int[,] buildingPointsArray;
+    public List<Vector2Int> dungeonArray;
 
 
-    public BiomeGenData(BiomeCoord[,] voronoiMap, Vector2Int[,] buildingPointsArray){
+    public BiomeGenData(BiomeCoord[,] voronoiMap, List<Vector2Int> dungeonArray){
         this.voronoiMap = voronoiMap;
-        this.buildingPointsArray = buildingPointsArray;
+        this.dungeonArray = dungeonArray;
         }
     }

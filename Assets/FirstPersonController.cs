@@ -132,7 +132,7 @@ public class FirstPersonController : MonoBehaviour
 
             if (moveInput.magnitude > 0)
             {
-//                Debug.Log("IsMoving");
+                Debug.Log("IsMoving");
                 isIdle = false;
             }
             else

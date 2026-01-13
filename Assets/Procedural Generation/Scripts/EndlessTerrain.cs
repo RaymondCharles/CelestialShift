@@ -84,6 +84,7 @@ public class EndlessTerrain : MonoBehaviour
         MapData mapData;
         bool mapDataReceived;
         int previousLODIndex = -1;
+        List<GameObject> dungeonList = new List<GameObject>();
 
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen){
             this.coord = coord;
@@ -119,13 +120,13 @@ public class EndlessTerrain : MonoBehaviour
             }
 
             // request map data
-            Debug.Log($"Requesting map data for chunk coord {coord} at world origin {position}");
+            //Debug.Log($"Requesting map data for chunk coord {coord} at world origin {position}");
 
             Vector2 chunkOrigin = new Vector2(coord.x * size, coord.y * size);
             Vector2 chunkCentre = chunkOrigin + Vector2.one * (size * 0.5f);
 
             //mapGenerator.RequestMapData(chunkCentre, OnMapDataReceived);
-            mapGenerator.RequestMapData(position, OnMapDataReceived);
+            mapGenerator.RequestMapData(position, size, OnMapDataReceived);
         }
         
         void OnMapDataReceived(MapData mapData){
@@ -134,6 +135,7 @@ public class EndlessTerrain : MonoBehaviour
             mapDataReceived = true;
 
             /*
+            VARIOUS DEBUG TEXTURES
             int size = mapGenerator.mapChunkSize;
 
             
@@ -187,6 +189,25 @@ public class EndlessTerrain : MonoBehaviour
             Texture2D texture = TextureGenerator.TextureFromColourMap(mapData.colourMap, mapGenerator.mapChunkSize, mapGenerator.mapChunkSize);
             meshRenderer.material.mainTexture = texture;
 
+            // place dungeons of chunk, default to invisible until highest LOD
+            foreach (Vector2Int point in mapData.biomeGenData.dungeonArray){
+
+                float worldX = point.x + position.x;
+                float worldY = point.y + position.y;
+
+                // obtain information via chunk-local coords
+                BiomeCoord biomeCoord = mapData.biomeGenData.voronoiMap[point.x, point.y];
+                BiomeScriptableObject biome = mapData.biomeDict[biomeCoord.getBiome()];
+                
+                // position in world space
+                Vector3 dungeonPos = new Vector3(worldX * scale, mapData.noiseMap[point.x, point.y] * mapGenerator.meshHeightMultiplier /*porbably need to come back and change w biomehiehg tmult*/, worldY * scale);
+                
+                GameObject dungeon = GameObject.Instantiate(biome.dungeonPrefab, dungeonPos, Quaternion.identity);
+                dungeon.transform.parent = meshObject.transform;
+                SetVisible(false);
+                dungeonList.Add(dungeon);
+            }
+
             UpdateTerrainChunk();
         }
 
@@ -214,6 +235,12 @@ public class EndlessTerrain : MonoBehaviour
                     if (lodIndex != previousLODIndex){
                         LODmesh lodMesh = lodMeshes[lodIndex];
                         if (lodMesh.hasMesh){
+                            // only place dungeon if highest detail LOD - this will change to visible if close enough to viewer
+                            if (lodIndex == 0){
+                                foreach (GameObject dungeon in dungeonList){
+                                    dungeon.SetActive(true);
+                                }
+                            }
                             previousLODIndex = lodIndex;
                             meshFilter.mesh = lodMesh.mesh;
                             meshCollider.sharedMesh = lodMesh.mesh;
@@ -224,7 +251,14 @@ public class EndlessTerrain : MonoBehaviour
 
                     visibleTerrainChunksLastUpdate.Add(this);
                 }
+                else{
+                    // hide dungeons if chunk not visible
+                    foreach (GameObject dungeon in dungeonList){
+                        dungeon.SetActive(false);
+                    }
+                }
                 SetVisible(visible);
+
             }
         }
 

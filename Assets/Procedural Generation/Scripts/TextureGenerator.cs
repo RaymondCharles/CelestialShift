@@ -46,13 +46,10 @@ public static class TextureGenerator{
             }
         }
         // inefficient but works for now
-        for (int i = 0; i < biomeGenData.buildingPointsArray.GetLength(0); i++){
-            for (int j = 0; j < biomeGenData.buildingPointsArray.GetLength(1); j++){
-                Vector2Int point = biomeGenData.buildingPointsArray[i,j];
-                int x = (int)point.x;
-                int y = (int)point.y;
-                colourMap[y * width + x] = Color.black;
-            }
+        foreach (Vector2Int point in biomeGenData.dungeonArray){
+            int x = (int)point.x;
+            int y = (int)point.y;
+            colourMap[y * width + x] = Color.black;
         }
         return TextureFromColourMap(colourMap, width, height);
     }

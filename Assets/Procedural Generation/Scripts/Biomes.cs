@@ -12,5 +12,5 @@ public class BiomeScriptableObject : ScriptableObject
     public Color biomeColour;
     public float biomeHeightMultiplier;
     public AnimationCurve meshHeightCurve;
-    public GameObject buildingPrefab;
+    public GameObject dungeonPrefab;
 }

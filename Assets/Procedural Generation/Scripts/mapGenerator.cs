@@ -54,7 +54,7 @@ public class mapGenerator : MonoBehaviour
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new Queue<MapThreadInfo<MeshData>>();
 
     public void GenerateMapDataInEditor(){
-        mapDataScriptableObject.mapData = generateMapData(Vector2.zero);
+        mapDataScriptableObject.mapData = generateMapData(Vector2.zero, mapChunkSize);
     }
     
     public void DrawMapInEditor(){
@@ -71,35 +71,32 @@ public class mapGenerator : MonoBehaviour
         }else if (drawMode == DrawMode.ColourMap){
             display.DrawTexture (TextureGenerator.TextureFromColourMap(mapDataScriptableObject.mapData.colourMap, mapChunkSize, mapChunkSize));
         }else if (drawMode == DrawMode.Mesh){
-            // draw mesh, spawn buildings at building points
+            // draw mesh, spawn dungeons at dungeon points
             display.DrawMesh (meshGenerator.GenerateTerrainMesh(mapDataScriptableObject.mapData.noiseMap, meshHeightMultiplier, meshHeightCurve, editorLevelOfDetail, mapDataScriptableObject.mapData.biomeGenData.voronoiMap, mapDataScriptableObject.mapData.biomeDict), TextureGenerator.TextureFromColourMap(mapDataScriptableObject.mapData.colourMap, mapChunkSize, mapChunkSize));
             if (generateBuildings){
-                foreach (Vector2Int coord in mapDataScriptableObject.mapData.biomeGenData.buildingPointsArray){
-                    if (!mapDataScriptableObject.mapData.buildingsMap[coord.x, coord.y]){ // only spawn if not already spawned
-                        Debug.Log("Spawning building at: " + coord);
-                        spawnObject.SpawnObjectAtPoint(mapDataScriptableObject.mapData.biomeDict[mapDataScriptableObject.mapData.biomeGenData.voronoiMap[coord.x, coord.y].getBiome()].buildingPrefab, new Vector3(coord.x, 0.5f * meshHeightMultiplier, coord.y), Quaternion.identity, mesh.transform);
-                        mapDataScriptableObject.mapData.buildingsMap[coord.x, coord.y] = true; // mark as spawned
-                    }
+                foreach (Vector2Int coord in mapDataScriptableObject.mapData.biomeGenData.dungeonArray){
+                    Debug.Log("Spawning building at: " + coord);
+                    spawnObject.SpawnObjectAtPoint(mapDataScriptableObject.mapData.biomeDict[mapDataScriptableObject.mapData.biomeGenData.voronoiMap[coord.x, coord.y].getBiome()].dungeonPrefab, new Vector3(coord.x, 0.5f * meshHeightMultiplier, coord.y), Quaternion.identity, mesh.transform);
                 }
             }
         }else if (drawMode == DrawMode.Voronoi){
-            mapDataScriptableObject.mapData = generateMapData(offset);
+            mapDataScriptableObject.mapData = generateMapData(offset, mapChunkSize);
             display.DrawTexture (TextureGenerator.TextureFromBiomeMap(mapDataScriptableObject.mapData.biomeGenData, Biomes));
         }
     }
 
-    public void RequestMapData(Vector2 centre, Action<MapData> callback){
+    public void RequestMapData(Vector2 centre, int chunkSize, Action<MapData> callback){
         // start mapGeneration on new thread
         //Debug.Log("Requesting map data at centre: " + centre);
         ThreadStart threadStart = delegate {
-            MapDataThread(centre, callback);
+            MapDataThread(centre, chunkSize, callback);
         };
 
         new Thread(threadStart).Start();
     }
 
-    void MapDataThread(Vector2 centre, Action<MapData> callback){
-        MapData mapData = generateMapData(centre);
+    void MapDataThread(Vector2 centre, int chunkSize, Action<MapData> callback){
+        MapData mapData = generateMapData(centre, chunkSize);
         lock (mapDataThreadInfoQueue){
             // enqueue the generated map data to be processed on main thread, locked so no conflicts
             mapDataThreadInfoQueue.Enqueue (new MapThreadInfo<MapData> (callback, mapData));
@@ -138,11 +135,11 @@ public class mapGenerator : MonoBehaviour
         }
     }
     
-    public MapData generateMapData(Vector2 centre){
+    public MapData generateMapData(Vector2 centre, int chunkSize){
         Debug.Log($"MapData centre={centre} (should be multiples of {mapChunkSize-1})");
         // create biome dictionary for easy access
         Dictionary<string, BiomeScriptableObject> biomeDict = new Dictionary<string, BiomeScriptableObject>();
-        bool[,] buildingsMap = new bool[mapChunkSize, mapChunkSize]; // OPTIMIZE WE DO NOT NEED A FULL MAP HERE
+        //bool[,] buildingsMap = new bool[, mapChunkSize]; // OPTIMIZE WE DO NOT NEED A FULL MAP HERE
         foreach (BiomeScriptableObject biome in Biomes) {
             biomeDict[biome.name] = biome;
         }
@@ -176,7 +173,8 @@ public class mapGenerator : MonoBehaviour
 
         // call noise.GenerateNoiseMap() with parameters to generate noise map
         float[,] noiseMap = noise.GenerateNoiseMap (mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, centre, biomeGenData, Biomes, biomeDict, normalizeMode);
-
+        /*
+            // debug: log edge values of noise map at edges
         if (centre == Vector2.zero || centre == new Vector2(0, mapChunkSize - 1)) {
             int edgeY = (centre.y == 0) ? (mapChunkSize - 1) : 0;
             var sb = new System.Text.StringBuilder();
@@ -186,6 +184,7 @@ public class mapGenerator : MonoBehaviour
             }
             Debug.Log(sb.ToString());
         }
+        */
 
         // build a 1d array of colours by looping through the heightmap, checking TerrainType struct, and assigning colours accordingly EXPAND WITH BIOMES - i.e. figure out different structs for different biomes
         Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
@@ -236,9 +235,9 @@ public class mapGenerator : MonoBehaviour
         }
 
         // set a 9 pixel square at building points to red to visualize them
-            Color redColor = new Color(1f, 0f, 0f);
+        Color redColor = new Color(1f, 0f, 0f);
         if (generateBuildings){
-            foreach (Vector2Int coord in biomeGenData.buildingPointsArray){
+            foreach (Vector2Int coord in biomeGenData.dungeonArray){
                 if (coord.x > 2 && coord.x < mapChunkSize -2 && coord.y > 2 && coord.y < mapChunkSize -2){
                     colourMap[coord.y * mapChunkSize + coord.x] = redColor; // colour building points
                     colourMap[(coord.y-1) * mapChunkSize + (coord.x-1)] = redColor;
@@ -250,11 +249,11 @@ public class mapGenerator : MonoBehaviour
                     colourMap[(coord.y-1) * mapChunkSize + (coord.x)] = redColor;
                     colourMap[(coord.y+1) * mapChunkSize + (coord.x)] = redColor;
                 }
-                buildingsMap[coord.x, coord.y] = false; // mark building point as unspawned
-                Debug.Log("Marked building at: " + coord + " in buildings map." + ": " + buildingsMap[coord.x, coord.y] );
+                //buildingsMap[coord.x, coord.y] = false; // mark building point as unspawned
+                //Debug.Log("Marked building at: " + coord + " in buildings map." + ": " + buildingsMap[coord.x, coord.y] );
             }
         }
-        return new MapData (noiseMap, colourMap, biomeGenData, biomeDict, buildingsMap);
+        return new MapData (noiseMap, colourMap, biomeGenData, biomeDict, chunkSize);
     }
 
     void OnValidate (){
@@ -305,14 +304,15 @@ public struct MapData{
     public readonly float[,] noiseMap;
     public readonly Color[] colourMap;
     public readonly BiomeGenData biomeGenData;
+    // store biome dictionary from in editor list to access biome data where needed
     public readonly Dictionary<string, BiomeScriptableObject> biomeDict;
-    public readonly bool[,] buildingsMap;
+    public readonly int chunkSize;
 
-    public MapData(float[,] noiseMap, Color[] colourMap, BiomeGenData biomeGenData, Dictionary<string, BiomeScriptableObject> biomeDict, bool[,] buildingsMap){
+    public MapData(float[,] noiseMap, Color[] colourMap, BiomeGenData biomeGenData, Dictionary<string, BiomeScriptableObject> biomeDict, int chunkSize){
         this.noiseMap = noiseMap;
         this.colourMap = colourMap;
         this.biomeGenData = biomeGenData;
         this.biomeDict = biomeDict;
-        this.buildingsMap = buildingsMap;
+        this.chunkSize = chunkSize;
     }
 }
