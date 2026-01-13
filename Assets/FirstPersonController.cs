@@ -146,12 +146,20 @@ public class FirstPersonController : MonoBehaviour
 
         if (GameManager.Instance.loadGame)
         {
-            LoadPlayer();
+            StartCoroutine(DelayedLoadPlayer(1f));
         }
 
 
 
     }
+    private IEnumerator DelayedLoadPlayer(float delay)
+    {
+        CanMove = false;
+        yield return new WaitForSeconds(delay);
+        LoadPlayer();
+        CanMove = true;
+    }
+
 
     void LateUpdate()
     {
@@ -171,21 +179,19 @@ public class FirstPersonController : MonoBehaviour
         SaveSystem.SavePlayer(this);
         Debug.Log("Player saved at position: " + playerTransform.position);
     }
-
     public void LoadPlayer()
     {
         PlayerData data = SaveSystem.LoadPlayer();
         if (data == null) return;
 
-        // Position
+        // Load player position
         transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
 
-        // Inventory
+        // Clear current inventory
         for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
-        {
-            Inventory.Instance.inventoryItems[i] = null; // clear old
-        }
+            Inventory.Instance.inventoryItems[i] = null;
 
+        // Load saved inventory
         foreach (InventorySlotData slotData in data.inventorySlots)
         {
             Item item = ItemDatabase.Instance.GetItemByName(slotData.itemName);
@@ -194,33 +200,81 @@ public class FirstPersonController : MonoBehaviour
             Inventory.Instance.inventoryItems[slotData.slotIndex] = new SlotItem(item, slotData.quantity);
         }
 
-        // Update UI immediately
+        // Update Inventory UI
         if (InventoryUI.Instance != null)
-        {
             for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
-            {
                 InventoryUI.Instance.UpdateSlot(i);
-            }
-        }
+
+        // Clear hotbar
         for (int i = 0; i < HotBarManager.Instance.slotItems.Length; i++)
         {
             HotBarManager.Instance.slotItems[i] = null;
             HotBarManager.Instance.UpdateSlot(i);
         }
 
+        // Load hotbar items
         foreach (InventorySlotData slotData in data.HotBarSlots)
         {
             Item item = ItemDatabase.Instance.GetItemByName(slotData.itemName);
             if (item == null) continue;
 
             HotBarManager.Instance.slotItems[slotData.slotIndex] = new SlotItem(item, slotData.quantity);
-
             HotBarManager.Instance.UpdateSlot(slotData.slotIndex);
         }
 
-
         Debug.Log("Player + Inventory/HotBar loaded");
     }
+
+
+    //public void LoadPlayer()
+    //{
+    //    PlayerData data = SaveSystem.LoadPlayer();
+    //    if (data == null) return;
+
+    //    // Position
+    //    transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
+
+    //    // Inventory
+    //    for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
+    //    {
+    //        Inventory.Instance.inventoryItems[i] = null; // clear old
+    //    }
+
+    //    foreach (InventorySlotData slotData in data.inventorySlots)
+    //    {
+    //        Item item = ItemDatabase.Instance.GetItemByName(slotData.itemName);
+    //        if (item == null) continue;
+
+    //        Inventory.Instance.inventoryItems[slotData.slotIndex] = new SlotItem(item, slotData.quantity);
+    //    }
+
+    //    // Update UI immediately
+    //    if (InventoryUI.Instance != null)
+    //    {
+    //        for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
+    //        {
+    //            InventoryUI.Instance.UpdateSlot(i);
+    //        }
+    //    }
+    //    for (int i = 0; i < HotBarManager.Instance.slotItems.Length; i++)
+    //    {
+    //        HotBarManager.Instance.slotItems[i] = null;
+    //        HotBarManager.Instance.UpdateSlot(i);
+    //    }
+
+    //    foreach (InventorySlotData slotData in data.HotBarSlots)
+    //    {
+    //        Item item = ItemDatabase.Instance.GetItemByName(slotData.itemName);
+    //        if (item == null) continue;
+
+    //        HotBarManager.Instance.slotItems[slotData.slotIndex] = new SlotItem(item, slotData.quantity);
+
+    //        HotBarManager.Instance.UpdateSlot(slotData.slotIndex);
+    //    }
+
+
+    //    Debug.Log("Player + Inventory/HotBar loaded");
+    //}
 
 
 

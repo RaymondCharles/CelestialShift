@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
@@ -32,49 +33,24 @@ public class GameManager : MonoBehaviour
     {
         if (loadGame && scene.name == "SampleScene")
         {
-            StartCoroutine(LoadPlayerWhenReady());
+            StartCoroutine(WaitForPlayerAndLoad());
         }
     }
 
-    //IEnumerator LoadPlayerWhenReady()
-    //{
-    //    // Wait for scene load
-    //    yield return null;
-
-    //    // Wait until inventory exists
-    //    while (Inventory.Instance == null ||
-    //           InventoryUI.Instance == null ||
-    //           ItemDatabase.Instance == null)
-    //    {
-    //        yield return null;
-    //    }
-
-    //    FirstPersonController.Instance.LoadPlayer();
-    //}
-    IEnumerator LoadPlayerWhenReady()
+    private IEnumerator WaitForPlayerAndLoad()
     {
-        // Wait one frame for scene to fully load
-        yield return null;
-
-        // Wait until inventory, hotbar, and UI are fully initialized
-        while (Inventory.Instance == null ||
-               Inventory.Instance.inventoryItems == null ||
-               InventoryUI.Instance == null ||
-               HotBarManager.Instance == null ||
-               HotBarManager.Instance.slotItems == null ||
-               ItemDatabase.Instance == null)
-        {
+        // Wait until the FirstPersonController exists
+        while (FirstPersonController.Instance == null)
             yield return null;
-        }
 
+        // Let the player load itself
         FirstPersonController.Instance.LoadPlayer();
     }
-
 
     public void NewGame()
     {
         loadGame = false;
-        SceneManager.LoadScene("SampleScene"); 
+        SceneManager.LoadScene("SampleScene");
     }
 
     public void LoadGame()
