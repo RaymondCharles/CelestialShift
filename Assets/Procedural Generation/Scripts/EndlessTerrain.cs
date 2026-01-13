@@ -275,7 +275,7 @@ public class EndlessTerrain : MonoBehaviour
 
         public void SetVisible(bool visible){
             // sets object to visible or not
-            meshObject.SetActive(visible);
+            if (meshObject != null) meshObject.SetActive(visible);
         }
         public bool IsVisible(){
             return meshObject.activeSelf;
