@@ -413,9 +413,12 @@ public class FirstPersonController : MonoBehaviour
             }
 
             bool ContinueSlide = inputActions.Player.Slide.IsPressed() && characterController.isGrounded;
+            //Debug.Log(ContinueSlide + "ContinueSlide");
+            //Debug.Log(isSliding + "isSliding");
             // Stop slide when button no longer held
             if (isSliding && !ContinueSlide)
             {
+                //Debug.Log("Stop Slide");
                 isSliding = false;
                 isIdle = true;
             }
@@ -423,11 +426,13 @@ public class FirstPersonController : MonoBehaviour
             // While sliding
             if (isSliding)
             {
+                //Debug.Log("Is Sliding");
                 HandleSlide();
             }
             
             if (!characterController.isGrounded)
             {
+               // Debug.Log("Grounded check");
                 isFalling = true;
                 isIdle = false;
             }
