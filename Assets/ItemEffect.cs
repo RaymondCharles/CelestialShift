@@ -12,16 +12,20 @@ public class ItemEffect : MonoBehaviour
     public bool throwable;
     public bool consumable;
     public bool swingable;
-    public AnimationClip throwItem;
-    public AnimationClip consumeItem;
-    public AnimationClip swingItem;
+    public AnimationClip throwItemClip;
+    public AnimationClip consumeItemClip;
+    public AnimationClip useItemClip;
+    public AnimationClip swingItemClip;
     private AnimatorOverrideController overrideController;
+    int busyTag = Animator.StringToHash("UsingItem");
+    int rightArmLayer;
 
     void Awake()
     {
         overrideController = new AnimatorOverrideController(playerAnimator.runtimeAnimatorController);
         playerAnimator.runtimeAnimatorController = overrideController;
         inputActions = new PlayerInputActions();
+        rightArmLayer = playerAnimator.GetLayerIndex("RightArm Layer");
     }
 
     // Start is called before the first frame update
@@ -33,32 +37,39 @@ public class ItemEffect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(playerAnimator.GetCurrentAnimatorStateInfo(rightArmLayer).tagHash == busyTag || playerAnimator.GetNextAnimatorStateInfo(rightArmLayer).tagHash == busyTag);
         if (InventoryUI.Instance != null) if (fpController.InventoryPanel.activeSelf) return;
         Debug.Log(equippedItem);
-        if (inputActions.Player.Use.IsPressed() && equippedItem != null)
+        if (equippedItem == null)
+        {
+            swingable = false;
+            throwable = false;
+            consumable = false;
+        }
+        if (inputActions.Player.Use.IsPressed())
         {
             Debug.Log("Made it here");
             if (swingable)
             {
-                overrideController["UseItem"] = swingItem;
+                overrideController["UseItem"] = swingItemClip;
             }
             else if (throwable)
             {
-                overrideController["UseItem"] = throwItem;
+                overrideController["UseItem"] = throwItemClip;
             }
             else if (consumable)
             {
-                overrideController["UseItem"] = consumeItem;
+                overrideController["UseItem"] = consumeItemClip;
             }
             else
             {
-                overrideController["UseItem"] = null;
+                overrideController["UseItem"] = useItemClip;
             }
             playerAnimator.SetTrigger("useItem");
             playerAnimator.SetBool("isBlocking", false);
             //equippedItem.use()
         }
-        else if (inputActions.Player.Block.IsPressed() && equippedShield != null)
+        else if (inputActions.Player.Block.IsPressed() && equippedShield != null && (playerAnimator.GetCurrentAnimatorStateInfo(rightArmLayer).tagHash != busyTag && playerAnimator.GetNextAnimatorStateInfo(rightArmLayer).tagHash != busyTag))
         {
             playerAnimator.SetBool("isBlocking", true);
         }
@@ -74,22 +85,20 @@ public class ItemEffect : MonoBehaviour
         
     }
 
-    public void useItem()
+    /*public void useItem()
     {
         if (equippedItem != null)
         {
-            Debug.Log("IsHappening");
             playerAnimator.SetTrigger("useItem");
             playerAnimator.SetBool("isBlocking", false);
             //equippedItem.use() will have its own animator for collider for sword in the function.
         }
-    }
+    }*/
 
     public void useBlock()
     {
         if (equippedShield != null)
         {
-            Debug.Log("IsHappening 2");
             playerAnimator.SetBool("isBlocking", true);
             //Set shield animator to true so that the collider is in place.
         }

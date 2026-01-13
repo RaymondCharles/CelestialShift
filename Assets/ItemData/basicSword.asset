@@ -21,7 +21,7 @@ MonoBehaviour:
   parentItems: []
   childrenItems: []
   worldPrefab: {fileID: 1601993921236731519, guid: 4dd769bcbc63dde4e9b2ffc6fe9cce85, type: 3}
-  action: {fileID: 11400000, guid: 46f6878b98c75bb4bae62aeef645a0e1, type: 2}
+  action: {fileID: 0}
   newObject: {fileID: 0}
   objectToSpawn: {fileID: 967905765742540190, guid: 8adc890f7b787f44fa0fd482990cf67d, type: 3}
   positionalGameObjectName: right hand_end

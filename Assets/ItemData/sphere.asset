@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
-  m_Name: cube
+  m_Name: sphere
   m_EditorClassIdentifier: 
-  itemName: cube
-  itemImg: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  itemName: sphere
+  itemImg: {fileID: 546601033, guid: 58b91ef4865cd7b49b8b7cb46d9b40c2, type: 3}
   usable: 0
   itemID: 
-  quantityLimit: 10
+  quantityLimit: 1
   selected: 0
   parentItems: []
   childrenItems: []
-  worldPrefab: {fileID: 1877884569096021469, guid: 07a3e520ef0ed754f8d35c4cd1d8ee86, type: 3}
+  worldPrefab: {fileID: 1511610720200220097, guid: 333e561fa06c9de44b5667f8cad08949, type: 3}
   action: {fileID: 11400000, guid: d786cde816a62944fa8f5bc7ee18d737, type: 2}
   newObject: {fileID: 0}
-  objectToSpawn: {fileID: 1877884569096021469, guid: 6e1fa992237e74f489099e9126c5da23, type: 3}
+  objectToSpawn: {fileID: 1511610720200220097, guid: d5595e707efa55c4c8c6afa1b8e64afc, type: 3}
   positionalGameObjectName: right hand_end
   swingable: 0
-  throwable: 0
-  consumable: 1
+  throwable: 1
+  consumable: 0

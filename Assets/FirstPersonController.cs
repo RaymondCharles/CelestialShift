@@ -56,21 +56,21 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float gravity = 30.0f;
 
     //Crouch Parameters
-    [SerializeField] private float crouchHeight = 2f;
-    [SerializeField] private float standingHeight = 11f;
-    [SerializeField] private float timeToCrouch = 0.25f;
-    [SerializeField] private Vector3 crouchingCenter = new Vector3(0, 5f, 0);
-    [SerializeField] private Vector3 standingCenter = new Vector3(0, 5f, 0);
+    [SerializeField] private float crouchHeight;
+    [SerializeField] private float standingHeight;
+    [SerializeField] private float timeToCrouch;
+    [SerializeField] private Vector3 crouchingCenter;
+    [SerializeField] private Vector3 standingCenter;
     private bool isCrouching;
     private bool duringCrouchAnimation;
 
     //Headbob Parameters
-    [SerializeField] private float walkBobSpeed = 14f;
-    [SerializeField] private float walkBobAmount = 0.05f;
-    [SerializeField] private float sprintBobSpeed = 18f;
-    [SerializeField] private float sprintBobAmount = 0.11f;
-    [SerializeField] private float crouchBobSpeed = 8f;
-    [SerializeField] private float crouchBobAmount = 0.025f;
+    [SerializeField] private float walkBobSpeed;
+    [SerializeField] private float walkBobAmount;
+    [SerializeField] private float sprintBobSpeed;
+    [SerializeField] private float sprintBobAmount;
+    [SerializeField] private float crouchBobSpeed;
+    [SerializeField] private float crouchBobAmount;
     private float defaultYPos = 0;
     private float timer;
 

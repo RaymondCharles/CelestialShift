@@ -37,7 +37,6 @@ public class Item : ScriptableObject
 
     public void Equip()
     {
-        Debug.Log("Made it here");
         if (newObject == null)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -46,7 +45,6 @@ public class Item : ScriptableObject
             positionalTransform = FindChildRecursive(player.transform, positionalGameObjectName);
             if (positionalTransform == null || ItemAnimator == null) return;
 
-            Debug.Log("Created Sword");
             newObject = Instantiate(objectToSpawn, positionalTransform);
             ItemAnimator.GetComponent<ItemEffect>().equippedItem = newObject;
             ItemAnimator.GetComponent<ItemEffect>().swingable = swingable;
