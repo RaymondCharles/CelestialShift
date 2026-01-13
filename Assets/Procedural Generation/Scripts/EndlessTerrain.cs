@@ -205,7 +205,8 @@ public class EndlessTerrain : MonoBehaviour
                     BiomeScriptableObject biome = mapData.biomeDict[biomeCoord.getBiome()];
                     
                     // position in world space
-                    Vector3 dungeonPos = new Vector3(worldX * scale, mapData.noiseMap[point.x, point.y] * (mapGenerator.meshHeightMultiplier * biome.biomeHeightMultiplier) /*porbably need to come back and change w biomehiehg tmult*/, worldY * scale);
+                    float height = mapData.heightCurve.Evaluate(mapData.noiseMap[point.x, point.y]) * (mapGenerator.meshHeightMultiplier * biome.biomeHeightMultiplier);
+                    Vector3 dungeonPos = new Vector3(worldX * scale, height, worldY * scale);
                     
                     GameObject dungeon = GameObject.Instantiate(biome.dungeonPrefab, dungeonPos, Quaternion.identity);
                     dungeon.transform.parent = meshObject.transform;

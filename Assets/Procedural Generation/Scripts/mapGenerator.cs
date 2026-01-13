@@ -253,7 +253,7 @@ public class mapGenerator : MonoBehaviour
                 //Debug.Log("Marked building at: " + coord + " in buildings map." + ": " + buildingsMap[coord.x, coord.y] );
             }
         }
-        return new MapData (noiseMap, colourMap, biomeGenData, biomeDict, chunkSize);
+        return new MapData (noiseMap, colourMap, biomeGenData, biomeDict, chunkSize, meshHeightCurve);
     }
 
     void OnValidate (){
@@ -307,12 +307,14 @@ public struct MapData{
     // store biome dictionary from in editor list to access biome data where needed
     public readonly Dictionary<string, BiomeScriptableObject> biomeDict;
     public readonly int chunkSize;
+    public readonly AnimationCurve heightCurve;
 
-    public MapData(float[,] noiseMap, Color[] colourMap, BiomeGenData biomeGenData, Dictionary<string, BiomeScriptableObject> biomeDict, int chunkSize){
+    public MapData(float[,] noiseMap, Color[] colourMap, BiomeGenData biomeGenData, Dictionary<string, BiomeScriptableObject> biomeDict, int chunkSize, AnimationCurve _heightCurve){
         this.noiseMap = noiseMap;
         this.colourMap = colourMap;
         this.biomeGenData = biomeGenData;
         this.biomeDict = biomeDict;
         this.chunkSize = chunkSize;
+        this.heightCurve = _heightCurve;
     }
 }
