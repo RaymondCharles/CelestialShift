@@ -8687,6 +8687,8 @@ MonoBehaviour:
   slopeThreshold: 0.1
   slideVelocity: {x: 0, y: 0, z: 0}
   mouseSmoothTime: 0.03
+  cameraController: {fileID: 0}
+  turnSpeed: 12
 --- !u!224 &615376268 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5882612985282958000, guid: 0ec49db3fefb2d547ba10b40734135b4, type: 3}
@@ -11574,7 +11576,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 903206890}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2581523, y: -0.000000008311578, z: 0.0000000022209337, w: 0.96610427}
+  m_LocalRotation: {x: 0.2581523, y: 0.000000008311578, z: -0.0000000022209334, w: 0.96610427}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -15863,6 +15865,8 @@ MonoBehaviour:
   slopeThreshold: 0.1
   slideVelocity: {x: 0, y: 0, z: 0}
   mouseSmoothTime: 0.03
+  cameraController: {fileID: 0}
+  turnSpeed: 12
 --- !u!1 &1376351647
 GameObject:
   m_ObjectHideFlags: 0
@@ -23396,7 +23400,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144748341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24058327, y: 0.000000016701, z: -0.0000000041395665, w: 0.97062856}
+  m_LocalRotation: {x: 0.24058327, y: -0.00000001670101, z: 0.0000000041395687, w: 0.97062856}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -24618,12 +24622,13 @@ MonoBehaviour:
   sensX: 300
   sensY: 300
   orientation: {fileID: 4272359964722229517}
-  followTarget: {fileID: 4272359964722229517}
+  followTarget: {fileID: 66255245}
   playerCam: {fileID: 6469672217251193701}
   FPCamera: {fileID: 1941465093}
   TPCamera: {fileID: 626552434}
   toggleKey: 31
-  enemyLock: 20
+  CameraLockKey: 53
+  cameraLock: 1
   freeLookCamera: {fileID: 626552435}
   virtualCam: {fileID: 1941465094}
 --- !u!4 &3112596260028608544
@@ -26433,6 +26438,8 @@ MonoBehaviour:
   slopeThreshold: 0.1
   slideVelocity: {x: 0, y: 0, z: 0}
   mouseSmoothTime: 0.03
+  cameraController: {fileID: 3031775645218132493}
+  turnSpeed: 12
 --- !u!1 &7945833629450419811
 GameObject:
   m_ObjectHideFlags: 0
