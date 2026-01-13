@@ -189,23 +189,31 @@ public class EndlessTerrain : MonoBehaviour
             Texture2D texture = TextureGenerator.TextureFromColourMap(mapData.colourMap, mapGenerator.mapChunkSize, mapGenerator.mapChunkSize);
             meshRenderer.material.mainTexture = texture;
 
-            // place dungeons of chunk, default to invisible until highest LOD
-            foreach (Vector2Int point in mapData.biomeGenData.dungeonArray){
 
-                float worldX = point.x + position.x;
-                float worldY = point.y + position.y;
+            try {
+                // place dungeons of chunk, default to invisible until highest LOD
+                foreach (Vector2Int point in mapData.biomeGenData.dungeonArray){
+                    
+                    if (point.x < 0 || point.x >= mapData.chunkSize || point.y < 0 || point.y >= mapData.chunkSize){continue;}
 
-                // obtain information via chunk-local coords
-                BiomeCoord biomeCoord = mapData.biomeGenData.voronoiMap[point.x, point.y];
-                BiomeScriptableObject biome = mapData.biomeDict[biomeCoord.getBiome()];
-                
-                // position in world space
-                Vector3 dungeonPos = new Vector3(worldX * scale, mapData.noiseMap[point.x, point.y] * mapGenerator.meshHeightMultiplier /*porbably need to come back and change w biomehiehg tmult*/, worldY * scale);
-                
-                GameObject dungeon = GameObject.Instantiate(biome.dungeonPrefab, dungeonPos, Quaternion.identity);
-                dungeon.transform.parent = meshObject.transform;
-                SetVisible(false);
-                dungeonList.Add(dungeon);
+                    float worldX = point.x + position.x;
+                    float worldY = point.y + position.y;
+
+                    // obtain information via chunk-local coords
+                    BiomeCoord biomeCoord = mapData.biomeGenData.voronoiMap[point.x, point.y];
+                    BiomeScriptableObject biome = mapData.biomeDict[biomeCoord.getBiome()];
+                    
+                    // position in world space
+                    Vector3 dungeonPos = new Vector3(worldX * scale, mapData.noiseMap[point.x, point.y] * mapGenerator.meshHeightMultiplier /*porbably need to come back and change w biomehiehg tmult*/, worldY * scale);
+                    
+                    GameObject dungeon = GameObject.Instantiate(biome.dungeonPrefab, dungeonPos, Quaternion.identity);
+                    dungeon.transform.parent = meshObject.transform;
+                    SetVisible(false);
+                    dungeonList.Add(dungeon);
+                }
+            }
+            catch (Exception e) {
+                Debug.LogError($"Dungeon spawn failed for chunk {coord}: {e}");
             }
 
             UpdateTerrainChunk();
