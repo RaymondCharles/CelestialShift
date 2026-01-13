@@ -30,4 +30,4 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  dungeonPrefab: {fileID: 2697643423062104356, guid: 6b99dbe4a6e6c9646bcc8da34ac62421, type: 3}
+  dungeonPrefab: {fileID: 578770440915052239, guid: 5b694e860b8ab3e45ab209917a25c23b, type: 3}
