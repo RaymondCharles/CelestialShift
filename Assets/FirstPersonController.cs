@@ -2,11 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;   // NEW INPUT SYSTEM
-
+using UnityEngine.SceneManagement;
 public class FirstPersonController : MonoBehaviour
 {
     // New Input System object
-    private PlayerInputActions inputActions;
+    public PlayerInputActions inputActions;
+    PlayerInput playerInput;
+    InputAction InventoryAction;
+    InputAction PauseAction;
+    InputAction DropAction;
+    InputAction UseAction;
+    public GameObject InventoryPanel;
+    public GameObject PausePanel;
+    public GameObject RecipePanel;
+    public Transform playerTransform;
+    public static FirstPersonController Instance;
+    public GameObject gameManager;
 
     //Determine whether a player/character is in control
     public bool CanMove { get; private set; } = true;
@@ -16,7 +27,10 @@ public class FirstPersonController : MonoBehaviour
     private bool ShouldJump => canJump && inputActions.Player.Jump.triggered && characterController.isGrounded;
     private bool ShouldCrouch => canCrouch && inputActions.Player.Crouch.triggered && !duringCrouchAnimation && characterController.isGrounded;
     private bool CanSlide => inputActions.Player.Slide.triggered && characterController.isGrounded;
+   
     private bool isSliding = false; //check if you can slide
+    public bool swordAttack = false;
+    public bool shieldDefend = false;
 
     //Functional Options
     [SerializeField] private bool canSprint = true;
@@ -42,21 +56,21 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float gravity = 30.0f;
 
     //Crouch Parameters
-    [SerializeField] private float crouchHeight = 0.5f;
-    [SerializeField] private float standingHeight = 2f;
-    [SerializeField] private float timeToCrouch = 0.25f;
-    [SerializeField] private Vector3 crouchingCenter = new Vector3(0, 0.5f, 0);
-    [SerializeField] private Vector3 standingCenter = new Vector3(0, 0, 0);
+    [SerializeField] private float crouchHeight;
+    [SerializeField] private float standingHeight;
+    [SerializeField] private float timeToCrouch;
+    [SerializeField] private Vector3 crouchingCenter;
+    [SerializeField] private Vector3 standingCenter;
     private bool isCrouching;
     private bool duringCrouchAnimation;
 
     //Headbob Parameters
-    [SerializeField] private float walkBobSpeed = 14f;
-    [SerializeField] private float walkBobAmount = 0.05f;
-    [SerializeField] private float sprintBobSpeed = 18f;
-    [SerializeField] private float sprintBobAmount = 0.11f;
-    [SerializeField] private float crouchBobSpeed = 8f;
-    [SerializeField] private float crouchBobAmount = 0.025f;
+    [SerializeField] private float walkBobSpeed;
+    [SerializeField] private float walkBobAmount;
+    [SerializeField] private float sprintBobSpeed;
+    [SerializeField] private float sprintBobAmount;
+    [SerializeField] private float crouchBobSpeed;
+    [SerializeField] private float crouchBobAmount;
     private float defaultYPos = 0;
     private float timer;
 
@@ -95,16 +109,125 @@ public class FirstPersonController : MonoBehaviour
     private Vector2 currentMouseDelta;
     private Vector2 currentMouseDeltaVelocity;
 
+
+    public CameraController cameraController;
+    [SerializeField] private float turnSpeed = 12f; // degrees per second
+
+
     void Awake()
     {
         characterController = GetComponent<CharacterController>();
         defaultYPos = playerCamera.transform.localPosition.y;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
+
 
         // Instantiate the input actions
         inputActions = new PlayerInputActions();
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+
+
     }
+    private void Start()
+    {
+        playerInput = GetComponent<PlayerInput>();
+        InventoryAction = playerInput.actions.FindAction("Inventory");
+        PauseAction = playerInput.actions.FindAction("Pause");
+        DropAction = playerInput.actions.FindAction("Drop");
+        UseAction = playerInput.actions.FindAction("Use");
+
+        if (GameManager.Instance.loadGame)
+        {
+            LoadPlayer();
+        }
+
+
+
+    }
+
+    void LateUpdate()
+    {
+        if (InventoryPanel.activeSelf || PausePanel.activeSelf)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+    public void SavePlayer()
+    {
+        SaveSystem.SavePlayer(this);
+        Debug.Log("Player saved at position: " + playerTransform.position);
+    }
+
+    public void LoadPlayer()
+    {
+        PlayerData data = SaveSystem.LoadPlayer();
+        if (data == null) return;
+
+        // Position
+        transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
+
+        // Inventory
+        for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
+        {
+            Inventory.Instance.inventoryItems[i] = null; // clear old
+        }
+
+        foreach (InventorySlotData slotData in data.inventorySlots)
+        {
+            Item item = ItemDatabase.Instance.GetItemByName(slotData.itemName);
+            if (item == null) continue;
+
+            Inventory.Instance.inventoryItems[slotData.slotIndex] = new SlotItem(item, slotData.quantity);
+        }
+
+        // Update UI immediately
+        if (InventoryUI.Instance != null)
+        {
+            for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
+            {
+                InventoryUI.Instance.UpdateSlot(i);
+            }
+        }
+        for (int i = 0; i < HotBarManager.Instance.slotItems.Length; i++)
+        {
+            HotBarManager.Instance.slotItems[i] = null;
+            HotBarManager.Instance.UpdateSlot(i);
+        }
+
+        foreach (InventorySlotData slotData in data.HotBarSlots)
+        {
+            Item item = ItemDatabase.Instance.GetItemByName(slotData.itemName);
+            if (item == null) continue;
+
+            HotBarManager.Instance.slotItems[slotData.slotIndex] = new SlotItem(item, slotData.quantity);
+
+            HotBarManager.Instance.UpdateSlot(slotData.slotIndex);
+        }
+
+
+        Debug.Log("Player + Inventory/HotBar loaded");
+    }
+
+
+
+
+
+
+
 
     private void OnEnable()
     {
@@ -115,6 +238,99 @@ public class FirstPersonController : MonoBehaviour
     {
         inputActions.Disable();
     }
+    public void InventoryPanelShow()
+    {
+        InventoryPanel.SetActive(!InventoryPanel.activeSelf);
+        for (int i=0; i < Inventory.Instance.inventoryItems.Length; i++)
+        {
+            InventoryUI.Instance.UpdateSlot(i);
+        }
+    }
+    public void PausePanelShow()
+    {
+        PausePanel.SetActive(!PausePanel.activeSelf);
+    }
+    public void RecipePanelShow()
+    {
+        RecipePanel.SetActive(!RecipePanel.activeSelf);
+    }
+    public void PausePanelHideOnClick()
+    {
+        PausePanel.SetActive(false);
+    }
+    public void OnClickSaveAndQuit()
+    {
+        
+        if (FirstPersonController.Instance != null)
+        {
+            FirstPersonController.Instance.SavePlayer();
+        }
+        else
+        {
+            Debug.LogWarning("Save skipped: FirstPersonController instance not found in this scene.");
+        }
+
+ 
+        if (GameManager.Instance != null)
+            GameManager.Instance.loadGame = true;
+
+        // Go to MenuScene via LoadingManager
+        if (LoadingManager.Instance != null)
+        {
+            int menuSceneIndex = 0; 
+            LoadingManager.Instance.ChangeToGameScene(menuSceneIndex);
+        }
+        else
+        {
+            SceneManager.LoadScene("MenuScene");
+        }
+    }
+
+
+    public void DropSelectedItem()
+    {
+        if (HotBarManager.Instance == null) return;
+        int selectedSlot = HotBarManager.Instance.selectedSlot;
+        if (selectedSlot == -1) return;
+        SlotItem slotItem = HotBarManager.Instance.slotItems[selectedSlot];
+        if (slotItem == null) return;
+
+        if (Inventory.Instance == null) return;
+        if (slotItem.itemDetails.worldPrefab == null) return;
+
+
+        Vector3 dropPos = playerTransform.position + playerTransform.forward * 1.5f + Vector3.up * 0.5f;
+
+        // Spawn the world item
+        Inventory.Instance.GenerateItem(slotItem.itemDetails, slotItem.quantity, dropPos);
+
+        // Remove from hotbar
+        HotBarManager.Instance.ClearSlot(slotItem);
+    }
+
+
+    public void UseSelectedItem()
+    {
+        int selectedSlot = HotBarManager.Instance.selectedSlot;
+        if (selectedSlot == -1) return;
+        SlotItem slotItem = HotBarManager.Instance.slotItems[selectedSlot];
+        if (slotItem == null) return;
+
+        if (Inventory.Instance == null) return;
+        if (slotItem.itemDetails.worldPrefab == null) return;
+
+        if (slotItem.quantity > 0)
+        {
+            slotItem.itemDetails.Use(gameManager);
+            if (slotItem.itemDetails.usable) slotItem.quantity--;
+            if (slotItem.quantity == 0)
+            {
+                slotItem.itemDetails.UnEquip();
+                HotBarManager.Instance.ClearSlot(slotItem);
+            }
+        }
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -125,14 +341,36 @@ public class FirstPersonController : MonoBehaviour
         bool isIdle = true;
         bool isFalling = false;
 
+
+        //Inventory 
+        if (InventoryAction.triggered)
+        {
+            InventoryPanelShow();
+        }
+
+        if (PauseAction.triggered)
+        {
+            PausePanelShow();
+        }
+        if (DropAction.triggered)
+        {
+            DropSelectedItem();
+        }
+        if (UseAction.triggered)
+        {
+            UseSelectedItem();
+        }
+
+
         if (CanMove)
         {
             HandleMovementInput();
+            HandleRotation();
             //HandleMouseLook();
+            
 
-            if (moveInput.magnitude > 0)
+            if (moveInput.magnitude > 0 || isSliding || isCrouching || !characterController.isGrounded)
             {
-                Debug.Log("IsMoving");
                 isIdle = false;
             }
             else
@@ -143,19 +381,21 @@ public class FirstPersonController : MonoBehaviour
                 isIdle = true;
             }
 
-            if (canJump)
+            if (canJump && !isCrouching)
             {
                 HandleJump();
             }
 
-            if (canCrouch)
+            if (canCrouch && !isSliding)
             {
                 HandleCrouch();
                 if (isCrouching)
                 {
-                    Debug.Log("Crouching");
                     playerAnimator.SetBool("isCrouching", true);
-                    isIdle = false;
+                }
+                else
+                {
+                    playerAnimator.SetBool("isCrouching", false);
                 }
             }
 
@@ -166,12 +406,10 @@ public class FirstPersonController : MonoBehaviour
             }*/
 
             // Start slide on press
-            if (CanSlide && !isSliding)
+            if (CanSlide && !isSliding && !isCrouching)
             {
-                Debug.Log("Start Slide");
                 StartSlide(characterController.velocity);
                 isSliding = true;
-                isIdle = false;
             }
 
             bool ContinueSlide = inputActions.Player.Slide.IsPressed() && characterController.isGrounded;
@@ -190,7 +428,6 @@ public class FirstPersonController : MonoBehaviour
             {
                 //Debug.Log("Is Sliding");
                 HandleSlide();
-                isIdle = false;
             }
             
             if (!characterController.isGrounded)
@@ -204,6 +441,29 @@ public class FirstPersonController : MonoBehaviour
             playerAnimator.SetBool("isFalling", isFalling);
             playerAnimator.SetBool("isSliding", isSliding);
             ApplyFinalMovements();
+            
+        }
+    }
+    
+    private void HandleRotation()
+    {
+        Vector3 cameraYaw = new Vector3(0f, cameraController.playerCam.eulerAngles.y, 0f);
+        if (cameraController.cameraLock)
+        {
+            transform.rotation = Quaternion.Euler(cameraYaw);
+        }
+        else
+        {
+            if (moveInput.magnitude > 0.01f)
+            {
+                float offsetDeg = Mathf.Atan2(moveInput.x, moveInput.y) * Mathf.Rad2Deg;
+                float targetYaw = cameraYaw.y + offsetDeg;
+                float currentYaw = transform.eulerAngles.y;
+
+                float smoothYaw = Mathf.LerpAngle(currentYaw,targetYaw,turnSpeed * Time.deltaTime);
+
+                transform.rotation = Quaternion.Euler(new Vector3(0f, smoothYaw, 0f));
+            }
         }
     }
 
@@ -214,10 +474,9 @@ public class FirstPersonController : MonoBehaviour
         if (moveInput.magnitude > 0)
         {
             playerAnimator.SetBool("isWalking", !isCrouching && !IsSprinting);
-            playerAnimator.SetBool("isRunning", IsSprinting);
+            playerAnimator.SetBool("isRunning", !isCrouching && IsSprinting);
             playerAnimator.SetBool("isCrouching", isCrouching);
         }
-
         // moveInput.y = Vertical (W/S), moveInput.x = Horizontal (A/D)
         float targetX = currentSpeed * moveInput.y;   // forward/back
         float targetZ = currentSpeed * moveInput.x;   // left/right
@@ -225,9 +484,13 @@ public class FirstPersonController : MonoBehaviour
         // Keep existing y velocity (for jump / gravity)
         float moveDirectionY = moveDirection.y;
 
-        // Convert local input into world space movement
         Vector3 forwardMovement = transform.TransformDirection(Vector3.forward) * targetX;
         Vector3 rightMovement = transform.TransformDirection(Vector3.right) * targetZ;
+        if (!cameraController.cameraLock)
+        {
+            forwardMovement = cameraController.followTarget.TransformDirection(Vector3.forward) * targetX;
+            rightMovement = cameraController.followTarget.transform.TransformDirection(Vector3.right) * targetZ;
+        }
 
         moveDirection = forwardMovement + rightMovement;
         moveDirection.y = moveDirectionY;
@@ -289,7 +552,6 @@ public class FirstPersonController : MonoBehaviour
         {
             yield break;
         }
-
         duringCrouchAnimation = true;
 
         float timeElapsed = 0;

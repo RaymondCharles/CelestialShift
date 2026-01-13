@@ -18,11 +18,13 @@ public class CameraController : MonoBehaviour
     public GameObject TPCamera;
     private bool isThirdPerson = false;
     public Key toggleKey = Key.Q; //Keybind for switching between cameras
-    public Key enemyLock = Key.F; //Keybind for locking in on an enemy
+    //public Key enemyLock = Key.F; //Keybind for locking in on an enemy
+    public Key CameraLockKey = Key.LeftAlt; //Keybind for locking the camera
 
     
     private float prevXInput;
     private float prevYInput;
+    public bool cameraLock = true;
 
     
 
@@ -70,18 +72,15 @@ public class CameraController : MonoBehaviour
         }
 
         // 2. Toggling between camera views (Press q to swap)
-        if (Keyboard.current != null && Keyboard.current[toggleKey].wasPressedThisFrame)
-        {
-            ToggleView();
-        }
+        if (Keyboard.current != null && Keyboard.current[toggleKey].wasPressedThisFrame) ToggleView();
+        // 3. Toggling camera lock mode (Press Left Alt to swap).
+        if (Keyboard.current != null && Keyboard.current[CameraLockKey].wasPressedThisFrame && isThirdPerson) cameraLock = !cameraLock;
     }
 
     void LateUpdate()
     {
-        Vector3 yawOnly = new Vector3(0f, playerCam.eulerAngles.y, 0f);
-        orientation.rotation = Quaternion.Euler(yawOnly);
-        followTarget.rotation = Quaternion.Euler(yawOnly);
-
+        Vector3 cameraYaw = new Vector3(0f, playerCam.eulerAngles.y, 0f);
+        followTarget.rotation = Quaternion.Euler(cameraYaw);
     }
 
 
@@ -99,6 +98,7 @@ public class CameraController : MonoBehaviour
         {
             virtualCam.Priority = 20;
             freeLookCamera.Priority = 10;
+            cameraLock = true;
         }
     }
 
