@@ -17,7 +17,7 @@ public class treeGenerator : MonoBehaviour
                         x = prng.Next(0, chunkSize);
                         y = prng.Next(0, chunkSize);
                         // check biome at this location matches
-                        if (biomeMap[x,y].getBiome() == biome){
+                        if (biomeMap[x,y].getBiome() == biome && biomeMap[x,y].getWeight() == 1f){
                             treeCoords.Add(new TreeCoord(biomeDict[biome].treePrefabs[objIndex].name, x, y, objIndex, biomeDict[biome]));
                             break;
                         }

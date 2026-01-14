@@ -208,7 +208,7 @@ public class EndlessTerrain : MonoBehaviour
                     
                     // position in world space
                     float height = mapData.heightCurve.Evaluate(mapData.noiseMap[point.x, point.y]) * (mapGenerator.meshHeightMultiplier * biome.biomeHeightMultiplier);
-                    Vector3 dungeonPos = new Vector3(worldX * scale, height, worldY * scale);
+                    Vector3 dungeonPos = new Vector3(worldX * scale, height*scale, worldY * scale);
                     
                     GameObject dungeon = GameObject.Instantiate(biome.dungeonPrefab, dungeonPos, Quaternion.identity);
                     dungeon.transform.parent = meshObject.transform;
@@ -227,14 +227,14 @@ public class EndlessTerrain : MonoBehaviour
                     if (treeCoord.x < 0 || treeCoord.x >= mapData.chunkSize || treeCoord.y < 0 || treeCoord.y >= mapData.chunkSize){continue;}
 
                     float worldX = treeCoord.x + position.x - 0.5f * mapData.chunkSize;
-                    float worldY = position.y + treeCoord.y + 0.5f * mapData.chunkSize;
+                    float worldY = position.y + ((0.5f * mapData.chunkSize) - treeCoord.y);
 
                     // obtain information via chunk-local coords
                     BiomeCoord biomeCoord = mapData.biomeGenData.voronoiMap[treeCoord.x, treeCoord.y];
                     
                     // position in world space
                     float height = mapData.heightCurve.Evaluate(treeCoord.z) * (mapGenerator.meshHeightMultiplier * treeCoord.biomeType.biomeHeightMultiplier);
-                    Vector3 treePos = new Vector3(worldX * scale, height, worldY * scale);
+                    Vector3 treePos = new Vector3(worldX * scale, height*scale, worldY * scale);
                     
                     GameObject tree = GameObject.Instantiate(treeCoord.biomeType.treePrefabs[treeCoord.objectIndex].prefab, treePos, Quaternion.identity);
                     tree.transform.parent = meshObject.transform;
@@ -274,11 +274,10 @@ public class EndlessTerrain : MonoBehaviour
                         if (lodMesh.hasMesh){
                             // only place dungeon if highest detail LOD - this will change to visible if close enough to viewer
                             if (lodIndex == 0){
-                                // FOR TREE OBJECTS, USE LOW LOD TOO
                                 foreach (GameObject dungeon in dungeonList){
                                     dungeon.SetActive(true);
                                 }
-                            }else if (lodIndex <= 1){
+                            }if (lodIndex == 0){
                                 // hide trees if not highest LOD
                                 foreach (GameObject tree in treeList){
                                     tree.SetActive(true);
@@ -291,7 +290,6 @@ public class EndlessTerrain : MonoBehaviour
                             lodMesh.RequestMesh(mapData);
                         }
                     }
-
                     visibleTerrainChunksLastUpdate.Add(this);
                 }
                 else{

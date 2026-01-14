@@ -31,3 +31,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   dungeonPrefab: {fileID: 8824576729014844395, guid: e98f417abb698f547bef938ab6863202, type: 3}
+  treePrefabs:
+  - name: SnowBall
+    prefab: {fileID: 4810952041232954101, guid: 1e0df6b478d125542b2af25c909d1e65, type: 3}
+    countPerBiome: 10
+    groupSize: 0
+    groupProbability: 0
