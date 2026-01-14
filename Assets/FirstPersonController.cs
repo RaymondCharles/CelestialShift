@@ -377,6 +377,7 @@ public class FirstPersonController : MonoBehaviour
         {
             slotItem.itemDetails.Use(gameManager);
             if (slotItem.itemDetails.usable) slotItem.quantity--;
+            HotBarManager.Instance.UpdateSlot(selectedSlot);
             if (slotItem.quantity == 0)
             {
                 slotItem.itemDetails.UnEquip();
@@ -410,11 +411,6 @@ public class FirstPersonController : MonoBehaviour
         {
             DropSelectedItem();
         }
-        if (UseAction.triggered)
-        {
-            UseSelectedItem();
-        }
-
 
         if (CanMove)
         {

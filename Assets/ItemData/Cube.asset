@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
-  m_Name: cube
+  m_Name: Cube
   m_EditorClassIdentifier: 
   itemName: cube
   itemImg: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
-  usable: 0
-  itemID: 
+  usable: 1
+  useSpeed: 5
   quantityLimit: 10
   selected: 0
   parentItems: []
   childrenItems: []
   worldPrefab: {fileID: 1877884569096021469, guid: 07a3e520ef0ed754f8d35c4cd1d8ee86, type: 3}
-  action: {fileID: 11400000, guid: d786cde816a62944fa8f5bc7ee18d737, type: 2}
+  action: {fileID: 0}
   newObject: {fileID: 0}
   objectToSpawn: {fileID: 1877884569096021469, guid: 6e1fa992237e74f489099e9126c5da23, type: 3}
   positionalGameObjectName: right hand_end

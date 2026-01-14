@@ -12,7 +12,7 @@ public class Item : ScriptableObject
     public string itemName;
     public Sprite itemImg;
     public bool usable;
-    public string itemID;
+    public float useSpeed = 1f;
 
     public int quantityLimit;
 
@@ -50,6 +50,7 @@ public class Item : ScriptableObject
             ItemAnimator.GetComponent<ItemEffect>().swingable = swingable;
             ItemAnimator.GetComponent<ItemEffect>().throwable = throwable;
             ItemAnimator.GetComponent<ItemEffect>().consumable = consumable;
+            ItemAnimator.GetComponent<ItemEffect>().useSpeed = useSpeed;
         }
     }
 
@@ -60,7 +61,6 @@ public class Item : ScriptableObject
 
     public void Use(GameObject gameManager)
     {
-        Debug.Log("Trying to use");
         if (action!=null)
         {
             action.Execute(this, gameManager);

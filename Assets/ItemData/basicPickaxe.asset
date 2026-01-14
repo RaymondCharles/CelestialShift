@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
-  m_Name: woodenShield
+  m_Name: basicPickaxe
   m_EditorClassIdentifier: 
-  itemName: wooden shield
-  itemImg: {fileID: 21300000, guid: 996e4268fefbe6942a939835cce139df, type: 3}
+  itemName: basicPickaxe
+  itemImg: {fileID: -194952269, guid: 8cb1dcea1a57eab4eb8406a7cedd9ea4, type: 3}
   usable: 0
-  itemID: Shield
+  useSpeed: 1
   quantityLimit: 1
   selected: 0
   parentItems: []
   childrenItems: []
-  worldPrefab: {fileID: 8989109606312072488, guid: 04b1b13e1b5aa4047957ae3aabe4b79c, type: 3}
+  worldPrefab: {fileID: 3279265994378489053, guid: f9ac752608c3a3c4b84475b859aa4298, type: 3}
   action: {fileID: 0}
   newObject: {fileID: 0}
-  objectToSpawn: {fileID: 4811934317335652646, guid: 1ab6ff81171b2974b865d08f3a5a841a, type: 3}
+  objectToSpawn: {fileID: 3279265994378489053, guid: cfbfa17b7ab552343bb56a81a7729ef2, type: 3}
   positionalGameObjectName: right hand_end
-  swingable: 0
+  swingable: 1
   throwable: 0
   consumable: 0
