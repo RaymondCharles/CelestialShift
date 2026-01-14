@@ -19,6 +19,7 @@ public class CameraController : MonoBehaviour
     public GameObject FPCamera;
     public GameObject TPCamera;
     private bool isThirdPerson = false;
+    public bool IsThirdPerson => isThirdPerson;
     public Key toggleKey = Key.Q; //Keybind for switching between cameras
     //public Key enemyLock = Key.F; //Keybind for locking in on an enemy
     public Key CameraLockKey = Key.LeftAlt; //Keybind for locking the camera
