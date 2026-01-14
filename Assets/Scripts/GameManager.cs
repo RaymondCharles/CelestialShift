@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
@@ -32,27 +33,24 @@ public class GameManager : MonoBehaviour
     {
         if (loadGame && scene.name == "SampleScene")
         {
-            StartCoroutine(LoadPlayerWhenReady());
+            StartCoroutine(WaitForPlayerAndLoad());
         }
     }
 
-    private IEnumerator LoadPlayerWhenReady()
+    private IEnumerator WaitForPlayerAndLoad()
     {
-        // Wait until FirstPersonController exists
+        // Wait until the FirstPersonController exists
         while (FirstPersonController.Instance == null)
-        {
-            yield return null; 
-        }
+            yield return null;
 
+        // Let the player load itself
         FirstPersonController.Instance.LoadPlayer();
-        loadGame = false;
-        Debug.Log("Player loaded at saved position.");
     }
 
     public void NewGame()
     {
         loadGame = false;
-        SceneManager.LoadScene("SampleScene"); 
+        SceneManager.LoadScene("SampleScene");
     }
 
     public void LoadGame()

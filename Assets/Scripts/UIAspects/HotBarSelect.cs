@@ -27,13 +27,36 @@ public class HotBarSelect : MonoBehaviour
     //    for (int i = 0; i < Slots.Length; i++)
     //        Slots[i].gameObject.SetActive(i == index);
     //}
+    //private void SelectSlot(int index)
+    //{
+    //    // Highlight the pressed slot
+    //    for (int i = 0; i < Slots.Length; i++)
+    //        if (Slots[i] != null) { 
+    //    Slots[i].gameObject.SetActive(i== index && !Slots[index].gameObject.activeSelf);
+    //}
+
+    //    // Tell HotBarManager which slot is currently selected
+    //    if (HotBarManager.Instance != null)
+    //        if (!Slots[index].gameObject.activeSelf) HotBarManager.Instance.selectedSlot = -1;
+    //        else
+    //        {
+    //            HotBarManager.Instance.selectedSlot = index;
+    //            HotBarManager.Instance.UpdateSelectedItem();
+    //        }
+
     private void SelectSlot(int index)
     {
-        // Highlight the pressed slot
+        if (index < 0 || index >= Slots.Length)
+            return;
+
         for (int i = 0; i < Slots.Length; i++)
-            if (Slots[i] != null) { 
-        Slots[i].gameObject.SetActive(i== index && !Slots[index].gameObject.activeSelf);
-    }
+        {
+            if (!Slots[i])
+                continue;
+            
+
+            Slots[i].gameObject.SetActive(i == index && !Slots[i].gameObject.active);
+        }
 
         // Tell HotBarManager which slot is currently selected
         if (HotBarManager.Instance != null)
@@ -41,9 +64,10 @@ public class HotBarSelect : MonoBehaviour
             else
             {
                 HotBarManager.Instance.selectedSlot = index;
-                HotBarManager.Instance.UpdateSelectedItem();
             }
-
+            HotBarManager.Instance.UpdateSelectedItem();
     }
+
+    //}
 
 }

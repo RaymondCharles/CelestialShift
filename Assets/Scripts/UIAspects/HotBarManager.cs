@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using TMPro;
 
 public class HotBarManager : MonoBehaviour, UIManager
 {
@@ -58,25 +59,29 @@ public class HotBarManager : MonoBehaviour, UIManager
     {
 
         int leftOver = quantity;
-        int index = 0;
+        int index = -1;
         foreach (SlotItem item2 in slotItems)
         {
-            Debug.Log(index);
+            index++;
             if (item2==null) continue;
             if (item2.itemDetails.itemName == item.itemName)
             {
                 Debug.Log("Added quantity, was " + item2.quantity.ToString() + "and now is " + (item2.quantity + quantity).ToString());
-                item2.quantity+=quantity;
+                item2.quantity+=leftOver;
                 leftOver = item2.quantity - item.quantityLimit;
+                Debug.Log("Leftover: " + leftOver.ToString());
                 if (leftOver > 0)
                 {
                     item2.quantity -= leftOver;
+                    UpdateSlot(index);
                 }
                 else if (leftOver <= 0)
                 {
+                    Debug.Log(index);
+                    Debug.Log("Updating this index, item name: " + item2.itemDetails.itemName);
+                    UpdateSlot(index);
                     return 0;
                 }
-                index++;
             }
         }
         
@@ -127,6 +132,7 @@ public class HotBarManager : MonoBehaviour, UIManager
             {
                 Slots[i].image.sprite = emptySlotSprite;
                 slotItems[i] = null;
+                Slots[i].GetComponentInChildren<TMP_Text>().text = "";
                 break;
             }
         }
@@ -150,47 +156,59 @@ public class HotBarManager : MonoBehaviour, UIManager
         Slots[slot1].image.sprite = slotItems[slot1] != null ? slotItems[slot1].itemDetails.itemImg : emptySlotSprite;
         Slots[slot2].image.sprite = slotItems[slot2] != null ? slotItems[slot2].itemDetails.itemImg : emptySlotSprite;
         UpdateSelectedItem();
+        UpdateSlot(slot1);
+        UpdateSlot(slot2);
 
     }
 
     public void UpdateSelectedItem()
     {
-    for (int i = 0; i < slotItems.Length; i++)
+        for (int i = 0; i < slotItems.Length; i++)
         {
             if (slotItems[i] != null)
             {
                 slotItems[i].selected = false;
+                if (slotItems[i].itemDetails!=null) slotItems[i].itemDetails.UnEquip();
             }
         }
+
+        if (selectedSlot < 0 || selectedSlot >= slotItems.Length)
+            return;
+
         SlotItem selectedItem = slotItems[selectedSlot];
-        if (selectedItem != null) { 
+        if (selectedItem != null)
+        {
             selectedItem.selected = true;
+            if (selectedItem.itemDetails!=null) selectedItem.itemDetails.Equip();
+
         }
     }
+
 
     public void UpdateSlot(int slotIndex)
     {
         Slots[slotIndex].image.sprite = slotItems[slotIndex] != null ? slotItems[slotIndex].itemDetails.itemImg : emptySlotSprite;
+        Slots[slotIndex].GetComponentInChildren<TMP_Text>().text = slotItems[slotIndex] != null ? slotItems[slotIndex].quantity.ToString() : "";
     }
 
-    public void DropSelectedItem()
-    {
-        SlotItem slotItem = slotItems[selectedSlot];
-        if (slotItem == null) return;
+    //public void DropSelectedItem()
+    //{
+    //    SlotItem slotItem = slotItems[selectedSlot];
+    //    if (slotItem == null) return;
 
-        PlayerMotion player = PlayerMotion.Instance;
-        if (player == null) return;
+    //    PlayerMotion player = PlayerMotion.Instance;
+    //    if (player == null) return;
 
-        Vector3 dropPos = player.playerTransform.position + player.playerTransform.forward;
+    //    Vector3 dropPos = player.playerTransform.position + player.playerTransform.forward;
 
 
-        dropPos.y = player.playerTransform.position.y;
+    //    dropPos.y = player.playerTransform.position.y;
 
-        Inventory.Instance.GenerateItem(slotItem.itemDetails, slotItem.quantity, dropPos);
+    //    Inventory.Instance.GenerateItem(slotItem.itemDetails, slotItem.quantity, dropPos);
 
-        // Remove from hotbar
-        ClearSlot(slotItem);
-    }
+    //    // Remove from hotbar
+    //    ClearSlot(slotItem);
+    //}
 
     public SlotItem GetItem(int slotIndex)
     {
