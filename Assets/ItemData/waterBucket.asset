@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: water bucket
   itemImg: {fileID: 21300000, guid: 996e4268fefbe6942a939835cce139df, type: 3}
   usable: 0
-  itemID: 
+  useSpeed: 1
   quantityLimit: 10
   selected: 0
   parentItems: []

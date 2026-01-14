@@ -256,7 +256,7 @@ public class mapGenerator : MonoBehaviour
                 //Debug.Log("Marked building at: " + coord + " in buildings map." + ": " + buildingsMap[coord.x, coord.y] );
             }
         }
-        return new MapData (noiseMap, colourMap, biomeGenData, biomeDict, chunkSize, meshHeightCurve);
+        return new MapData (noiseMap, colourMap, biomeGenData, biomeDict, treeCoords, chunkSize, meshHeightCurve);
     }
 
     void OnValidate (){

@@ -222,21 +222,21 @@ public class EndlessTerrain : MonoBehaviour
             // Tree Logic - rememeber to scale height by mult and biome mult
             try {
                 // place dungeons of chunk, default to invisible until highest LOD
-                foreach (TreeCoord point in mapData.treeCoords){
+                foreach (TreeCoord treeCoord in mapData.treeCoords){
                     
-                    if (point.x < 0 || point.x >= mapData.chunkSize || point.y < 0 || point.y >= mapData.chunkSize){continue;}
+                    if (treeCoord.x < 0 || treeCoord.x >= mapData.chunkSize || treeCoord.y < 0 || treeCoord.y >= mapData.chunkSize){continue;}
 
-                    float worldX = point.x + position.x - 0.5f * mapData.chunkSize;
-                    float worldY = position.y + point.y + 0.5f * mapData.chunkSize;
+                    float worldX = treeCoord.x + position.x - 0.5f * mapData.chunkSize;
+                    float worldY = position.y + treeCoord.y + 0.5f * mapData.chunkSize;
 
                     // obtain information via chunk-local coords
-                    BiomeCoord biomeCoord = mapData.biomeGenData.voronoiMap[point.x, point.y];
+                    BiomeCoord biomeCoord = mapData.biomeGenData.voronoiMap[treeCoord.x, treeCoord.y];
                     
                     // position in world space
-                    mapData.heightCurve.Evaluate(point.z) * (mapGenerator.meshHeightMultiplier * biome.biomeHeightMultiplier);
+                    float height = mapData.heightCurve.Evaluate(treeCoord.z) * (mapGenerator.meshHeightMultiplier * treeCoord.biomeType.biomeHeightMultiplier);
                     Vector3 treePos = new Vector3(worldX * scale, height, worldY * scale);
                     
-                    GameObject tree = GameObject.Instantiate(biome.treePrefabs[point.objectIndex], treePos, Quaternion.identity);
+                    GameObject tree = GameObject.Instantiate(treeCoord.biomeType.treePrefabs[treeCoord.objectIndex].prefab, treePos, Quaternion.identity);
                     tree.transform.parent = meshObject.transform;
                     tree.SetActive(false);
                     treeList.Add(tree);

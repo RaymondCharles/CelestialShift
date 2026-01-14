@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class treeGenerator : MonoBehaviour
 {
-    public TreeCoord[] AssignTreePos(int chunkSize, int seed, int offset, float[,] heightMap, Dictionary<BiomeScriptableObject, int> biomeDict, BiomeCoord[,] biomeMap){
+    public TreeCoord[] AssignTreePos(int chunkSize, int seed, float offset, float[,] heightMap, Dictionary<string, BiomeScriptableObject> biomeDict, BiomeCoord[,] biomeMap){
         List<TreeCoord> treeCoords = new List<TreeCoord>();
-        System.Random prng = new System.Random(seed + offset);
+        System.Random prng = new System.Random(seed + (int)offset);
         int x = 0;
         int y = 0;
         // need to match voronoi biome y 
-        foreach (BiomeScriptableObject biome in biomeDict.Keys){
-            for (int objIndex = 0; objIndex < biome.treePrefabs.Length; objIndex++){
-                for (int i = 0; i < objInfo.countPerBiome; i++){
+        foreach (string biome in biomeDict.Keys){
+            for (int objIndex = 0; objIndex < biomeDict[biome].treePrefabs.Length; objIndex++){
+                for (int i = 0; i < biomeDict[biome].treePrefabs[objIndex].countPerBiome; i++){
                     for (int j = 0; j < 20; j++){ // try 20 times to find a valid location - avoids infinite loop for no biome areas - need to improve i.e. what if biome area is smaller than number of objects to place
                         x = prng.Next(0, chunkSize);
                         y = prng.Next(0, chunkSize);
                         // check biome at this location matches
-                        if (biomeMap[x,y].getBiome() == biome.name){
-                            treeCoords.Add(new TreeCoord(objInfo.name, x, y, objIndex, biome));
+                        if (biomeMap[x,y].getBiome() == biome){
+                            treeCoords.Add(new TreeCoord(biomeDict[biome].treePrefabs[objIndex].name, x, y, objIndex, biomeDict[biome]));
                             break;
                         }
                     }
