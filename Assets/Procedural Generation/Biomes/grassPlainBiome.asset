@@ -40,3 +40,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   dungeonPrefab: {fileID: 651509608423966001, guid: 8e7ae73a0436de04db57344a3028524b, type: 3}
+  treePrefabs:
+  - name: Tree
+    prefab: {fileID: 0}
+    countPerBiome: 10
+    groupSize: 0
+    groupProbability: 0

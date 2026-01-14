@@ -86,6 +86,7 @@ public class EndlessTerrain : MonoBehaviour
         bool mapDataReceived;
         int previousLODIndex = -1;
         List<GameObject> dungeonList = new List<GameObject>();
+        List<GameObject> treeList = new List<GameObject>();
 
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen){
             this.coord = coord;
@@ -218,7 +219,32 @@ public class EndlessTerrain : MonoBehaviour
             catch (Exception e) {
                 Debug.LogError($"Dungeon spawn failed for chunk {coord}: {e}");
             }
+            // Tree Logic - rememeber to scale height by mult and biome mult
+            try {
+                // place dungeons of chunk, default to invisible until highest LOD
+                foreach (TreeCoord point in mapData.treeCoords){
+                    
+                    if (point.x < 0 || point.x >= mapData.chunkSize || point.y < 0 || point.y >= mapData.chunkSize){continue;}
 
+                    float worldX = point.x + position.x - 0.5f * mapData.chunkSize;
+                    float worldY = position.y + point.y + 0.5f * mapData.chunkSize;
+
+                    // obtain information via chunk-local coords
+                    BiomeCoord biomeCoord = mapData.biomeGenData.voronoiMap[point.x, point.y];
+                    
+                    // position in world space
+                    mapData.heightCurve.Evaluate(point.z) * (mapGenerator.meshHeightMultiplier * biome.biomeHeightMultiplier);
+                    Vector3 treePos = new Vector3(worldX * scale, height, worldY * scale);
+                    
+                    GameObject tree = GameObject.Instantiate(biome.treePrefabs[point.objectIndex], treePos, Quaternion.identity);
+                    tree.transform.parent = meshObject.transform;
+                    tree.SetActive(false);
+                    treeList.Add(tree);
+                }
+            }
+            catch (Exception e) {
+                Debug.LogError($"Tree spawn failed for chunk {coord}: {e}");
+            }
             UpdateTerrainChunk();
         }
 
@@ -248,8 +274,14 @@ public class EndlessTerrain : MonoBehaviour
                         if (lodMesh.hasMesh){
                             // only place dungeon if highest detail LOD - this will change to visible if close enough to viewer
                             if (lodIndex == 0){
+                                // FOR TREE OBJECTS, USE LOW LOD TOO
                                 foreach (GameObject dungeon in dungeonList){
                                     dungeon.SetActive(true);
+                                }
+                            }else if (lodIndex <= 1){
+                                // hide trees if not highest LOD
+                                foreach (GameObject tree in treeList){
+                                    tree.SetActive(true);
                                 }
                             }
                             previousLODIndex = lodIndex;
@@ -263,9 +295,12 @@ public class EndlessTerrain : MonoBehaviour
                     visibleTerrainChunksLastUpdate.Add(this);
                 }
                 else{
-                    // hide dungeons if chunk not visible
+                    // hide dungeons  and treesif chunk not visible
                     foreach (GameObject dungeon in dungeonList){
                         dungeon.SetActive(false);
+                    }
+                    foreach (GameObject tree in treeList){
+                        tree.SetActive(false);
                     }
                 }
                 SetVisible(visible);

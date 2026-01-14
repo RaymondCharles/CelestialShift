@@ -186,6 +186,9 @@ public class mapGenerator : MonoBehaviour
         }
         */
 
+        // generate tree positions
+        TreeCoord[] treeCoords = new treeGenerator().AssignTreePos(chunkSize, seed, offset.x + offset.y, noiseMap, biomeDict, biomeGenData.voronoiMap);
+
         // build a 1d array of colours by looping through the heightmap, checking TerrainType struct, and assigning colours accordingly EXPAND WITH BIOMES - i.e. figure out different structs for different biomes
         Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
         for (int y=0; y < mapChunkSize; y++){
@@ -279,13 +282,22 @@ public class mapGenerator : MonoBehaviour
     }
 }
 
-
 // add new struct with terraintype as a field, biomes, adding lacunarity and all that good stuff as fields
 [System.Serializable]
 public struct TerrainType{
     public string name;
     public float height;
     public Color colour;
+}
+
+[System.Serializable]
+public struct objectGenInfo{
+    public string name;
+    public GameObject prefab;
+    public int countPerBiome;
+    // additional parameters
+    public int groupSize;
+    public float groupProbability;
 }
 
 [System.Serializable]
@@ -306,14 +318,16 @@ public struct MapData{
     public readonly BiomeGenData biomeGenData;
     // store biome dictionary from in editor list to access biome data where needed
     public readonly Dictionary<string, BiomeScriptableObject> biomeDict;
+    public readonly TreeCoord[] treeCoords;
     public readonly int chunkSize;
     public readonly AnimationCurve heightCurve;
 
-    public MapData(float[,] noiseMap, Color[] colourMap, BiomeGenData biomeGenData, Dictionary<string, BiomeScriptableObject> biomeDict, int chunkSize, AnimationCurve _heightCurve){
+    public MapData(float[,] noiseMap, Color[] colourMap, BiomeGenData biomeGenData, Dictionary<string, BiomeScriptableObject> biomeDict, TreeCoord[] treeCoords, int chunkSize, AnimationCurve _heightCurve){
         this.noiseMap = noiseMap;
         this.colourMap = colourMap;
         this.biomeGenData = biomeGenData;
         this.biomeDict = biomeDict;
+        this.treeCoords = treeCoords;
         this.chunkSize = chunkSize;
         this.heightCurve = _heightCurve;
     }
