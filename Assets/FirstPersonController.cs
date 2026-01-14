@@ -14,6 +14,7 @@ public class FirstPersonController : MonoBehaviour
     InputAction UseAction;
     public GameObject InventoryPanel;
     public GameObject PausePanel;
+    public GameObject SettingsPanel;
     public GameObject RecipePanel;
     public Transform playerTransform;
     public static FirstPersonController Instance;
@@ -149,13 +150,11 @@ public class FirstPersonController : MonoBehaviour
             LoadPlayer();
         }
 
-
-
     }
 
     void LateUpdate()
     {
-        if (InventoryPanel.activeSelf || PausePanel.activeSelf)
+        if (InventoryPanel.activeSelf || PausePanel.activeSelf || SettingsPanel.activeSelf)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -222,13 +221,6 @@ public class FirstPersonController : MonoBehaviour
         Debug.Log("Player + Inventory/HotBar loaded");
     }
 
-
-
-
-
-
-
-
     private void OnEnable()
     {
         inputActions.Enable();
@@ -248,8 +240,83 @@ public class FirstPersonController : MonoBehaviour
     }
     public void PausePanelShow()
     {
-        PausePanel.SetActive(!PausePanel.activeSelf);
+        bool isActive = !PausePanel.activeSelf;
+
+        PausePanel.SetActive(isActive);
+
+        if (isActive)
+        {
+  
+            Time.timeScale = 0f;
+            CanMove = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+    
+            Time.timeScale = 1f;
+            CanMove = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
+ 
+    public void ContinueGame()
+    {
+
+        if (PausePanel != null)
+        {
+            PausePanel.SetActive(false);
+        }
+
+
+        if (SettingsPanel != null)
+        {
+            SettingsPanel.SetActive(false);
+        }
+        Time.timeScale = 1f;
+        CanMove = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    public void OpenSettingsPanel()
+    {
+        if (PausePanel != null)
+        {
+            PausePanel.SetActive(false);
+        }
+
+        if (SettingsPanel != null) 
+        { 
+        SettingsPanel.SetActive(true);
+        }
+        if (InventoryPanel != null)
+        {
+            InventoryPanel.SetActive(true);
+        }
+    }
+
+    public void CloseSettingsPanel()
+    {
+        if (SettingsPanel != null)
+            SettingsPanel.SetActive(false);
+
+        
+        if (PausePanel != null)
+            PausePanel.SetActive(false);
+
+        if (InventoryPanel != null)
+        { 
+        InventoryPanel.SetActive(false);
+        }
+        Time.timeScale = 1f;
+        CanMove = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
     public void RecipePanelShow()
     {
         RecipePanel.SetActive(!RecipePanel.activeSelf);
@@ -269,8 +336,9 @@ public class FirstPersonController : MonoBehaviour
         {
             Debug.LogWarning("Save skipped: FirstPersonController instance not found in this scene.");
         }
+        Time.timeScale = 1f;
+        CanMove = true;
 
- 
         if (GameManager.Instance != null)
             GameManager.Instance.loadGame = true;
 
