@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: basicSword
   itemImg: {fileID: 21300000, guid: 36c1f77886c7830459e4b6973bf699be, type: 3}
   usable: 0
-  itemID: 
+  useSpeed: 2
   quantityLimit: 1
   selected: 0
   parentItems: []
