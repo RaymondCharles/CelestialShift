@@ -42,7 +42,12 @@ MonoBehaviour:
   dungeonPrefab: {fileID: 651509608423966001, guid: 8e7ae73a0436de04db57344a3028524b, type: 3}
   treePrefabs:
   - name: Tree
-    prefab: {fileID: 0}
+    prefab: {fileID: 4098151115256204285, guid: e08f9d7c970be444d9c4087f3af53976, type: 3}
+    countPerBiome: 10
+    groupSize: 0
+    groupProbability: 0
+  - name: Tree
+    prefab: {fileID: 4098151115256204285, guid: e08f9d7c970be444d9c4087f3af53976, type: 3}
     countPerBiome: 10
     groupSize: 0
     groupProbability: 0
