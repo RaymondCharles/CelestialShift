@@ -8,6 +8,7 @@ public class SwingableCollision : MonoBehaviour
     public int swordDamage = 0;
     public bool hasHit = false;
     public Transform edge;
+    public ParticleSystem sparks;
 
     void OnTriggerStay(Collider other)
     {
@@ -26,6 +27,7 @@ public class SwingableCollision : MonoBehaviour
             GameObject envObject = other.gameObject;
             if (midSwing && !hasHit)
             {
+                sparks.Emit(5);
                 hasHit = true;
                 Debug.Log("GONNA SPAWN");
                 envObject.GetComponent<mineableBehaviour>().SpawnMaterials((int)swordDamage, edge);
