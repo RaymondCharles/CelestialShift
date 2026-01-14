@@ -18,10 +18,10 @@ public class EndlessTerrain : MonoBehaviour
     public static Vector2 viewerPosition;
     public static Vector2  previousViewerPosition;
     static mapGenerator mapGenerator;
-    int chunkSize;
+    public int chunkSize;
     int chunksVisibleInVD;
 
-    Dictionary<Vector2Int, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2Int, TerrainChunk>();
+    public Dictionary<Vector2Int, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2Int, TerrainChunk>();
     static List<TerrainChunk> visibleTerrainChunksLastUpdate = new List<TerrainChunk>();
 
     void Start()
@@ -82,7 +82,7 @@ public class EndlessTerrain : MonoBehaviour
         mapGenerator mapGenerator;
         LODInfo[] detailLevels;
         LODmesh[] lodMeshes;
-        MapData mapData;
+        public MapData mapData;
         bool mapDataReceived;
         int previousLODIndex = -1;
         List<GameObject> dungeonList = new List<GameObject>();
@@ -108,6 +108,7 @@ public class EndlessTerrain : MonoBehaviour
             meshFilter = meshObject.AddComponent<MeshFilter>();
             meshCollider = meshObject.AddComponent<MeshCollider>();
             meshRenderer.material = material;
+            meshObject.layer = LayerMask.NameToLayer("Ground");
             
 
             meshObject.transform.position = positionV3 * scale;

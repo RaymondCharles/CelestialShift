@@ -115,6 +115,7 @@ public class ItemEffect : MonoBehaviour
         
         if (playerAnimator.GetCurrentAnimatorStateInfo(rightArmLayer).tagHash == busyTag || playerAnimator.GetNextAnimatorStateInfo(rightArmLayer).tagHash == busyTag)
         {
+            playerAnimator.SetBool("isBlocking", false);
             midSwing = true;
         }
         else
@@ -131,24 +132,6 @@ public class ItemEffect : MonoBehaviour
         if ((itemCollisionScript = equippedItem.GetComponent<SwingableCollision>()) != null)
         {
             itemCollisionScript.ResetHit();
-        }
-    }
-    /*public void useItem()
-    {
-        if (equippedItem != null)
-        {
-            playerAnimator.SetTrigger("useItem");
-            playerAnimator.SetBool("isBlocking", false);
-            //equippedItem.use() will have its own animator for collider for sword in the function.
-        }
-    }*/
-
-    public void useBlock()
-    {
-        if (equippedShield != null)
-        {
-            playerAnimator.SetBool("isBlocking", true);
-            //Set shield animator to true so that the collider is in place.
         }
     }
 }
