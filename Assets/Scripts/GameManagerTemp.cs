@@ -7,4 +7,8 @@ public class GameManagerTemp : MonoBehaviour
     public Item[] allItems;
     public GameObject player;
 
+    public List<GameObject> enemies;
+
+
+    
 }

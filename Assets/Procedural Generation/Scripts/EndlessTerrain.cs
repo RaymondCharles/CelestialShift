@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EndlessTerrain : MonoBehaviour
 {
@@ -24,6 +25,10 @@ public class EndlessTerrain : MonoBehaviour
     public Dictionary<Vector2Int, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2Int, TerrainChunk>();
     static List<TerrainChunk> visibleTerrainChunksLastUpdate = new List<TerrainChunk>();
 
+    public static EndlessTerrain Instance;
+    
+    void Awake() => Instance = this;
+
     void Start()
     {
         mapGenerator = FindObjectOfType<mapGenerator>();
@@ -37,6 +42,11 @@ public class EndlessTerrain : MonoBehaviour
     }
 
     void Update()
+    {
+        LoadTerrain();
+    }
+
+    public void LoadTerrain()
     {
         viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / scale;
         if ((previousViewerPosition - viewerPosition).sqrMagnitude > sqrChunkUpdateMoveThreshold){
@@ -88,10 +98,29 @@ public class EndlessTerrain : MonoBehaviour
         List<GameObject> dungeonList = new List<GameObject>();
         List<GameObject> treeList = new List<GameObject>();
 
+        //navmesh
+        GameObject navColliderObj;
+        MeshCollider navCollider;
+        bool navColliderReady;
+
+        // Per-chunk navmesh data
+        NavMeshData navMeshData;
+        NavMeshDataInstance navMeshInstance;
+        AsyncOperation navBuildOp;
+        bool navMeshAdded;
+        bool navBuildRequested;
+
+
+        bool playerColliderSet = false;
+        int chunkSize;
+        MaterialPropertyBlock mpb;
+
+        
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen){
             this.coord = coord;
             this.detailLevels = detailLevels;
             this.mapGenerator = mapGen;
+            this.chunkSize = mapGenerator.mapChunkSize;
 
             // World origin (x,z)
             position = new Vector2(coord.x * size, coord.y * size);
@@ -111,11 +140,26 @@ public class EndlessTerrain : MonoBehaviour
             meshRenderer.material = material;
             meshObject.layer = LayerMask.NameToLayer("Ground");
             
+            mpb = new MaterialPropertyBlock();
+            meshRenderer.sharedMaterial = material;
+
+            
 
             meshObject.transform.position = positionV3 * scale;
             meshObject.transform.parent = parent;
             meshObject.transform.localScale = Vector3.one * scale;
             SetVisible(false); // default to not visible
+
+
+            // Create a separate object to hold simplified collider for navmesh
+            navColliderObj = new GameObject("NavMeshCollider");
+            navColliderObj.transform.SetParent(meshObject.transform, false);
+            navColliderObj.layer = LayerMask.NameToLayer("NavMeshOnly");
+
+            navCollider = navColliderObj.AddComponent<MeshCollider>();
+            navCollider.convex = false;
+            navColliderReady = false;
+
 
             // create LOD meshes for different detail levels
             lodMeshes = new LODmesh[detailLevels.Length];
@@ -191,7 +235,9 @@ public class EndlessTerrain : MonoBehaviour
             Texture2D texture = TextureGenerator.TextureFromColourMap(flipped, size, size);
             */
             Texture2D texture = TextureGenerator.TextureFromColourMap(mapData.colourMap, mapGenerator.mapChunkSize, mapGenerator.mapChunkSize);
-            meshRenderer.material.mainTexture = texture;
+            meshRenderer.GetPropertyBlock(mpb);
+            mpb.SetTexture("_BaseMap", texture); // URP Lit
+            meshRenderer.SetPropertyBlock(mpb);
 
 
             try {
@@ -212,6 +258,7 @@ public class EndlessTerrain : MonoBehaviour
                     Vector3 dungeonPos = new Vector3(worldX * scale, height*scale, worldY * scale);
                     
                     GameObject dungeon = GameObject.Instantiate(biome.dungeonPrefab, dungeonPos, Quaternion.identity);
+                    dungeon.layer = LayerMask.NameToLayer("Ground");
                     dungeon.transform.parent = meshObject.transform;
                     dungeon.SetActive(false);
                     dungeonList.Add(dungeon);
@@ -239,6 +286,7 @@ public class EndlessTerrain : MonoBehaviour
                     
                     GameObject tree = GameObject.Instantiate(treeCoord.biomeType.treePrefabs[treeCoord.objectIndex].prefab, treePos, Quaternion.identity);
                     tree.transform.parent = meshObject.transform;
+                    tree.layer = LayerMask.NameToLayer("Ground");
                     tree.SetActive(false);
                     treeList.Add(tree);
                 }
@@ -252,6 +300,9 @@ public class EndlessTerrain : MonoBehaviour
         public void UpdateTerrainChunk(){
             // determine if chunk is visible based on viewer position, visible true if within maxViewDistance
             if (mapDataReceived){
+                TryInitChunkNavMesh();
+                TrySetPlayerCollider();
+
                 Vector3 viewerPos3 = new Vector3(viewerPosition.x, 0f, viewerPosition.y);
                 float viewerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(viewerPos3));
                 
@@ -286,7 +337,9 @@ public class EndlessTerrain : MonoBehaviour
                             }
                             previousLODIndex = lodIndex;
                             meshFilter.mesh = lodMesh.mesh;
-                            meshCollider.sharedMesh = lodMesh.mesh;
+                            //meshCollider.sharedMesh = lodMesh.mesh;
+
+
                         } else if (!lodMesh.hasRequestedMesh){
                             lodMesh.RequestMesh(mapData);
                         }
@@ -311,9 +364,81 @@ public class EndlessTerrain : MonoBehaviour
             // sets object to visible or not
             if (meshObject != null) meshObject.SetActive(visible);
         }
+        
         public bool IsVisible(){
             return meshObject.activeSelf;
         }
+
+        void TrySetPlayerCollider()
+        {
+            if (playerColliderSet) return;
+
+            // LOD0 = highest detail
+            var lod0 = lodMeshes[0];
+            if (!lod0.hasMesh || lod0.mesh == null) return;
+
+            meshCollider.sharedMesh = lod0.mesh;
+            playerColliderSet = true;
+        }
+
+        void TryInitChunkNavMesh()
+        {
+            if (navColliderReady) return;
+
+            int navLodIndex = detailLevels.Length - 1;
+            var navLod = lodMeshes[navLodIndex];
+
+            if (!navLod.hasMesh || navLod.mesh == null) return;
+
+            // Set simplified collider ONCE
+            navCollider.sharedMesh = navLod.mesh;
+            navColliderReady = true;
+
+            // Create per-chunk NavMeshData and add it
+            if (!navMeshAdded)
+            {
+                int agentType = ChunkNavMeshManager.Instance.AgentTypeID;
+                navMeshData = new NavMeshData(agentType);
+                navMeshInstance = NavMesh.AddNavMeshData(navMeshData);
+                navMeshAdded = true;
+            }
+
+            // Kick off the build via manager queue (throttled)
+            if (!navBuildRequested)
+            {
+                navBuildRequested = true;
+                ChunkNavMeshManager.Instance.EnqueueBuild(BuildChunkNavMesh);
+            }
+        }
+
+        void BuildChunkNavMesh()
+        {
+            // Build bounds = this chunk bounds, scaled to world
+            // Your bounds were created in "unscaled chunk space", then object transform uses scale.
+            // So use world bounds directly:
+            var worldBounds = new Bounds(meshObject.transform.position + new Vector3(chunkSize * scale * 0.5f, 0f, chunkSize * scale * 0.5f),
+                                        new Vector3(chunkSize * scale, 200f, chunkSize * scale));
+
+            // Collect sources only from NavMeshOnly layer, inside this chunk bounds
+            var sources = new List<NavMeshBuildSource>(16);
+            NavMeshBuilder.CollectSources(
+                worldBounds,
+                LayerMask.GetMask("NavMeshOnly"),
+                NavMeshCollectGeometry.PhysicsColliders,
+                0,
+                new List<NavMeshBuildMarkup>(),
+                sources
+            );
+
+            var settings = ChunkNavMeshManager.Instance.GetSettings();
+
+            navBuildOp = NavMeshBuilder.UpdateNavMeshDataAsync(navMeshData, settings, sources, worldBounds);
+            navBuildOp.completed += _ =>
+            {
+                ChunkNavMeshManager.Instance.NotifyBuildFinished();
+            };
+        }
+
     }
 
     class LODmesh{
