@@ -5164,6 +5164,8 @@ MonoBehaviour:
   consumeItemClip: {fileID: 0}
   useItemClip: {fileID: 0}
   swingItemClip: {fileID: 0}
+  useSpeed: 1
+  midSwing: 0
 --- !u!95 &276474662
 Animator:
   serializedVersion: 7
@@ -10383,6 +10385,7 @@ GameObject:
   m_Component:
   - component: {fileID: 705507995}
   - component: {fileID: 705507994}
+  - component: {fileID: 705507996}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -10467,6 +10470,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &705507996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705507993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &707395456 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8863131847073162066, guid: 40ac5525f5ade654ebdc5424db828663, type: 3}
@@ -11076,6 +11102,8 @@ MonoBehaviour:
   consumeItemClip: {fileID: 6291693430043131109, guid: 56209f2b674b6fa418a0ee0e9b9386f5, type: 3}
   useItemClip: {fileID: 140180917695826619, guid: 56209f2b674b6fa418a0ee0e9b9386f5, type: 3}
   swingItemClip: {fileID: 6251526563410470785, guid: 56209f2b674b6fa418a0ee0e9b9386f5, type: 3}
+  useSpeed: 1
+  midSwing: 0
 --- !u!1 &762733659
 GameObject:
   m_ObjectHideFlags: 0
@@ -13002,7 +13030,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 903206890}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2581523, y: 0.000000008311578, z: -0.0000000022209337, w: 0.96610427}
+  m_LocalRotation: {x: 0.2581523, y: 0.000000008311578, z: -0.0000000022209334, w: 0.96610427}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -20655,6 +20683,18 @@ MonoBehaviour:
   rotationSpeed: 1000
   visionRange: 20
   engagementRange: 10
+  meleeEnterRange: 2.2
+  meleeExitRange: 3
+  animator: {fileID: 0}
+  speedA: Speed
+  meleeTrigger: Melee
+  rangedTrigger: Ranged
+  walkSpeedThreshold: 0.1
+  runSpeedThreshold: 3
+  attackMode: 2
+  meleeDamage: 10
+  meleeAngle: 90
+  meleeHitDelay: 0.2
 --- !u!65 &1567202152
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26678,7 +26718,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144748341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24058327, y: -0.00000001670101, z: 0.0000000041395687, w: 0.97062856}
+  m_LocalRotation: {x: 0.24058327, y: 0.000000016701, z: -0.0000000041395665, w: 0.97062856}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -28009,6 +28049,18 @@ MonoBehaviour:
   toggleKey: 31
   CameraLockKey: 53
   cameraLock: 1
+  fpVolume: {fileID: 0}
+  tpVolume: {fileID: 0}
+  sandVolume: {fileID: 0}
+  snowVolume: {fileID: 0}
+  grassVolume: {fileID: 0}
+  sandFX: {fileID: 0}
+  snowFX: {fileID: 0}
+  grassFX: {fileID: 0}
+  mapGenerator: {fileID: 0}
+  biome: 
+  transitionSpeed: 3
+  targetFXRate: 300
   freeLookCamera: {fileID: 626552435}
   virtualCam: {fileID: 1941465094}
 --- !u!4 &3112596260028608544
@@ -28158,6 +28210,18 @@ PrefabInstance:
     - target: {fileID: 2361441215000808391, guid: c79b25310426088489f849dbf4906837, type: 3}
       propertyPath: m_SizeDelta.y
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2361441215000808391, guid: c79b25310426088489f849dbf4906837, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2361441215000808391, guid: c79b25310426088489f849dbf4906837, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2361441215000808391, guid: c79b25310426088489f849dbf4906837, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 2361441215000808391, guid: c79b25310426088489f849dbf4906837, type: 3}
       propertyPath: m_LocalPosition.x
@@ -29567,6 +29631,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapItemIcon
       objectReference: {fileID: 0}
+    - target: {fileID: 2742549629564947440, guid: 89faeb767954b244491552d97acc8bbe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5702373941283048420, guid: 89faeb767954b244491552d97acc8bbe, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -29598,6 +29666,18 @@ PrefabInstance:
     - target: {fileID: 5702373941283048420, guid: 89faeb767954b244491552d97acc8bbe, type: 3}
       propertyPath: m_SizeDelta.y
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702373941283048420, guid: 89faeb767954b244491552d97acc8bbe, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702373941283048420, guid: 89faeb767954b244491552d97acc8bbe, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702373941283048420, guid: 89faeb767954b244491552d97acc8bbe, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 5702373941283048420, guid: 89faeb767954b244491552d97acc8bbe, type: 3}
       propertyPath: m_LocalPosition.x
