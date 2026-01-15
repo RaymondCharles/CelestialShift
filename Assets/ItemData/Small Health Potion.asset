@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Small Health Potion
   itemImg: {fileID: 21300000, guid: 36c1f77886c7830459e4b6973bf699be, type: 3}
-  usable: 1
+  usable: 0
+  useSpeed: 1
   quantityLimit: 30
   selected: 0
   parentItems:
@@ -22,3 +23,9 @@ MonoBehaviour:
   childrenItems: []
   worldPrefab: {fileID: 958547734467315665, guid: 5c212e7cbdb956d4eb75c0707aaf907b, type: 3}
   action: {fileID: 11400000, guid: d99a5aea957d280408a5b1110763b170, type: 2}
+  newObject: {fileID: 0}
+  objectToSpawn: {fileID: 8045968092007505945, guid: 12acba66850e63f40b16cac7e1d733d1, type: 3}
+  positionalGameObjectName: right hand_end
+  swingable: 0
+  throwable: 0
+  consumable: 1

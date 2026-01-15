@@ -15,9 +15,16 @@ MonoBehaviour:
   itemName: Fire Splash Potion
   itemImg: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   usable: 1
+  useSpeed: 1
   quantityLimit: 10
   selected: 0
   parentItems: []
   childrenItems: []
   worldPrefab: {fileID: 6205032877022989193, guid: 0385f43a872b9bd4286d8dd81a103edd, type: 3}
   action: {fileID: 11400000, guid: ae6923627a6c9184c8e4e4707f5924a4, type: 2}
+  newObject: {fileID: 0}
+  objectToSpawn: {fileID: 6205032877022989193, guid: de69e25b60c5e4b4d83416faa7357333, type: 3}
+  positionalGameObjectName: 
+  swingable: 0
+  throwable: 1
+  consumable: 0
