@@ -9,6 +9,10 @@ public class BigMapIcon : MonoBehaviour
     public Transform dungeonWorldObject;
     public GameObject dungeonIconPrefab;
 
+    public float zoomSpeed = 5f;
+    public float minHeight = 400f;
+    public float maxHeight = 800f;
+
     private GameObject dungeonIcon;
 
     void Start()

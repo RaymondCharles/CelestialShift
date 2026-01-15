@@ -14,6 +14,8 @@ public class FirstPersonController : MonoBehaviour
     InputAction DropAction;
     InputAction UseAction;
     InputAction MapAction;
+    InputAction MapZoomAction;
+
     public GameObject InventoryPanel;
     public GameObject PausePanel;
     public GameObject SettingsPanel;
@@ -24,6 +26,7 @@ public class FirstPersonController : MonoBehaviour
     public static FirstPersonController Instance;
     public GameObject gameManager;
     private bool isBigMapOpen = false;
+    float zoomValue;
 
 
     //Determine whether a player/character is in control
@@ -151,6 +154,8 @@ public class FirstPersonController : MonoBehaviour
         DropAction = playerInput.actions.FindAction("Drop");
         UseAction = playerInput.actions.FindAction("Use");
         MapAction = playerInput.actions.FindAction("Map");
+        MapZoomAction = playerInput.actions.FindAction("ZoomMap");
+        zoomValue = MapZoomAction.ReadValue<float>();
 
 
         if (GameManager.Instance.loadGame)
