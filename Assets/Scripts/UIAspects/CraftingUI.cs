@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CraftingUI : MonoBehaviour, UIManager
 {
     public static CraftingUI Instance;
 
     public Image[] slots;
-    public Image resultSlot;
     public SlotItem[] craftingItems;
     public Sprite emptySprite;
 
@@ -20,6 +20,7 @@ public class CraftingUI : MonoBehaviour, UIManager
     public void UpdateSlot(int slotIndex)
     {
         slots[slotIndex].sprite = craftingItems[slotIndex] != null ? craftingItems[slotIndex].itemDetails.itemImg : emptySprite;
+        slots[slotIndex].GetComponentInChildren<TMP_Text>().text = craftingItems[slotIndex] != null ? craftingItems[slotIndex].quantity.ToString() : "";
     }
 
     public void SlotSwap(int slot1, int slot2)

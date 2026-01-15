@@ -8,43 +8,43 @@ public class Inventory : MonoBehaviour
     public static Inventory Instance;
     public HotBarManager hotBarManager;
     public SlotItem[] inventoryItems;
+    private int inventorySize = 40;
 
 
 
     public void Awake()
     {
         Instance = this;
-
-        // Ensure inventory array is always initialized
-        if (inventoryItems == null || inventoryItems.Length != 8)
-        {
-            inventoryItems = new SlotItem[8];
-        }
+        inventoryItems = new SlotItem[inventorySize];
     }
 
 
     public int addItem(Item item, int quantity)
     {
+        int index = -1;
         int leftOver = quantity;
         foreach (SlotItem itemInList in inventoryItems)
         {
+            index++;
             if (itemInList == null) continue;
             if (itemInList.itemDetails.itemName == item.itemName)
             {
-                itemInList.quantity += quantity;
+                itemInList.quantity += leftOver;
                 leftOver = itemInList.quantity - item.quantityLimit;
                 if (leftOver > 0)
                 {
                     itemInList.quantity -= leftOver;
+                    InventoryUI.Instance.UpdateSlot(index);
                 }
                 else if (leftOver <= 0)
                 {
+                    InventoryUI.Instance.UpdateSlot(index);
                     return 0;
                 }
                 Debug.Log(leftOver);
             }
         }
-        int index;
+        index = -1;
         while ((index = GetFirstEmptySlot()) != -1 && leftOver > item.quantityLimit)
         {
             inventoryItems[index] = (new SlotItem(item, item.quantityLimit));;

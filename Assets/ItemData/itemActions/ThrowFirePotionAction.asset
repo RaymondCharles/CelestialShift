@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 916ccbd75fc333f49b2572af3d3764f5, type: 3}
+  m_Name: ThrowFirePotionAction
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 6205032877022989193, guid: 0434d512f11e30f4293fb5bcb6ae354b, type: 3}
+  throwSpeed: 18
+  splashRadius: 2
+  damagePerTick: 5
+  tickSeconds: 1
+  durationSeconds: 5
+  spawnOffset: {x: 0, y: 1.4, z: 0.6}
+  spawnForwardPush: 0.25
