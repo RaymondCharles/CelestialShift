@@ -20,7 +20,7 @@ MonoBehaviour:
   selected: 0
   parentItems: []
   childrenItems: []
-  worldPrefab: {fileID: 8650222930057260052, guid: e81262b1d65750a40a6dbb77a1a6e359, type: 3}
+  worldPrefab: {fileID: 5507235963131712768, guid: 67104cc023d3ad14e8ad9f74e55334e3, type: 3}
   action: {fileID: 11400000, guid: c7119e149633dc842b0b5c82f3e27231, type: 2}
   newObject: {fileID: 0}
   objectToSpawn: {fileID: 5507235963131712768, guid: 00773adefbffdac44a9f9c772103acf6, type: 3}

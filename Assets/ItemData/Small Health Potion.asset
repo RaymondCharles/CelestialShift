@@ -21,7 +21,7 @@ MonoBehaviour:
   parentItems:
   - {fileID: 11400000, guid: d780f6cdda55d2345b9af117ba6e0660, type: 2}
   childrenItems: []
-  worldPrefab: {fileID: 958547734467315665, guid: 5c212e7cbdb956d4eb75c0707aaf907b, type: 3}
+  worldPrefab: {fileID: 8045968092007505945, guid: 3ee07b1c165378a489fe0780551acbd6, type: 3}
   action: {fileID: 11400000, guid: d99a5aea957d280408a5b1110763b170, type: 2}
   newObject: {fileID: 0}
   objectToSpawn: {fileID: 8045968092007505945, guid: 12acba66850e63f40b16cac7e1d733d1, type: 3}
