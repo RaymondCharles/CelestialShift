@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7345013734483371942}
   - component: {fileID: 7614294846527516194}
   - component: {fileID: 7578426319055596406}
+  - component: {fileID: -398824993674110954}
   m_Layer: 0
   m_Name: Water Bucket To Hold
   m_TagString: Untagged
@@ -135,3 +136,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-398824993674110954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6806850328721163496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 186d569141ff92c4a806413425ec1b89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 11400000, guid: 9c3abf2dd8216ec48ae11ac167b80437, type: 2}

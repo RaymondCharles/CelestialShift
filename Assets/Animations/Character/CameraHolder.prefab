@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1409769067678376749}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 194, y: 100.59, z: 214}
+  m_LocalPosition: {x: 118.03084, y: 52.164146, z: 660.0509}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -699,7 +699,7 @@ Transform:
   m_GameObject: {fileID: 4603033084619873464}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 194, y: 100.59, z: 214}
+  m_LocalPosition: {x: 118.03084, y: 52.164146, z: 660.0509}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -765,41 +765,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 4603033084619873464}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Script: {fileID: 11500000, guid: e3a1098ae11d8f24fb89ac0d8b97c1ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
-  m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
-  m_Cameras: []
-  m_RendererIndex: -1
-  m_VolumeLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  m_VolumeTrigger: {fileID: 0}
-  m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
-  m_AntialiasingQuality: 2
-  m_StopNaN: 0
-  m_Dithering: 0
-  m_ClearDepth: 1
-  m_AllowXRRendering: 1
-  m_AllowHDROutput: 1
-  m_UseScreenCoordOverride: 0
-  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
-  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
-  m_RequiresDepthTexture: 0
-  m_RequiresColorTexture: 0
-  m_Version: 2
-  m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+  sensX: 200
+  sensY: 200
+  orientation: {fileID: 0}
+  followTarget: {fileID: 0}
+  playerCam: {fileID: 0}
+  FPCamera: {fileID: 0}
+  TPCamera: {fileID: 0}
+  toggleKey: 31
+  enemyLock: 20
+  freeLookCamera: {fileID: 0}
+  virtualCam: {fileID: 0}
 --- !u!81 &5735785182680682544
 AudioListener:
   m_ObjectHideFlags: 0
@@ -886,21 +865,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 6142897122011183729}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5db371de1211c4045814106c9cde26af, type: 3}
+  m_Script: {fileID: 11500000, guid: e3a1098ae11d8f24fb89ac0d8b97c1ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sensX: 200
   sensY: 200
   orientation: {fileID: 0}
   followTarget: {fileID: 0}
-  playerCam: {fileID: 2802390271263640344}
-  FPCamera: {fileID: 1409769067678376749}
-  TPCamera: {fileID: 6271563685372969483}
+  playerCam: {fileID: 0}
+  FPCamera: {fileID: 0}
+  TPCamera: {fileID: 0}
   toggleKey: 31
   enemyLock: 20
-  GameManager: {fileID: 0}
-  freeLookCamera: {fileID: 1328344228314797909}
-  virtualCam: {fileID: 8837153450622214287}
+  freeLookCamera: {fileID: 0}
+  virtualCam: {fileID: 0}
 --- !u!1 &6271563685372969483
 GameObject:
   m_ObjectHideFlags: 0

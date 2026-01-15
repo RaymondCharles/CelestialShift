@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
+  m_Name: woodenShield
+  m_EditorClassIdentifier: 
+  itemName: wooden shield
+  itemImg: {fileID: 21300000, guid: 996e4268fefbe6942a939835cce139df, type: 3}
+  usable: 0
+  useSpeed: 1
+  quantityLimit: 1
+  selected: 0
+  parentItems: []
+  childrenItems: []
+  worldPrefab: {fileID: 8989109606312072488, guid: 04b1b13e1b5aa4047957ae3aabe4b79c, type: 3}
+  action: {fileID: 0}
+  minimapIconPrefab: {fileID: 9213814653018040957, guid: c79b25310426088489f849dbf4906837, type: 3}
+  newObject: {fileID: 0}
+  objectToSpawn: {fileID: 4811934317335652646, guid: 1ab6ff81171b2974b865d08f3a5a841a, type: 3}
+  positionalGameObjectName: right hand_end
+  swingable: 0
+  throwable: 0
+  consumable: 0

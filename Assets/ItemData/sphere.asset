@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: sphere
   itemImg: {fileID: 546601033, guid: 58b91ef4865cd7b49b8b7cb46d9b40c2, type: 3}
   usable: 0
-  itemID: 
+  useSpeed: 1
   quantityLimit: 1
   selected: 0
   parentItems: []

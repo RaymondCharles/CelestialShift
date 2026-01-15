@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ba415e03ca788444aa75fd2f844b9d2, type: 3}
+  m_Name: desertBiome
+  m_EditorClassIdentifier: 
+  name: Desert
+  terrainType:
+  - name: rock
+    height: 0.1
+    colour: {r: 0.4716981, g: 0.33634156, b: 0.05562477, a: 0}
+  - name: Sand
+    height: 1
+    colour: {r: 0.754717, g: 0.5373814, b: 0.06051977, a: 0}
+  persistance: 0.491
+  lacunarity: 1.85
+  biomeColour: {r: 1, g: 0.84106404, b: 0, a: 0}
+  biomeHeightMultiplier: 0.4
+  meshHeightCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  dungeonPrefab: {fileID: 578770440915052239, guid: 5b694e860b8ab3e45ab209917a25c23b, type: 3}
+  treePrefabs:
+  - name: Rock
+    prefab: {fileID: 6057102198567465640, guid: 731c45c19a171374190a9a14a22abfe3, type: 3}
+    countPerBiome: 10
+    groupSize: 0
+    groupProbability: 0

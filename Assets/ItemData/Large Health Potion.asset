@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
+  m_Name: Large Health Potion
+  m_EditorClassIdentifier: 
+  itemName: Large Health Potion
+  itemImg: {fileID: 21300000, guid: e45697d9f2c57e14f91b3f3725bc64c4, type: 3}
+  usable: 1
+  useSpeed: 1
+  quantityLimit: 10
+  selected: 0
+  parentItems: []
+  childrenItems:
+  - items:
+    - {fileID: 11400000, guid: b5d5da3c3de1b724fba32153f7a21a9c, type: 2}
+    - {fileID: 11400000, guid: b5d5da3c3de1b724fba32153f7a21a9c, type: 2}
+    itemQuantities: 0f0000000f000000
+  worldPrefab: {fileID: 3249369431548683117, guid: 4adf6b74c2eeaf348af884ba3112b479, type: 3}
+  action: {fileID: 11400000, guid: d60caac2930cfcb4f8621e7be22e2fb4, type: 2}
+  newObject: {fileID: 0}
+  objectToSpawn: {fileID: 3249369431548683117, guid: 240c2e9b6f4c19a42b0a3b54ae02539c, type: 3}
+  positionalGameObjectName: right hand_end
+  swingable: 0
+  throwable: 0
+  consumable: 1
