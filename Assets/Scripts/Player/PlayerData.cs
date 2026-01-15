@@ -7,6 +7,9 @@ public class PlayerData
     public float[] position;
     public List<InventorySlotData> inventorySlots;
     public List<InventorySlotData> HotBarSlots;
+    public float hotBarSize;
+    public float inventorySize;
+    public float musicVolume;
 
 
 
@@ -64,5 +67,8 @@ public class PlayerData
                 }
             }
         }
+        hotBarSize = PlayerPrefs.GetFloat("HotbARSize", 0.6f);
+        inventorySize = PlayerPrefs.GetFloat("InvSize", 1f);
+        musicVolume = PlayerPrefs.GetFloat("MusicVol", 0.6f);
     }
 }

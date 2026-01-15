@@ -1603,7 +1603,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2134260201}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: HotBarSize, Assembly-CSharp
         m_MethodName: ApplySize
         m_Mode: 0
@@ -16169,6 +16169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InventoryPanel: {fileID: 0}
+  HotBar: {fileID: 0}
   PausePanel: {fileID: 0}
   SettingsPanel: {fileID: 0}
   BigMapPanel: {fileID: 0}
@@ -29987,7 +29988,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 903206890}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.25815228, y: 0.000000016623154, z: -0.000000004441866, w: 0.96610427}
+  m_LocalRotation: {x: 0.25815228, y: -0.000000016623162, z: 0.0000000044418673, w: 0.96610427}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -45646,7 +45647,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2134260202}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MusicVolume, Assembly-CSharp
         m_MethodName: ApplyVolume
         m_Mode: 0
@@ -46066,7 +46067,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2134260200}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: InventorySIze, Assembly-CSharp
         m_MethodName: ApplySize
         m_Mode: 0
@@ -46166,6 +46167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InventoryPanel: {fileID: 1946826848}
+  HotBar: {fileID: 0}
   PausePanel: {fileID: 1058778956}
   SettingsPanel: {fileID: 0}
   BigMapPanel: {fileID: 0}
@@ -48486,7 +48488,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494344952}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2756825, y: -1e-45, z: -0, w: 0.96124876}
+  m_LocalRotation: {x: 0.2756825, y: 3e-45, z: -1e-45, w: 0.96124876}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -58078,6 +58080,11 @@ PrefabInstance:
       addedObject: {fileID: 1975685260}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c39ea5572abe4884daafcf31a070b0dd, type: 3}
+--- !u!1 &1738686578 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 261416495346783133, guid: c39ea5572abe4884daafcf31a070b0dd, type: 3}
+  m_PrefabInstance: {fileID: 1738686577}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1740881699
 GameObject:
   m_ObjectHideFlags: 0
@@ -67898,9 +67905,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2134260199}
-  - component: {fileID: 2134260200}
-  - component: {fileID: 2134260201}
   - component: {fileID: 2134260202}
+  - component: {fileID: 2134260201}
+  - component: {fileID: 2134260200}
   m_Layer: 5
   m_Name: Settings
   m_TagString: Untagged
@@ -68047,7 +68054,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144748341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24058327, y: -0.000000016701, z: 0.0000000041395665, w: 0.97062856}
+  m_LocalRotation: {x: 0.24058327, y: 0.00000001670101, z: -0.0000000041395687, w: 0.97062856}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -72931,6 +72938,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InventoryPanel: {fileID: 1946826848}
+  HotBar: {fileID: 1738686578}
   PausePanel: {fileID: 1058778956}
   SettingsPanel: {fileID: 2134260198}
   BigMapPanel: {fileID: 1425368502}

@@ -16,6 +16,7 @@ public class FirstPersonController : MonoBehaviour
     InputAction MapAction;
     InputAction MapZoomAction;
     public GameObject InventoryPanel;
+    public GameObject HotBar;
     public GameObject PausePanel;
     public GameObject SettingsPanel;
     public GameObject BigMapPanel;
@@ -191,6 +192,13 @@ public class FirstPersonController : MonoBehaviour
     {
         SaveSystem.SavePlayer(this);
         Debug.Log("Player saved at position: " + playerTransform.position);
+
+        if (HotBar != null) PlayerPrefs.SetFloat("HotbARSize", HotBar.transform.localScale.x);
+        if (InventoryPanel != null) PlayerPrefs.SetFloat("InvSize", InventoryPanel.transform.localScale.x);
+        if (GameManager.Instance != null && GameManager.Instance.currentMusic != null)
+            PlayerPrefs.SetFloat("MusicVol", GameManager.Instance.currentMusic.volume);
+
+        PlayerPrefs.Save();
     }
     public void LoadPlayer()
     {
@@ -236,6 +244,19 @@ public class FirstPersonController : MonoBehaviour
         }
 
         Debug.Log("Player + Inventory/HotBar loaded");
+
+        // Apply HotBar size
+        if (HotBar != null)
+            HotBar.transform.localScale = Vector3.one * (PlayerPrefs.GetFloat("HotbARSize", 0.6f));
+
+        // Apply Inventory size
+        if (InventoryPanel != null)
+            InventoryPanel.transform.localScale = Vector3.one * (PlayerPrefs.GetFloat("InvSize", 1f));
+
+        // Apply music volume
+        if (GameManager.Instance != null && GameManager.Instance.currentMusic != null)
+            GameManager.Instance.currentMusic.volume = PlayerPrefs.GetFloat("MusicVol", 0.6f);
+
     }
 
     private void OnEnable()

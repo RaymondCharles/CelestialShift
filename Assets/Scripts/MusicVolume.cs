@@ -22,7 +22,7 @@ public class MusicVolume : MonoBehaviour
                     {
                         GameManager.Instance.currentMusic.volume = value;
                     }
-                PlayerPrefs.SetFloat("GameMusicVolume", value);
+                PlayerPrefs.SetFloat("MusicVol", value);
 
             }
 }
