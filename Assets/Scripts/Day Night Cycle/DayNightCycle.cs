@@ -107,7 +107,8 @@ public class DayNightCycle : MonoBehaviour {
 
 
     private void Update()
-    {
+    {   
+        /*
         if (dailyRotation == null)
         {
             Debug.LogError("DayNightCycle: dailyRotation is NOT assigned!");
@@ -118,6 +119,7 @@ public class DayNightCycle : MonoBehaviour {
             Debug.LogError("DayNightCycle: sun is NOT assigned!");
             return;
         }
+        */
         if (!pause)
         {
             UpdateTimeScale();
@@ -135,8 +137,8 @@ public class DayNightCycle : MonoBehaviour {
     private void UpdateTimeScale()
     {
         _timeScale = 24 / (_targetDayLength / 60); // base time scale calculation - 24 / (day length in hours)
-        //_timeScale *= timeCurve.Evaluate(elapsedTime / (targetDayLength * 60)); //changes timescale based on time curve
-        //_timeScale /= timeCurveNormalization; //keeps day length at target value
+        _timeScale *= timeCurve.Evaluate(elapsedTime / (targetDayLength * 60)); //changes timescale based on time curve
+        _timeScale /= timeCurveNormalization; //keeps day length at target value
     }
 
 

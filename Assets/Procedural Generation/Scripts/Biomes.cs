@@ -14,4 +14,5 @@ public class BiomeScriptableObject : ScriptableObject
     public AnimationCurve meshHeightCurve;
     public GameObject dungeonPrefab;
     public objectGenInfo[] treePrefabs;
+    public objectGenInfo[] enemyPrefabs;
 }
