@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        volume = PlayerPrefs.HasKey("GameMusicVolume") ? PlayerPrefs.GetFloat("GameMusicVolume") : 0.6f;
+        volume = PlayerPrefs.HasKey("MusicVol") ? PlayerPrefs.GetFloat("MusicVol") : 0.6f;
 
         if (currentMusic.clip)
         {
@@ -143,4 +143,6 @@ public class GameManager : MonoBehaviour
         loadGame = true;
         SceneManager.LoadScene("SampleScene");
     }
+
+
 }

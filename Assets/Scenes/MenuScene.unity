@@ -4862,6 +4862,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InventoryPanel: {fileID: 0}
+  GameOverPanel: {fileID: 0}
   HotBar: {fileID: 0}
   PausePanel: {fileID: 0}
   SettingsPanel: {fileID: 0}
@@ -9308,7 +9309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56c4f40180cf31543b5d75bf2bf07bb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HotBar: {fileID: 0}
+  HotBar: {fileID: 1788668213}
   sliderSize: {fileID: 1283643401}
   defaultSize: 0.6
 --- !u!114 &804624202
@@ -9323,7 +9324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa246084b17ea5a409102c4a54d42925, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Inventory: {fileID: 0}
+  Inventory: {fileID: 892428190}
   sliderSize: {fileID: 897750251}
   defaultSize: 0.6
 --- !u!1 &810516871

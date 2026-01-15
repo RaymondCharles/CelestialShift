@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerStatsUI : MonoBehaviour
@@ -6,6 +7,12 @@ public class PlayerStatsUI : MonoBehaviour
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Slider hungerSlider;
+
+
+    public GameObject gameOverPanel;
+    public Button mainMenuButton;
+    private bool isGameOver = false;
+    public GameObject Crosshair;
 
     private void Awake()
     {
@@ -53,6 +60,9 @@ public class PlayerStatsUI : MonoBehaviour
 
         // Update values once at start
         Refresh();
+
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (mainMenuButton != null) mainMenuButton.onClick.AddListener(ReturnToMainMenu);
     }
 
     private void Refresh()
@@ -64,5 +74,52 @@ public class PlayerStatsUI : MonoBehaviour
 
         if (hungerSlider != null)
             hungerSlider.value = playerStats.Hunger;
+
+        if (playerStats.Health <= 0)
+        {
+            TriggerGameOver();
+
+            UpdateCrosshair();
+        }
     }
+    private void UpdateCrosshair()
+    {
+
+        bool shouldHide = gameOverPanel.activeSelf;
+
+        if (Crosshair != null)
+            Crosshair.SetActive(!shouldHide);
+    }
+    private void TriggerGameOver()
+    {
+        if (isGameOver) return; 
+        isGameOver = true;
+
+        Time.timeScale = 0f; 
+
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.inGame = false; 
+        }
+
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
+
+        UpdateCrosshair();
+    }
+
+    private void ReturnToMainMenu()
+    {
+        Time.timeScale = 1f; 
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.inGame = false; 
+        }
+        SceneManager.LoadScene("MenuScene");
+    }
+
+
+
+
 }

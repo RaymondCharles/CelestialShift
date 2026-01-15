@@ -16,6 +16,7 @@ public class FirstPersonController : MonoBehaviour
     InputAction MapAction;
     InputAction MapZoomAction;
     public GameObject InventoryPanel;
+    public GameObject GameOverPanel;
     public GameObject HotBar;
     public GameObject PausePanel;
     public GameObject SettingsPanel;
@@ -177,7 +178,7 @@ public class FirstPersonController : MonoBehaviour
 
     void LateUpdate()
     {
-        if (InventoryPanel.activeSelf || PausePanel.activeSelf || SettingsPanel.activeSelf)
+        if (InventoryPanel.activeSelf || PausePanel.activeSelf || SettingsPanel.activeSelf || GameOverPanel.activeSelf)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -270,11 +271,28 @@ public class FirstPersonController : MonoBehaviour
     }
     public void InventoryPanelShow()
     {
-        InventoryPanel.SetActive(!InventoryPanel.activeSelf);
-        for (int i=0; i < Inventory.Instance.inventoryItems.Length; i++)
+        bool newState = !InventoryPanel.activeSelf;
+
+        if (newState)
         {
-            InventoryUI.Instance.UpdateSlot(i);
+            // Close BigMap if open
+            if (isBigMapOpen) CloseBigMap();
+
+            // Close PausePanel if open
+            if (PausePanel.activeSelf) PausePanel.SetActive(false);
         }
+
+        InventoryPanel.SetActive(newState);
+
+        // Update all slots
+        if (Inventory.Instance != null && InventoryUI.Instance != null)
+        {
+            for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
+            {
+                InventoryUI.Instance.UpdateSlot(i);
+            }
+        }
+
         UpdateCrosshair();
     }
     private void UpdateCrosshair()
@@ -289,14 +307,22 @@ public class FirstPersonController : MonoBehaviour
     public void PausePanelShow()
     {
         bool isActive = !PausePanel.activeSelf;
-        if (GameManager.Instance != null) GameManager.Instance.inGame = (!isActive);
-        Debug.Log(GameManager.Instance.inGame);
-
-        PausePanel.SetActive(isActive);
 
         if (isActive)
         {
-  
+            // Close Inventory if open
+            if (InventoryPanel.activeSelf) InventoryPanel.SetActive(false);
+
+            // Close BigMap if open
+            if (isBigMapOpen) CloseBigMap();
+        }
+
+        PausePanel.SetActive(isActive);
+
+        if (GameManager.Instance != null) GameManager.Instance.inGame = !isActive;
+
+        if (isActive)
+        {
             Time.timeScale = 0f;
             CanMove = false;
             Cursor.lockState = CursorLockMode.None;
@@ -304,14 +330,16 @@ public class FirstPersonController : MonoBehaviour
         }
         else
         {
-    
             Time.timeScale = 1f;
             CanMove = true;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+
         UpdateCrosshair();
     }
+
+
 
     public void ContinueGame()
     {
