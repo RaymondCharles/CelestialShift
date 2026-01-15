@@ -25,7 +25,7 @@ public class Item : ScriptableObject
     public GameObject worldPrefab;
 
     public ItemAction action;
-
+    public GameObject minimapIconPrefab;
     private GameObject ItemAnimator;
     private Transform positionalTransform;
     public GameObject newObject;

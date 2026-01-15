@@ -22,6 +22,7 @@ MonoBehaviour:
   childrenItems: []
   worldPrefab: {fileID: 1877884569096021469, guid: 07a3e520ef0ed754f8d35c4cd1d8ee86, type: 3}
   action: {fileID: 11400000, guid: d786cde816a62944fa8f5bc7ee18d737, type: 2}
+  minimapIconPrefab: {fileID: 2742549629564947440, guid: 89faeb767954b244491552d97acc8bbe, type: 3}
   newObject: {fileID: 0}
   objectToSpawn: {fileID: 1877884569096021469, guid: 6e1fa992237e74f489099e9126c5da23, type: 3}
   positionalGameObjectName: right hand_end
