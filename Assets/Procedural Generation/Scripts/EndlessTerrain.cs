@@ -86,6 +86,7 @@ public class EndlessTerrain : MonoBehaviour
         bool mapDataReceived;
         int previousLODIndex = -1;
         List<GameObject> dungeonList = new List<GameObject>();
+        List<GameObject> treeList = new List<GameObject>();
 
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen){
             this.coord = coord;
@@ -208,7 +209,7 @@ public class EndlessTerrain : MonoBehaviour
                     
                     // position in world space
                     float height = mapData.heightCurve.Evaluate(mapData.noiseMap[point.x, point.y]) * (mapGenerator.meshHeightMultiplier * biome.biomeHeightMultiplier);
-                    Vector3 dungeonPos = new Vector3(worldX * scale, height, worldY * scale);
+                    Vector3 dungeonPos = new Vector3(worldX * scale, height*scale, worldY * scale);
                     
                     GameObject dungeon = GameObject.Instantiate(biome.dungeonPrefab, dungeonPos, Quaternion.identity);
                     dungeon.transform.parent = meshObject.transform;
@@ -219,7 +220,32 @@ public class EndlessTerrain : MonoBehaviour
             catch (Exception e) {
                 Debug.LogError($"Dungeon spawn failed for chunk {coord}: {e}");
             }
+            // Tree Logic - rememeber to scale height by mult and biome mult
+            try {
+                // place dungeons of chunk, default to invisible until highest LOD
+                foreach (TreeCoord treeCoord in mapData.treeCoords){
+                    
+                    if (treeCoord.x < 0 || treeCoord.x >= mapData.chunkSize || treeCoord.y < 0 || treeCoord.y >= mapData.chunkSize){continue;}
 
+                    float worldX = treeCoord.x + position.x - 0.5f * mapData.chunkSize;
+                    float worldY = position.y + ((0.5f * mapData.chunkSize) - treeCoord.y);
+
+                    // obtain information via chunk-local coords
+                    BiomeCoord biomeCoord = mapData.biomeGenData.voronoiMap[treeCoord.x, treeCoord.y];
+                    
+                    // position in world space
+                    float height = mapData.heightCurve.Evaluate(treeCoord.z) * (mapGenerator.meshHeightMultiplier * treeCoord.biomeType.biomeHeightMultiplier);
+                    Vector3 treePos = new Vector3(worldX * scale, height*scale, worldY * scale);
+                    
+                    GameObject tree = GameObject.Instantiate(treeCoord.biomeType.treePrefabs[treeCoord.objectIndex].prefab, treePos, Quaternion.identity);
+                    tree.transform.parent = meshObject.transform;
+                    tree.SetActive(false);
+                    treeList.Add(tree);
+                }
+            }
+            catch (Exception e) {
+                Debug.LogError($"Tree spawn failed for chunk {coord}: {e}");
+            }
             UpdateTerrainChunk();
         }
 
@@ -252,6 +278,11 @@ public class EndlessTerrain : MonoBehaviour
                                 foreach (GameObject dungeon in dungeonList){
                                     dungeon.SetActive(true);
                                 }
+                            }if (lodIndex == 0){
+                                // hide trees if not highest LOD
+                                foreach (GameObject tree in treeList){
+                                    tree.SetActive(true);
+                                }
                             }
                             previousLODIndex = lodIndex;
                             meshFilter.mesh = lodMesh.mesh;
@@ -260,13 +291,15 @@ public class EndlessTerrain : MonoBehaviour
                             lodMesh.RequestMesh(mapData);
                         }
                     }
-
                     visibleTerrainChunksLastUpdate.Add(this);
                 }
                 else{
-                    // hide dungeons if chunk not visible
+                    // hide dungeons  and treesif chunk not visible
                     foreach (GameObject dungeon in dungeonList){
                         dungeon.SetActive(false);
+                    }
+                    foreach (GameObject tree in treeList){
+                        tree.SetActive(false);
                     }
                 }
                 SetVisible(visible);
