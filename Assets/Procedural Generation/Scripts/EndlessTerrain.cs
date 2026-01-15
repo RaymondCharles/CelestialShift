@@ -26,6 +26,9 @@ public class EndlessTerrain : MonoBehaviour
     static List<TerrainChunk> visibleTerrainChunksLastUpdate = new List<TerrainChunk>();
 
     public static EndlessTerrain Instance;
+
+    private Vector2Int _currentPlayerChunk = new Vector2Int (0,0);
+    private TerrainChunk currentPlayerChunkRef;
     
     
     void Awake() => Instance = this;
@@ -46,15 +49,93 @@ public class EndlessTerrain : MonoBehaviour
     {
         LoadTerrain();
     }
-
     public void LoadTerrain()
     {
-        viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / scale;
-        if ((previousViewerPosition - viewerPosition).sqrMagnitude > sqrChunkUpdateMoveThreshold){
+        // 1) Viewer world position (in Unity units)
+        Vector3 wpos = viewer.position;
+
+        // 2) Convert world -> "scaled terrain space" the same way as CheckBiome()
+        //    CheckBiome does:
+        //      newHitX = hit.point.x + 0.5*(chunkSize*scale)
+        //      hitScaled = new Vector2(newHitX, newHitZ) / scale
+        //    Then floors hitScaled/chunkSize.
+        float halfChunkWorld = 0.5f * (chunkSize * scale);
+
+        float scaledX = (wpos.x + halfChunkWorld) / scale;
+        float scaledY = (wpos.z + halfChunkWorld) / scale; // use z like CheckBiome
+
+        // 3) Now convert scaled -> chunk coord (dictionary key)
+        Vector2Int playerChunkCoord = new Vector2Int(
+            Mathf.FloorToInt(scaledX / chunkSize),
+            Mathf.FloorToInt(scaledY / chunkSize)
+        );
+
+        // (Optional) keep viewerPosition if you use it elsewhere for visibility logic
+        viewerPosition = new Vector2(scaledX, scaledY);
+
+        // 4) Detect entering a new chunk
+        if (playerChunkCoord != _currentPlayerChunk)
+        {
+            _currentPlayerChunk = playerChunkCoord;
+            Debug.Log($"changed chunks -> {playerChunkCoord}");
+            
+            if (terrainChunkDictionary.TryGetValue(playerChunkCoord, out var chunk))
+            {
+                // Promote navmesh detail ONLY for the chunk the player is on (your choice)
+                // chunk.SetNavMeshLodOverride(0);
+
+                currentPlayerChunkRef = chunk;
+                if (chunk.navMeshLodIndex != 0)
+                {
+                    chunk.navMeshLodIndex = 0;
+                    chunk.navQueued = false;
+                    chunk.UpdateTerrainChunk();
+                }
+            }
+            else
+            {
+                // This can happen for 1 frame if the chunk isn't created yet.
+                // It will be handled once UpdateVisibleChunks creates it.
+                currentPlayerChunkRef = null;
+            }
+        }
+
+
+        // 5) Update visible chunks only when moved enough (uses viewerPosition in scaled space)
+        if ((previousViewerPosition - viewerPosition).sqrMagnitude > sqrChunkUpdateMoveThreshold)
+        {
             previousViewerPosition = viewerPosition;
             UpdateVisibleChunks();
         }
     }
+
+/*
+    public void LoadTerrain()
+    {
+        viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / scale;
+
+        int cx = Mathf.FloorToInt(viewerPosition.x / chunkSize);
+        int cy = Mathf.FloorToInt(viewerPosition.y / chunkSize);
+        Vector2Int playerChunkCoord = new Vector2Int(cx, cy);
+
+        if (playerChunkCoord != _currentPlayerChunk)
+        { 
+            _currentPlayerChunk = playerChunkCoord;
+            Debug.Log("changed chunks");
+            if (terrainChunkDictionary.TryGetValue(playerChunkCoord, out var chunk))
+            {
+                Debug.Log(playerChunkCoord);
+                //chunk.SetNavMeshLodOverride(0);
+                currentPlayerChunkRef = chunk;
+            }
+        }
+
+        
+        if ((previousViewerPosition - viewerPosition).sqrMagnitude > sqrChunkUpdateMoveThreshold){
+            previousViewerPosition = viewerPosition;
+            UpdateVisibleChunks();
+        }
+    }*/
 
     void UpdateVisibleChunks(){
 
@@ -100,11 +181,12 @@ public class EndlessTerrain : MonoBehaviour
         List<GameObject> treeList = new List<GameObject>();
         NavMeshSurface surface;
 
-        bool navQueued = false;
+        public bool navQueued = false;
         GameObject navSourceObject;
         MeshFilter navSourceFilter;
         MeshCollider navSourceCollider;
-        int navMeshLodIndex; // which lod to use for navmesh
+        public int navMeshLodIndex; // which lod to use for navmesh
+        int prevNMLodIndex;
 
 
         
@@ -154,12 +236,13 @@ public class EndlessTerrain : MonoBehaviour
             surface.overrideVoxelSize = true;
             surface.voxelSize = 0.4f; // tune
             surface.overrideTileSize = true;
-            surface.tileSize = 64; // tune
+            surface.tileSize = 128; // tune
 
 
             Debug.Log(NavMeshBuildQueue.Instance ? "Queue exists" : "Queue is NULL");
             //NavMeshBuildQueue.Instance.Enqueue(surface, this);
-            navMeshLodIndex = 1;//detailLevels.Length - 1; // highest LOD index = lowest detail
+            navMeshLodIndex = detailLevels.Length - 1; // highest LOD index = lowest detail
+            prevNMLodIndex = detailLevels.Length;
 
             
 
@@ -305,7 +388,6 @@ public class EndlessTerrain : MonoBehaviour
         public void UpdateTerrainChunk(){
             // determine if chunk is visible based on viewer position, visible true if within maxViewDistance
             if (mapDataReceived){
-
                 // Ensure navmesh LOD mesh is requested at least once
                 LODmesh navLod = lodMeshes[navMeshLodIndex];
                 if (!navLod.hasMesh && !navLod.hasRequestedMesh)
