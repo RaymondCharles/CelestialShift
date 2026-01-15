@@ -31,7 +31,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        if (currentMusic.clip) currentMusic.Play();
+        volume = PlayerPrefs.HasKey("GameMusicVolume") ? PlayerPrefs.GetFloat("GameMusicVolume") : 0.6f;
+
+        if (currentMusic.clip)
+        {
+            currentMusic.volume = volume;
+            currentMusic.Play();
+        }
     }
     
     private void Update()

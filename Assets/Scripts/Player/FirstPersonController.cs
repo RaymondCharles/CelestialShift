@@ -14,6 +14,7 @@ public class FirstPersonController : MonoBehaviour
     InputAction DropAction;
     InputAction UseAction;
     InputAction MapAction;
+    InputAction MapZoomAction;
     public GameObject InventoryPanel;
     public GameObject PausePanel;
     public GameObject SettingsPanel;
@@ -153,6 +154,9 @@ public class FirstPersonController : MonoBehaviour
         DropAction = playerInput.actions.FindAction("Drop");
         UseAction = playerInput.actions.FindAction("Use");
         MapAction = playerInput.actions.FindAction("Map");
+        MapZoomAction = playerInput.actions.FindAction("MapZoom");
+        float zoomValue = MapZoomAction.ReadValue<float>();
+
 
 
         if (GameManager.Instance.loadGame)
@@ -358,6 +362,10 @@ public class FirstPersonController : MonoBehaviour
 
     public void CloseSettingsPanel()
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.inGame = true; 
+        }
         if (SettingsPanel != null)
             SettingsPanel.SetActive(false);
 
