@@ -48,27 +48,7 @@ public class DayNightCycle : MonoBehaviour {
             return _dayNumber;
         }
     }
-    
-    [SerializeField]
-    private int _yearNumber = 0; // tracks the years passed
-    public int yearNumber
-    {
-        get
-        {
-            return _yearNumber;
-        }
-    }
     private float _timeScale = 100f; // how fast time moves in the game world
-    
-    [SerializeField]
-    private int _yearLength = 100; // number of days in a year
-    public float yearLength
-    {
-        get
-        {
-            return _yearLength;
-        }
-    }
 
     [SerializeField]
     public bool pause = false; // pauses the day night cycle when true for debugging
@@ -90,19 +70,12 @@ public class DayNightCycle : MonoBehaviour {
     private float sunVariation = 1.5f;
     [SerializeField]
     private Gradient sunColor;
-
-
-    [Header("Seasonal Variables")]
-    [SerializeField]
-    private Transform sunSeasonalRotation;
-    [SerializeField]
-    [Range(-45f, 45f)]
-    private float maxSeasonalTilt;
-
+    GameManagerTemp gameManagerTemp;
 
     private void Start()
     {
         NormalTimeCurve(); 
+        gameManagerTemp = FindObjectOfType<GameManagerTemp>();
     }
 
 
@@ -168,13 +141,7 @@ public class DayNightCycle : MonoBehaviour {
             elapsedTime = 0;
             _dayNumber++;
             _timeOfDay -= 1;
-
-
-            if(_dayNumber > _yearLength) //new year
-            {
-                _yearNumber++;
-                _dayNumber = 0;
-            }
+            gameManagerTemp.Level++; // increase player level each day
         }
     }
 
