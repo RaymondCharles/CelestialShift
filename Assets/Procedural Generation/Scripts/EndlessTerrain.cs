@@ -27,6 +27,7 @@ public class EndlessTerrain : MonoBehaviour
 
     public static EndlessTerrain Instance;
     
+    
     void Awake() => Instance = this;
 
     void Start()
@@ -99,6 +100,12 @@ public class EndlessTerrain : MonoBehaviour
         List<GameObject> treeList = new List<GameObject>();
         NavMeshSurface surface;
 
+        bool navQueued = false;
+        GameObject navSourceObject;
+        MeshFilter navSourceFilter;
+        MeshCollider navSourceCollider;
+        int navMeshLodIndex; // which lod to use for navmesh
+
 
         
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen){
@@ -124,16 +131,35 @@ public class EndlessTerrain : MonoBehaviour
             meshRenderer.material = material;
             meshObject.layer = LayerMask.NameToLayer("Ground");
             
-            
+
+
+
+
+            navSourceObject = new GameObject("NavMeshSource");
+            navSourceObject.transform.parent = meshObject.transform;
+            navSourceObject.transform.localPosition = Vector3.zero;
+            navSourceObject.transform.localRotation = Quaternion.identity;
+            navSourceObject.transform.localScale = Vector3.one; // IMPORTANT: do not scale this one
+
+            navSourceObject.layer = LayerMask.NameToLayer("NavMeshOnly");
+
+            navSourceFilter = navSourceObject.AddComponent<MeshFilter>();
+            navSourceCollider = navSourceObject.AddComponent<MeshCollider>();
+
+            // NavMeshSurface should ONLY collect from NavMeshOnly
             surface = meshObject.AddComponent<NavMeshSurface>();
-            surface.collectObjects = CollectObjects.Children;     // only this chunk
-            surface.layerMask = LayerMask.GetMask("Ground");      // only your ground layer
-            surface.useGeometry = NavMeshCollectGeometry.PhysicsColliders; // usually best
-            surface.overrideTileSize = true;
-            surface.tileSize = 128; // tune
+            surface.collectObjects = CollectObjects.Children;
+            surface.layerMask = LayerMask.GetMask("NavMeshOnly");
+            surface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
             surface.overrideVoxelSize = true;
-            surface.voxelSize = 0.2f; // tune
-            NavMeshBuildQueue.Instance.Enqueue(surface);
+            surface.voxelSize = 0.4f; // tune
+            surface.overrideTileSize = true;
+            surface.tileSize = 64; // tune
+
+
+            Debug.Log(NavMeshBuildQueue.Instance ? "Queue exists" : "Queue is NULL");
+            //NavMeshBuildQueue.Instance.Enqueue(surface, this);
+            navMeshLodIndex = 1;//detailLevels.Length - 1; // highest LOD index = lowest detail
 
             
 
@@ -279,6 +305,25 @@ public class EndlessTerrain : MonoBehaviour
         public void UpdateTerrainChunk(){
             // determine if chunk is visible based on viewer position, visible true if within maxViewDistance
             if (mapDataReceived){
+
+                // Ensure navmesh LOD mesh is requested at least once
+                LODmesh navLod = lodMeshes[navMeshLodIndex];
+                if (!navLod.hasMesh && !navLod.hasRequestedMesh)
+                {
+                    navLod.RequestMesh(mapData);
+                }
+                else
+                {
+                    navSourceFilter.sharedMesh = navLod.mesh;
+                    navSourceCollider.sharedMesh = navLod.mesh;
+
+                    // Only queue nav build once nav source is actually ready
+                    if (!navQueued)
+                    {
+                        navQueued = true;
+                        NavMeshBuildQueue.Instance.Enqueue(surface, this);
+                    }
+                }
                 Vector3 viewerPos3 = new Vector3(viewerPosition.x, 0f, viewerPosition.y);
                 float viewerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(viewerPos3));
                 
@@ -314,6 +359,20 @@ public class EndlessTerrain : MonoBehaviour
                             previousLODIndex = lodIndex;
                             meshFilter.mesh = lodMesh.mesh;
                             meshCollider.sharedMesh = lodMesh.mesh;
+                            // Update NavMesh source mesh if this is the nav LOD mesh
+                            /*if (lodIndex == navMeshLodIndex)
+                            {
+                                navSourceFilter.sharedMesh = lodMesh.mesh;
+                                navSourceCollider.sharedMesh = lodMesh.mesh;
+
+                                // Only queue nav build once nav source is actually ready
+                                if (!navQueued)
+                                {
+                                    navQueued = true;
+                                    NavMeshBuildQueue.Instance.Enqueue(surface, this);
+                                }
+                            }*/
+
 
 
                         } else if (!lodMesh.hasRequestedMesh){
