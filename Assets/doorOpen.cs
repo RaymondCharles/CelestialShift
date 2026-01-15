@@ -7,6 +7,8 @@ public class doorOpen : MonoBehaviour
     public List<GameObject> objectives;
     public bool objectiveComplete = false;
     public Animator doorAnimator;
+
+
     void OnTriggerEnter(Collider other)
     {
         if (objectives.Count == 0) objectiveComplete = true;
