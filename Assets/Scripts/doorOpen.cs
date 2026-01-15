@@ -11,6 +11,7 @@ public class doorOpen : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log("triggering");
         if (objectives.Count == 0) objectiveComplete = true;
         else
         {
@@ -24,6 +25,7 @@ public class doorOpen : MonoBehaviour
         }
         if (other.gameObject.tag == "Player" && objectiveComplete)
         {
+            Debug.Log("isopening");
             doorAnimator.SetBool("Open", true);
         }
     }

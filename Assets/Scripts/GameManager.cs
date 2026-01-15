@@ -6,6 +6,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public bool loadGame = false;
+    public bool inGame = false;
+    public AudioClip menuMusic;
+    public AudioClip inGameMusic;
+    public AudioSource currentMusic;
+    [SerializeField, Range(0f, 1f)] private float volume = 0.6f;
+    private float savedTime = 0f;
+    public float loopGap = 20f;
 
     private void Awake()
     {
@@ -17,7 +24,71 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        currentMusic.clip = menuMusic;
+        currentMusic.volume = volume;
+        currentMusic.playOnAwake = false;
     }
+
+    private void Start()
+    {
+        if (currentMusic.clip) currentMusic.Play();
+    }
+    
+    private void Update()
+    {
+        if (inGame == true && currentMusic.clip != inGameMusic)
+        {
+            currentMusic.Stop();
+            currentMusic.clip = inGameMusic;
+            currentMusic.time = savedTime;
+            currentMusic.Play();
+        }
+        if (inGame == false && currentMusic.clip != menuMusic)
+        {
+            savedTime = currentMusic.time;
+            currentMusic.Stop();
+            currentMusic.clip = menuMusic;
+            currentMusic.Play();
+        }
+        if (!currentMusic.isPlaying)
+        {
+            Invoke("PlayMusic", loopGap);
+        }
+    }
+
+
+    public void PlayMusic()
+    {
+        if (!currentMusic.isPlaying)
+        {
+            currentMusic.Play();
+        }
+    }
+/*
+
+    public void FadeTo(float targetVolume, float seconds)
+    {
+        StopAllCoroutines();
+        StartCoroutine(FadeRoutine(targetVolume, seconds));
+    }
+
+    private System.Collections.IEnumerator FadeRoutine(float target, float seconds)
+    {
+        float start = currentMusic.volume;
+        float t = 0f;
+        while (t < seconds)
+        {
+            t += Time.deltaTime;
+            currentMusic.volume = Mathf.Lerp(start, target, t / seconds);
+            yield return null;
+        }
+        currentMusic.volume = target;
+    }
+
+
+*/
+
+
 
     private void OnEnable()
     {
@@ -45,6 +116,7 @@ public class GameManager : MonoBehaviour
 
         // Let the player load itself
         FirstPersonController.Instance.LoadPlayer();
+        inGame = true;
     }
 
     public void NewGame()
@@ -55,6 +127,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadGame()
     {
+        savedTime = 0f;
         if (!SaveSystem.SaveExists())
         {
             Debug.LogWarning("No save found!");

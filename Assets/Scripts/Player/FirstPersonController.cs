@@ -122,6 +122,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float turnSpeed = 12f; // degrees per second
 
 
+
     void Awake()
     {
         characterController = GetComponent<CharacterController>();
@@ -263,6 +264,8 @@ public class FirstPersonController : MonoBehaviour
     public void PausePanelShow()
     {
         bool isActive = !PausePanel.activeSelf;
+        if (GameManager.Instance != null) GameManager.Instance.inGame = (!isActive);
+        Debug.Log(GameManager.Instance.inGame);
 
         PausePanel.SetActive(isActive);
 
@@ -287,6 +290,8 @@ public class FirstPersonController : MonoBehaviour
 
     public void ContinueGame()
     {
+        if (GameManager.Instance != null) GameManager.Instance.inGame = true;
+        Debug.Log("2");
   
         if (PausePanel != null)
             PausePanel.SetActive(false);
@@ -378,6 +383,7 @@ public class FirstPersonController : MonoBehaviour
     {
         PausePanel.SetActive(false);
     }
+
     public void OnClickSaveAndQuit()
     {
         
