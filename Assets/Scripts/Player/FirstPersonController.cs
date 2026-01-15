@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;   // NEW INPUT SYSTEM
 using UnityEngine.SceneManagement;
@@ -12,12 +13,18 @@ public class FirstPersonController : MonoBehaviour
     InputAction PauseAction;
     InputAction DropAction;
     InputAction UseAction;
+    InputAction MapAction;
     public GameObject InventoryPanel;
     public GameObject PausePanel;
+    public GameObject SettingsPanel;
+    public GameObject BigMapPanel;
+    public GameObject MiniMapPanel; 
     public GameObject RecipePanel;
     public Transform playerTransform;
     public static FirstPersonController Instance;
     public GameObject gameManager;
+    private bool isBigMapOpen = false;
+
 
     //Determine whether a player/character is in control
     public bool CanMove { get; private set; } = true;
@@ -143,13 +150,13 @@ public class FirstPersonController : MonoBehaviour
         PauseAction = playerInput.actions.FindAction("Pause");
         DropAction = playerInput.actions.FindAction("Drop");
         UseAction = playerInput.actions.FindAction("Use");
+        MapAction = playerInput.actions.FindAction("Map");
+
 
         if (GameManager.Instance.loadGame)
         {
             StartCoroutine(DelayedLoadPlayer(1f));
         }
-
-
 
     }
     private IEnumerator DelayedLoadPlayer(float delay)
@@ -163,7 +170,7 @@ public class FirstPersonController : MonoBehaviour
 
     void LateUpdate()
     {
-        if (InventoryPanel.activeSelf || PausePanel.activeSelf)
+        if (InventoryPanel.activeSelf || PausePanel.activeSelf || SettingsPanel.activeSelf)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -225,64 +232,6 @@ public class FirstPersonController : MonoBehaviour
         Debug.Log("Player + Inventory/HotBar loaded");
     }
 
-
-    //public void LoadPlayer()
-    //{
-    //    PlayerData data = SaveSystem.LoadPlayer();
-    //    if (data == null) return;
-
-    //    // Position
-    //    transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
-
-    //    // Inventory
-    //    for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
-    //    {
-    //        Inventory.Instance.inventoryItems[i] = null; // clear old
-    //    }
-
-    //    foreach (InventorySlotData slotData in data.inventorySlots)
-    //    {
-    //        Item item = ItemDatabase.Instance.GetItemByName(slotData.itemName);
-    //        if (item == null) continue;
-
-    //        Inventory.Instance.inventoryItems[slotData.slotIndex] = new SlotItem(item, slotData.quantity);
-    //    }
-
-    //    // Update UI immediately
-    //    if (InventoryUI.Instance != null)
-    //    {
-    //        for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
-    //        {
-    //            InventoryUI.Instance.UpdateSlot(i);
-    //        }
-    //    }
-    //    for (int i = 0; i < HotBarManager.Instance.slotItems.Length; i++)
-    //    {
-    //        HotBarManager.Instance.slotItems[i] = null;
-    //        HotBarManager.Instance.UpdateSlot(i);
-    //    }
-
-    //    foreach (InventorySlotData slotData in data.HotBarSlots)
-    //    {
-    //        Item item = ItemDatabase.Instance.GetItemByName(slotData.itemName);
-    //        if (item == null) continue;
-
-    //        HotBarManager.Instance.slotItems[slotData.slotIndex] = new SlotItem(item, slotData.quantity);
-
-    //        HotBarManager.Instance.UpdateSlot(slotData.slotIndex);
-    //    }
-
-
-    //    Debug.Log("Player + Inventory/HotBar loaded");
-    //}
-
-
-
-
-
-
-
-
     private void OnEnable()
     {
         inputActions.Enable();
@@ -302,8 +251,110 @@ public class FirstPersonController : MonoBehaviour
     }
     public void PausePanelShow()
     {
-        PausePanel.SetActive(!PausePanel.activeSelf);
+        bool isActive = !PausePanel.activeSelf;
+
+        PausePanel.SetActive(isActive);
+
+        if (isActive)
+        {
+  
+            Time.timeScale = 0f;
+            CanMove = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+    
+            Time.timeScale = 1f;
+            CanMove = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
+ 
+    public void ContinueGame()
+    {
+
+        if (PausePanel != null)
+        {
+            PausePanel.SetActive(false);
+        }
+
+
+        if (SettingsPanel != null)
+        {
+            SettingsPanel.SetActive(false);
+        }
+        Time.timeScale = 1f;
+        CanMove = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+    public void ToggleBigMap()
+    {
+        if (isBigMapOpen)
+            CloseBigMap();
+        else
+            OpenBigMap();
+    }
+
+    public void OpenBigMap()
+    {
+        isBigMapOpen = true;
+        BigMapPanel.SetActive(true);
+        MiniMapPanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void CloseBigMap()
+    {
+        isBigMapOpen = false;
+        BigMapPanel.SetActive(false);
+        MiniMapPanel.SetActive(true);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+
+
+    public void OpenSettingsPanel()
+    {
+        if (PausePanel != null)
+        {
+            PausePanel.SetActive(false);
+        }
+
+        if (SettingsPanel != null) 
+        { 
+        SettingsPanel.SetActive(true);
+        }
+        if (InventoryPanel != null)
+        {
+            InventoryPanel.SetActive(true);
+        }
+    }
+
+    public void CloseSettingsPanel()
+    {
+        if (SettingsPanel != null)
+            SettingsPanel.SetActive(false);
+
+        
+        if (PausePanel != null)
+            PausePanel.SetActive(false);
+
+        if (InventoryPanel != null)
+        { 
+        InventoryPanel.SetActive(false);
+        }
+        Time.timeScale = 1f;
+        CanMove = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
     public void RecipePanelShow()
     {
         RecipePanel.SetActive(!RecipePanel.activeSelf);
@@ -323,8 +374,9 @@ public class FirstPersonController : MonoBehaviour
         {
             Debug.LogWarning("Save skipped: FirstPersonController instance not found in this scene.");
         }
+        Time.timeScale = 1f;
+        CanMove = true;
 
- 
         if (GameManager.Instance != null)
             GameManager.Instance.loadGame = true;
 
@@ -400,7 +452,15 @@ public class FirstPersonController : MonoBehaviour
         //Inventory 
         if (InventoryAction.triggered)
         {
-            InventoryPanelShow();
+            if (isBigMapOpen)
+            {
+                CloseBigMap();
+                InventoryPanelShow();
+            }
+            else
+            {
+                InventoryPanelShow();
+            }
         }
 
         if (PauseAction.triggered)
@@ -411,6 +471,25 @@ public class FirstPersonController : MonoBehaviour
         {
             DropSelectedItem();
         }
+        if (UseAction.triggered)
+        {
+            UseSelectedItem();
+        }
+        if (MapAction.triggered)
+        {
+            if (InventoryPanel.activeSelf)
+            {
+                InventoryPanel.SetActive(false);
+                MiniMapPanel.SetActive(false);
+                OpenBigMap();
+            }
+            else
+            {
+                ToggleBigMap();
+            }
+        }
+
+
 
         if (CanMove)
         {
