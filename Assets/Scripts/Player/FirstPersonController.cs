@@ -24,6 +24,7 @@ public class FirstPersonController : MonoBehaviour
     public static FirstPersonController Instance;
     public GameObject gameManager;
     private bool isBigMapOpen = false;
+    public GameObject Crosshair;
 
 
     //Determine whether a player/character is in control
@@ -248,7 +249,17 @@ public class FirstPersonController : MonoBehaviour
         {
             InventoryUI.Instance.UpdateSlot(i);
         }
+        UpdateCrosshair();
     }
+    private void UpdateCrosshair()
+    {
+
+        bool shouldHide = PausePanel.activeSelf || InventoryPanel.activeSelf || BigMapPanel.activeSelf || SettingsPanel.activeSelf;
+
+        if (Crosshair != null)
+            Crosshair.SetActive(!shouldHide);
+    }
+
     public void PausePanelShow()
     {
         bool isActive = !PausePanel.activeSelf;
@@ -271,21 +282,23 @@ public class FirstPersonController : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+        UpdateCrosshair();
     }
- 
+
     public void ContinueGame()
     {
-
+  
         if (PausePanel != null)
-        {
             PausePanel.SetActive(false);
-        }
-
 
         if (SettingsPanel != null)
-        {
             SettingsPanel.SetActive(false);
-        }
+
+      
+        if (InventoryPanel != null && !isBigMapOpen)
+            InventoryPanel.SetActive(false);
+
+       
         Time.timeScale = 1f;
         CanMove = true;
         Cursor.lockState = CursorLockMode.Locked;
@@ -306,6 +319,7 @@ public class FirstPersonController : MonoBehaviour
         MiniMapPanel.SetActive(false);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        UpdateCrosshair();
     }
 
     public void CloseBigMap()
@@ -315,6 +329,7 @@ public class FirstPersonController : MonoBehaviour
         MiniMapPanel.SetActive(true);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        UpdateCrosshair();
     }
 
 
