@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;   // NEW INPUT SYSTEM
 using UnityEngine.SceneManagement;
@@ -12,13 +13,18 @@ public class FirstPersonController : MonoBehaviour
     InputAction PauseAction;
     InputAction DropAction;
     InputAction UseAction;
+    InputAction MapAction;
     public GameObject InventoryPanel;
     public GameObject PausePanel;
     public GameObject SettingsPanel;
+    public GameObject BigMapPanel;
+    public GameObject MiniMapPanel; 
     public GameObject RecipePanel;
     public Transform playerTransform;
     public static FirstPersonController Instance;
     public GameObject gameManager;
+    private bool isBigMapOpen = false;
+
 
     //Determine whether a player/character is in control
     public bool CanMove { get; private set; } = true;
@@ -144,6 +150,8 @@ public class FirstPersonController : MonoBehaviour
         PauseAction = playerInput.actions.FindAction("Pause");
         DropAction = playerInput.actions.FindAction("Drop");
         UseAction = playerInput.actions.FindAction("Use");
+        MapAction = playerInput.actions.FindAction("Map");
+
 
         if (GameManager.Instance.loadGame)
         {
@@ -280,6 +288,33 @@ public class FirstPersonController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
+    public void ToggleBigMap()
+    {
+        if (isBigMapOpen)
+            CloseBigMap();
+        else
+            OpenBigMap();
+    }
+
+    public void OpenBigMap()
+    {
+        isBigMapOpen = true;
+        BigMapPanel.SetActive(true);
+        MiniMapPanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void CloseBigMap()
+    {
+        isBigMapOpen = false;
+        BigMapPanel.SetActive(false);
+        MiniMapPanel.SetActive(true);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+
 
     public void OpenSettingsPanel()
     {
@@ -413,7 +448,15 @@ public class FirstPersonController : MonoBehaviour
         //Inventory 
         if (InventoryAction.triggered)
         {
-            InventoryPanelShow();
+            if (isBigMapOpen)
+            {
+                CloseBigMap();
+                InventoryPanelShow();
+            }
+            else
+            {
+                InventoryPanelShow();
+            }
         }
 
         if (PauseAction.triggered)
@@ -428,6 +471,20 @@ public class FirstPersonController : MonoBehaviour
         {
             UseSelectedItem();
         }
+        if (MapAction.triggered)
+        {
+            if (InventoryPanel.activeSelf)
+            {
+                InventoryPanel.SetActive(false);
+                MiniMapPanel.SetActive(false);
+                OpenBigMap();
+            }
+            else
+            {
+                ToggleBigMap();
+            }
+        }
+
 
 
         if (CanMove)
