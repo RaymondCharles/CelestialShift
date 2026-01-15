@@ -47962,7 +47962,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494344952}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2756825, y: 3e-45, z: -1e-45, w: 0.96124876}
+  m_LocalRotation: {x: 0.2756825, y: -1e-45, z: -0, w: 0.96124876}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -49810,7 +49810,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1569091381}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b50731da17847d4aad524844ab14de1, type: 3}
   m_Name: 
@@ -49853,12 +49853,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1569091381}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 419f9823bd8b9cd41a27a3c59035820f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trackedAgent: {fileID: 7902220941128870780}
+  trackedAgent: {fileID: 0}
   quantizationFactor: 0.1
 --- !u!1 &1570515394
 GameObject:
@@ -69157,7 +69157,6 @@ GameObject:
   - component: {fileID: 7902220941128870777}
   - component: {fileID: 7902220941128870776}
   - component: {fileID: 7902220941128870779}
-  - component: {fileID: 7902220941128870780}
   m_Layer: 7
   m_Name: MC
   m_TagString: Player
@@ -72000,28 +71999,6 @@ MonoBehaviour:
   hunger: 100
   hungerDrainPerSecond: 1
   starvingDamagePerSecond: 2
---- !u!195 &7902220941128870780
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3459231171067390903}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 500
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!1 &7945833629450419811
 GameObject:
   m_ObjectHideFlags: 0

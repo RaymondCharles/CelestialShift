@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EndlessTerrain : MonoBehaviour
 {
@@ -96,6 +97,9 @@ public class EndlessTerrain : MonoBehaviour
         int previousLODIndex = -1;
         List<GameObject> dungeonList = new List<GameObject>();
         List<GameObject> treeList = new List<GameObject>();
+        NavMeshSurface surface;
+
+
         
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen){
             this.coord = coord;
@@ -119,6 +123,17 @@ public class EndlessTerrain : MonoBehaviour
             meshCollider = meshObject.AddComponent<MeshCollider>();
             meshRenderer.material = material;
             meshObject.layer = LayerMask.NameToLayer("Ground");
+            
+            
+            surface = meshObject.AddComponent<NavMeshSurface>();
+            surface.collectObjects = CollectObjects.Children;     // only this chunk
+            surface.layerMask = LayerMask.GetMask("Ground");      // only your ground layer
+            surface.useGeometry = NavMeshCollectGeometry.PhysicsColliders; // usually best
+            surface.overrideTileSize = true;
+            surface.tileSize = 128; // tune
+            surface.overrideVoxelSize = true;
+            surface.voxelSize = 0.2f; // tune
+            NavMeshBuildQueue.Instance.Enqueue(surface);
 
             
 
