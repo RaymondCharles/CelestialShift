@@ -8590,7 +8590,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 232, y: 50}
+  m_AnchoredPosition: {x: 232, y: 28.1}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &812337466
@@ -25473,6 +25473,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3622828464538223184, guid: 3b093ccab7f623f45a80f7dfa7642eb4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3639135324764842162, guid: 3b093ccab7f623f45a80f7dfa7642eb4, type: 3}
       propertyPath: m_SizeDelta.x
       value: 484.0162
@@ -25739,7 +25743,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5372630289797586977, guid: 3b093ccab7f623f45a80f7dfa7642eb4, type: 3}
       propertyPath: m_text
-      value: Steve
+      value: 'Spike
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 5919230626998549840, guid: 3b093ccab7f623f45a80f7dfa7642eb4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -25767,11 +25773,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6913328231979909553, guid: 3b093ccab7f623f45a80f7dfa7642eb4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 307
+      value: 310.8
       objectReference: {fileID: 0}
     - target: {fileID: 6913328231979909553, guid: 3b093ccab7f623f45a80f7dfa7642eb4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -84
+      value: -107.7
       objectReference: {fileID: 0}
     - target: {fileID: 7005705536992949065, guid: 3b093ccab7f623f45a80f7dfa7642eb4, type: 3}
       propertyPath: m_AnchorMax.x
