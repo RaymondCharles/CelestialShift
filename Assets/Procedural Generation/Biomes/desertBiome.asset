@@ -37,3 +37,9 @@ MonoBehaviour:
     countPerBiome: 10
     groupSize: 0
     groupProbability: 0
+  enemyPrefabs:
+  - name: Cactus
+    prefab: {fileID: 3870180590396390759, guid: 3f04e44447cc182479f153a1538631dc, type: 3}
+    countPerBiome: 0
+    groupSize: 0
+    groupProbability: 0

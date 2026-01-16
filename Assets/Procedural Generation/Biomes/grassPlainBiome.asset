@@ -51,3 +51,14 @@ MonoBehaviour:
     countPerBiome: 10
     groupSize: 0
     groupProbability: 0
+  enemyPrefabs:
+  - name: Stickman
+    prefab: {fileID: 7556210754804010152, guid: fdf435cfcb10d3841bc4a1a57fa9d7ea, type: 3}
+    countPerBiome: 0
+    groupSize: 0
+    groupProbability: 0
+  - name: Sunflower
+    prefab: {fileID: 7556210754804010152, guid: fdf435cfcb10d3841bc4a1a57fa9d7ea, type: 3}
+    countPerBiome: 0
+    groupSize: 0
+    groupProbability: 0
