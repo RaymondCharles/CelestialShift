@@ -91,6 +91,7 @@ public class EndlessTerrain : MonoBehaviour
         List<GameObject> dungeonList = new List<GameObject>();
         List<GameObject> treeList = new List<GameObject>();
         List<GameObject> chunkEnemyList = new List<GameObject>();
+        List<GameObject> grassList = new List<GameObject>();
         public int enemyCount = 0;
 
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen, GameManagerTemp gameManager){// UPDATE FOR NEW GAME MANAGER
@@ -251,6 +252,7 @@ public class EndlessTerrain : MonoBehaviour
             catch (Exception e) {
                 Debug.LogError($"Tree spawn failed for chunk {coord}: {e}");
             }
+            // Grass Logic
             chunkEnemyList = spawnEnemies(gameManagerTemp.GetLevel());// UPDATE TO BE SOME FUNCTION OF LEVEL
             UpdateTerrainChunk();
         }
@@ -283,6 +285,15 @@ public class EndlessTerrain : MonoBehaviour
                             if (lodIndex == 0){foreach (GameObject dungeon in dungeonList){dungeon.SetActive(true);}}
                             if (lodIndex == 0){foreach (GameObject tree in treeList){tree.SetActive(true);}}
                             if (lodIndex == 0){foreach (GameObject enemy in chunkEnemyList){enemy.SetActive(true);}}
+                            GPUInstancedGrass gpuInstancedGrass = meshObject.GetComponent<GPUInstancedGrass>();
+                            if (lodIndex == 0 && gpuInstancedGrass == null){
+                                // instantiate grass only at highest LOD
+                                gpuInstancedGrass.RenderGrassGPUI(
+                                    mapData.noiseMap,
+                                    mapData.biomeGenData.voronoiMap,
+                                    bounds
+                                );
+                            }
                             previousLODIndex = lodIndex;
                             meshFilter.mesh = lodMesh.mesh;
                             meshCollider.sharedMesh = lodMesh.mesh;
@@ -300,6 +311,13 @@ public class EndlessTerrain : MonoBehaviour
                     }
                     foreach (GameObject tree in treeList){
                         tree.SetActive(false);
+                    }
+                    foreach (GameObject grass in grassList){
+                        grass.SetActive(false);
+                    }
+                    GPUInstancedGrass gpuInstancedGrass = meshObject.GetComponent<GPUInstancedGrass>();
+                    if (gpuInstancedGrass != null){
+                        gpuInstancedGrass.enabled = false;
                     }
                     chunkEnemyList.Clear();
                     SetVisible(visible);

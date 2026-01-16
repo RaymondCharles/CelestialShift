@@ -11,7 +11,6 @@ public class GameManagerTemp : MonoBehaviour
     public static Dictionary<Vector2Int, List<GameObject>> globalEnemyDict;
     public EndlessTerrain endlessTerrain;
 
-
     private void Awake()
     {
         globalEnemyDict = new Dictionary<Vector2Int, List<GameObject>>();
