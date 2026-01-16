@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,10 @@ public class EnemyHealthUI : MonoBehaviour
     [SerializeField] private bool faceCamera = true;
     [SerializeField] private Camera targetCamera;
 
+    // Levels
+    [SerializeField] private EnemyLevel enemyLevel;
+    [SerializeField] private TMP_Text levelText;
+
     private void Awake()
     {
         if (slider == null)
@@ -28,6 +33,12 @@ public class EnemyHealthUI : MonoBehaviour
 
         if (status == null)
             status = GetComponentInParent<EnemyStatusEffects>();
+
+        if (enemyLevel == null)
+            enemyLevel = GetComponentInParent<EnemyLevel>();
+
+        if (levelText == null)
+            levelText = GetComponentInChildren<TMP_Text>(true);
     }
 
     private void Start()
@@ -43,6 +54,13 @@ public class EnemyHealthUI : MonoBehaviour
         slider.maxValue = enemyHealth.MaxHealth;
         slider.value = enemyHealth.CurrentHealth;
         slider.wholeNumbers = false;
+
+        if (levelText != null)
+        {
+            int lvl = (enemyLevel != null) ? enemyLevel.level : 1;
+            levelText.text = $"Lv. {lvl}";
+        }
+
 
         if (targetCamera == null)
             targetCamera = Camera.main;
@@ -73,6 +91,13 @@ public class EnemyHealthUI : MonoBehaviour
             if (poisonIcon != null) poisonIcon.SetActive(false);
             if (burnIcon != null) burnIcon.SetActive(false);
         }
+
+        if (levelText != null)
+        {
+            int lvl = (enemyLevel != null) ? enemyLevel.level : 1;
+            levelText.text = $"Lv. {lvl}";
+        }
+
 
         // Face camera
         if (faceCamera && targetCamera != null)

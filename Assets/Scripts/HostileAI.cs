@@ -9,6 +9,7 @@ public class HostileAI : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform firePoint;
     [SerializeField] public GameObject projectilePrefab;
+    [SerializeField] private EnemyLevel enemyLevel;
 
     // Layers
     [SerializeField] private LayerMask terrainLayer;
@@ -88,6 +89,11 @@ public class HostileAI : MonoBehaviour
 
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
+
+        if (enemyLevel == null)
+            enemyLevel = GetComponent<EnemyLevel>();
+
+        ApplyLevelStats();
 
         // We will control rotation manually for fast tracking
         if (navAgent != null)
@@ -427,4 +433,14 @@ public class HostileAI : MonoBehaviour
 
         DoMeleeDamage();
     }
+
+    private void ApplyLevelStats()
+    {
+        if (enemyLevel == null) return;
+
+        attackCooldown = enemyLevel.ScaledAttackCooldown;
+        meleeDamage = enemyLevel.ScaledMeleeDamage;
+        meleeHitDelay = enemyLevel.ScaledMeleeHitDelay;
+    }
+
 }

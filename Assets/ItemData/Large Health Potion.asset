@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Large Health Potion
   m_EditorClassIdentifier: 
   itemName: Large Health Potion
-  itemImg: {fileID: 21300000, guid: e45697d9f2c57e14f91b3f3725bc64c4, type: 3}
+  itemImg: {fileID: 21300000, guid: 3933541b3382bed4d9ea94c04ba0cc71, type: 3}
   usable: 1
   useSpeed: 1
   quantityLimit: 10
@@ -26,6 +26,7 @@ MonoBehaviour:
     itemQuantities: 0f0000000f000000
   worldPrefab: {fileID: 3249369431548683117, guid: 4adf6b74c2eeaf348af884ba3112b479, type: 3}
   action: {fileID: 11400000, guid: d60caac2930cfcb4f8621e7be22e2fb4, type: 2}
+  minimapIconPrefab: {fileID: 0}
   newObject: {fileID: 0}
   objectToSpawn: {fileID: 3249369431548683117, guid: 240c2e9b6f4c19a42b0a3b54ae02539c, type: 3}
   positionalGameObjectName: right hand_end
