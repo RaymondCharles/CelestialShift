@@ -19864,7 +19864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cf2fcb8f33560f41b923a29413a1c6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _targetDayLength: 0.05
+  _targetDayLength: 2
   elapsedTime: 0
   use24Clock: 1
   clockText: {fileID: 0}
@@ -45348,7 +45348,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1316773214}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2756825, y: 3e-45, z: -1e-45, w: 0.96124876}
+  m_LocalRotation: {x: 0.2756825, y: -1e-45, z: -0, w: 0.96124876}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -50894,7 +50894,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grassMesh: {fileID: 4579454407841743219, guid: 942d28ac7974e1f498e0b0dab556f059, type: 3}
   grassMaterial: {fileID: -6478536213147159724, guid: 942d28ac7974e1f498e0b0dab556f059, type: 3}
-  size: 10
+  spacing: 0.4
 --- !u!4 &1478577796
 Transform:
   m_ObjectHideFlags: 0

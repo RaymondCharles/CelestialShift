@@ -1,73 +1,95 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GPUInstancedGrass : MonoBehaviour
+public class GPUInstancedGrassRenderer : MonoBehaviour
 {
     [SerializeField] Mesh grassMesh;
     [SerializeField] Material grassMaterial;
+    [SerializeField] float spacing = 0.4f;
+    [SerializeField] float grassScale = 300.0f;
 
-    [SerializeField] public int size = 10;
+    const int MAX_INSTANCES = 1023;
 
-    private Matrix4x4[] matrices;
+    // Cache: chunkId -> batches -> matrices
+    private readonly Dictionary<Vector2Int, List<Matrix4x4[]>> chunkBatches = new();
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        if (grassMaterial != null)
+            grassMaterial.enableInstancing = true;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        matrices = new Matrix4x4[size * size * size];
-    
-    int i = 0;
-    for (int x = 0; x < size; x++)
-    {
-        for (int y = 0; y < size; y++)
+        // Draw all cached chunks (you’ll likely filter to "visible chunks" here)
+        foreach (var kvp in chunkBatches)
         {
-            for (int z = 0; z < size; z++)
+            var batches = kvp.Value;
+            for (int i = 0; i < batches.Count; i++)
             {
-                Vector3 position = new Vector3(x * 2.0f, y * 2.0f, z * 2.0f);
-                matrices[i] = Matrix4x4.TRS(position, Quaternion.identity, Vector3.one);
-                i++;
+                Graphics.DrawMeshInstanced(grassMesh, 0, grassMaterial, batches[i]);
             }
         }
     }
-    Graphics.DrawMeshInstanced(grassMesh, 0, grassMaterial, matrices);
-    }
 
-    private void RenderGrassGPUI(float[,] noiseMap, BiomeCoord[,] biomeMap, Bounds bounds)
+    // called upon chunk generation, creates batches and stores in cache
+    public void BuildGrassForChunk(Vector2Int chunkId, float scale, Vector2 chunkPositionMapSpace, Bounds chunkBounds, mapGenerator mapGenerator, MapData mapData)
     {
-        // using a list of matrix lists to batch draw calls
-        List<List<Matrix4x4>> matrices = new List<List<Matrix4x4>>();
+        if (grassMesh == null || grassMaterial == null || mapData.noiseMap == null || mapData.biomeGenData.voronoiMap == null)
+            return;
 
-        int batch = 0;
-        List<Matrix4x4> newMatrixList = new List<Matrix4x4>();
-        matrices.Add(newMatrixList);
+        int width = mapData.noiseMap.GetLength(0);
+        int height = mapData.noiseMap.GetLength(1);
 
-        for (float x = bounds.center.x - bounds.size.x / 2; x < bounds.center.x + bounds.size.x / 2; x += 0.4f)
+        if (mapData.biomeGenData.voronoiMap.GetLength(0) != width || mapData.biomeGenData.voronoiMap.GetLength(1) != height)
         {
-            for (float z = bounds.center.z - bounds.size.z / 2; z < bounds.center.z + bounds.size.z / 2; z += 0.4f)
-            {
-                if  (biomeMap[(int)x, (int)z].getBiome() == "Grass Plains"){ 
-                    float y = noiseMap[(int)x, (int)z];
-                    Vector3 position = new Vector3(x, y, z);
-                    Matrix4x4 matrix = Matrix4x4.TRS(position, Quaternion.identity, Vector3.one);
-                    matrices[batch].Add(matrix);
-                }
-                if (matrices[batch].Count >= 1000)// do not exceed matrix limit
+            Debug.LogError($"Chunk {chunkId}: Grass generation failed due to biomeMap size mismatch.");
+            return;
+        }
+
+        // Build matrices in a List first, then freeze into arrays of <=1023
+        var current = new List<Matrix4x4>(MAX_INSTANCES);
+        var batches = new List<Matrix4x4[]>();
+        int chunkSize = mapData.chunkSize;
+
+        for (int x = 0; x < chunkSize; x++)
+        {
+            for (int y = 0; y < chunkSize; y++)
+            {   
+                BiomeScriptableObject biome = mapData.biomeDict[mapData.biomeGenData.voronoiMap[x, y].getBiome()];
+                if (biome.name != "Grass Plains"){continue;}
+ 
+                float z = mapData.heightCurve.Evaluate(mapData.noiseMap[x, y]) * (mapGenerator.meshHeightMultiplier * biome.biomeHeightMultiplier);
+
+                float worldX = x + chunkPositionMapSpace.x - 0.5f * chunkSize;
+                float worldY = chunkPositionMapSpace.y + ((0.5f * chunkSize) - y);
+
+                Vector3 worldPos = new Vector3(worldX * scale, z * scale, worldY * scale);
+
+                float grassScale = 1f;
+                current.Add(Matrix4x4.TRS(worldPos, Quaternion.identity, Vector3.one * grassScale));
+
+                // unscaled grass
+                //current.Add(Matrix4x4.TRS(worldPos, Quaternion.identity, Vector3.one));
+
+                if (current.Count == MAX_INSTANCES)
                 {
-                    batch++;
-                    matrices.Add(new List<Matrix4x4>());
+                    batches.Add(current.ToArray());
+                    current.Clear();
                 }
             }
         }
-        
-        for (int i = 0; i < batch; i++)
-        {
-            Graphics.DrawMeshInstanced(grassMesh, 0, grassMaterial, matrices[i]);
-        }
+
+        if (current.Count > 0)
+            batches.Add(current.ToArray());
+
+        // Replace cache for this chunk
+        chunkBatches[chunkId] = batches;
+    }
+
+    // Call when chunk unloads/despawns
+    public void RemoveChunk(Vector2Int chunkId)
+    {
+        chunkBatches.Remove(chunkId);
     }
 }

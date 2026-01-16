@@ -19,6 +19,7 @@ public class EndlessTerrain : MonoBehaviour
     public static Vector2  previousViewerPosition;
     static mapGenerator mapGenerator;
     GameManagerTemp gameManagerTemp; // UPDATE FOR NEW GAME MANAGER
+    GPUInstancedGrassRenderer grassRenderer;
     public int chunkSize;
     int chunksVisibleInVD;
 
@@ -30,6 +31,7 @@ public class EndlessTerrain : MonoBehaviour
     {
         mapGenerator = FindObjectOfType<mapGenerator>();
         gameManagerTemp = FindObjectOfType<GameManagerTemp>();
+        grassRenderer = FindObjectOfType<GPUInstancedGrassRenderer>();
         maxViewDistance = detailLevels[detailLevels.Length -1].visibleDstThreshold;
         chunkSize = mapGenerator.mapChunkSize - 1;
         // calculate how many chunks are visible in view distance
@@ -65,7 +67,7 @@ public class EndlessTerrain : MonoBehaviour
                 if (terrainChunkDictionary.ContainsKey(viewedChunkCoord)){
                     terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
                 } else {
-                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, mapGenerator, gameManagerTemp));// UPDATE FOR NEW GAME MANAGER
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, mapGenerator, gameManagerTemp, grassRenderer));// UPDATE FOR NEW GAME MANAGER
                 }
             }
         }
@@ -77,7 +79,7 @@ public class EndlessTerrain : MonoBehaviour
         public Vector2Int coord;
         public Vector2 position;
         Bounds bounds;
-
+        Bounds worldBounds;
         MeshRenderer meshRenderer;
         MeshFilter meshFilter;
         MeshCollider meshCollider;
@@ -86,6 +88,7 @@ public class EndlessTerrain : MonoBehaviour
         LODmesh[] lodMeshes;
         public MapData mapData;
         public GameManagerTemp gameManagerTemp;
+        public GPUInstancedGrassRenderer grassRenderer;
         bool mapDataReceived;
         int previousLODIndex = -1;
         List<GameObject> dungeonList = new List<GameObject>();
@@ -94,21 +97,25 @@ public class EndlessTerrain : MonoBehaviour
         List<GameObject> grassList = new List<GameObject>();
         public int enemyCount = 0;
 
-        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen, GameManagerTemp gameManager){// UPDATE FOR NEW GAME MANAGER
+        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen, GameManagerTemp gameManager, GPUInstancedGrassRenderer grassRenderer){// UPDATE FOR NEW GAME MANAGER
             this.coord = coord;
             this.detailLevels = detailLevels;
             this.mapGenerator = mapGen;
             this.gameManagerTemp = gameManager;// UPDATE FOR NEW GAME MANAGER
-
+            this.grassRenderer = grassRenderer;
             // World origin (x,z)
             position = new Vector2(coord.x * size, coord.y * size);
             Vector3 positionV3 = new Vector3(position.x, 0f, position.y);
 
-            // bounds must be in Z
+            // world bounds must be in Z
             Vector3 boundsCenter = positionV3 + new Vector3(size * 0.5f, 0f, size * 0.5f);
             Vector3 boundsSize   = new Vector3(size, 10000f, size); // tall Y so height doesn't matter
             bounds = new Bounds(boundsCenter, boundsSize);
-            
+
+            // world Bounds for grass generation
+            var worldCenter = new Vector3(bounds.center.x * scale, 0f, bounds.center.z * scale);
+            var worldSize   = new Vector3(bounds.size.x * scale, 10000f, bounds.size.z * scale);
+            worldBounds = new Bounds(worldCenter, worldSize);
 
             //create mesh object, set 3d position and scale, add renderer, filter, collider
             meshObject = new GameObject("Terrain Chunk");
@@ -253,6 +260,7 @@ public class EndlessTerrain : MonoBehaviour
                 Debug.LogError($"Tree spawn failed for chunk {coord}: {e}");
             }
             // Grass Logic
+            grassRenderer.BuildGrassForChunk(coord, scale, position, worldBounds, mapGenerator, mapData);
             chunkEnemyList = spawnEnemies(gameManagerTemp.GetLevel());// UPDATE TO BE SOME FUNCTION OF LEVEL
             UpdateTerrainChunk();
         }
@@ -285,15 +293,6 @@ public class EndlessTerrain : MonoBehaviour
                             if (lodIndex == 0){foreach (GameObject dungeon in dungeonList){dungeon.SetActive(true);}}
                             if (lodIndex == 0){foreach (GameObject tree in treeList){tree.SetActive(true);}}
                             if (lodIndex == 0){foreach (GameObject enemy in chunkEnemyList){enemy.SetActive(true);}}
-                            GPUInstancedGrass gpuInstancedGrass = meshObject.GetComponent<GPUInstancedGrass>();
-                            if (lodIndex == 0 && gpuInstancedGrass == null){
-                                // instantiate grass only at highest LOD
-                                gpuInstancedGrass.RenderGrassGPUI(
-                                    mapData.noiseMap,
-                                    mapData.biomeGenData.voronoiMap,
-                                    bounds
-                                );
-                            }
                             previousLODIndex = lodIndex;
                             meshFilter.mesh = lodMesh.mesh;
                             meshCollider.sharedMesh = lodMesh.mesh;
@@ -312,13 +311,10 @@ public class EndlessTerrain : MonoBehaviour
                     foreach (GameObject tree in treeList){
                         tree.SetActive(false);
                     }
-                    foreach (GameObject grass in grassList){
-                        grass.SetActive(false);
+                    if (grassRenderer != null){
+                        grassRenderer.RemoveChunk(coord);
                     }
-                    GPUInstancedGrass gpuInstancedGrass = meshObject.GetComponent<GPUInstancedGrass>();
-                    if (gpuInstancedGrass != null){
-                        gpuInstancedGrass.enabled = false;
-                    }
+                    grassRenderer.RemoveChunk(coord);
                     chunkEnemyList.Clear();
                     SetVisible(visible);
                 }
