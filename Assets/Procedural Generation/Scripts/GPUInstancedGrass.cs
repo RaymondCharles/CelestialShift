@@ -58,8 +58,11 @@ public class GPUInstancedGrassRenderer : MonoBehaviour
             {   
                 BiomeScriptableObject biome = mapData.biomeDict[mapData.biomeGenData.voronoiMap[x, y].getBiome()];
                 if (biome.name != "Grass Plains"){continue;}
- 
+                if (mapData.biomeGenData.voronoiMap[x, y].getWeight() < 0.5f){continue;}
+
+                // skip if high or on edge
                 float z = mapData.heightCurve.Evaluate(mapData.noiseMap[x, y]) * (mapGenerator.meshHeightMultiplier * biome.biomeHeightMultiplier);
+                if (z > 0.4f){continue;}
 
                 float worldX = x + chunkPositionMapSpace.x - 0.5f * chunkSize;
                 float worldY = chunkPositionMapSpace.y + ((0.5f * chunkSize) - y);
