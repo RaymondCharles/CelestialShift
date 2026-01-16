@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
   m_Name: Stick
   m_EditorClassIdentifier: 
-  itemName: 
-  itemImg: {fileID: 0}
+  itemName: Stick
+  itemImg: {fileID: 21300000, guid: de247de69e7a92e4e840ccf3b9f0d513, type: 3}
   usable: 0
   useSpeed: 1
   quantityLimit: 0
