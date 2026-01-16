@@ -1,55 +1,92 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class DungeonLocation : MonoBehaviour
 {
-    public GameObject DungeonUIPanel;
-    public string dungeonSceneName;   // The scene to load
-    public string spawnPointID;       // The spawn point ID in that scene
+    [Header("UI & Scene Settings")]
+    public GameObject UIPanel;            // The panel to show when player enters trigger
+    public string targetSceneName;        // Scene to load when button is pressed
+    public string targetSpawnID;          // Spawn point ID in that scene
+
+    [Header("Optional: Return Settings")]
+    public bool isReturnPoint = false;    // Mark if this trigger is for returning
 
     private void Start()
     {
-        DungeonUIPanel.SetActive(false);
+        if (UIPanel != null)
+            UIPanel.SetActive(false);
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
 
-        if (DungeonUIPanel != null)
-            DungeonUIPanel.SetActive(true);
-        else
-            Debug.LogError("DungeonUIPanel is NOT assigned!");
+        if (UIPanel != null)
+            UIPanel.SetActive(true);
 
-        if (GameManager.Instance == null)
+
+
+        // Store data in GameManager
+        if (GameManager.Instance != null)
         {
-            Debug.LogError("GameManager instance not found!");
+            GameManager.Instance.nextSceneName = targetSceneName;
+            GameManager.Instance.nextSpawnID = targetSpawnID;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        if (UIPanel != null)
+            UIPanel.SetActive(false);
+
+
+    }
+
+    // Call this function from the UI button
+    //public void Travel()
+    //{
+    //    if (string.IsNullOrEmpty(targetSceneName))
+    //    {
+    //        Debug.LogWarning("Target scene not set!");
+    //        return;
+    //    }
+
+    //    if (GameManager.Instance != null)
+    //    {
+    //        GameManager.Instance.TravelToScene(targetSceneName, targetSpawnID);
+    //    }
+    //    else
+    //    {
+    //        // Fallback
+    //        SceneManager.LoadScene(targetSceneName);
+    //    }
+    //}
+
+    public void Travel()
+    {
+      
+        if (string.IsNullOrEmpty(targetSceneName))
+        {
+            Debug.LogWarning("Target scene not set!");
             return;
         }
 
-        GameManager.Instance.nextDungeonScene = dungeonSceneName;
-        GameManager.Instance.nextSpawnPointID = spawnPointID;
-        GameManager.Instance.enteringDungeon = true;
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
+        if (GameManager.Instance != null)
         {
-            DungeonUIPanel.SetActive(false);
-        }
-    }
-
-    // This is called by the UI button
-    public void EnterDungeon()
-    {
-        if (!string.IsNullOrEmpty(dungeonSceneName))
-        {
-            // Load the dungeon scene
-            SceneManager.LoadScene(dungeonSceneName);
+            GameManager.Instance.TravelToScene(targetSceneName, targetSpawnID);
         }
         else
         {
-            Debug.LogWarning("Dungeon scene name not set!");
+            SceneManager.LoadScene(targetSceneName);
+        }
+
+        // Unlock cursor if this is a return point or UI should be shown
+        if (isReturnPoint || UIPanel != null)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 }

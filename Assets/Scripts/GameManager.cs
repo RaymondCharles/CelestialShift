@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public string nextSpawnID;
 
 
+
     private void Awake()
     {
         if (Instance != null)

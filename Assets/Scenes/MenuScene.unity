@@ -4400,7 +4400,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &506062152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4487,6 +4487,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67da5c4bd5b70b4daf840942380199f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DungeonUIPanelSnowExit: {fileID: 0}
+  DungeonUIPanelSnow: {fileID: 0}
+  DungeonUIPanelGrass: {fileID: 0}
+  DungeonUIPanelSand: {fileID: 0}
   InventoryPanel: {fileID: 0}
   GameOverPanel: {fileID: 0}
   HotBar: {fileID: 0}

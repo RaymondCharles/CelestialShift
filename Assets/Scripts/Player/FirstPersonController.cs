@@ -15,6 +15,7 @@ public class FirstPersonController : MonoBehaviour
     InputAction UseAction;
     InputAction MapAction;
     InputAction MapZoomAction;
+    public GameObject DungeonUIPanelSnowExit;
     public GameObject DungeonUIPanelSnow;
     public GameObject DungeonUIPanelGrass;
     public GameObject DungeonUIPanelSand;
@@ -151,8 +152,10 @@ public class FirstPersonController : MonoBehaviour
 
 
     }
+
     private void Start()
     {
+
         playerInput = GetComponent<PlayerInput>();
         InventoryAction = playerInput.actions.FindAction("Inventory");
         PauseAction = playerInput.actions.FindAction("Pause");
@@ -192,18 +195,53 @@ public class FirstPersonController : MonoBehaviour
     //        Cursor.visible = false;
     //    }
     //}
+    //void LateUpdate()
+    //{
+    //    bool anyPanelOpen =
+    //        (InventoryPanel != null && InventoryPanel.activeSelf) ||
+    //        (PausePanel != null && PausePanel.activeSelf) ||
+    //        (SettingsPanel != null && SettingsPanel.activeSelf) ||
+    //        (GameOverPanel != null && GameOverPanel.activeSelf) ||
+    //        (DungeonUIPanelSnow != null && DungeonUIPanelSnow.activeSelf) ||
+    //        (DungeonUIPanelGrass != null && DungeonUIPanelGrass.activeSelf) ||
+    //        (DungeonUIPanelSand != null && DungeonUIPanelSand.activeSelf) ||
+    //        (DungeonUIPanelSnowExit != null && DungeonUIPanelSnowExit.activeSelf);
+
+    //    if (anyPanelOpen)
+    //    {
+    //        Cursor.lockState = CursorLockMode.None;
+    //        Cursor.visible = true;
+    //    }
+    //    else
+    //    {
+    //        Cursor.lockState = CursorLockMode.Locked;
+    //        Cursor.visible = false;
+    //    }
+    //}
+
+    //}
     void LateUpdate()
     {
+        // Combine all panels safely
         bool anyPanelOpen =
             (InventoryPanel != null && InventoryPanel.activeSelf) ||
             (PausePanel != null && PausePanel.activeSelf) ||
             (SettingsPanel != null && SettingsPanel.activeSelf) ||
-            (GameOverPanel != null && GameOverPanel.activeSelf ||
-            DungeonUIPanelSnow != null && DungeonUIPanelSnow.activeSelf ||
-            DungeonUIPanelGrass != null && DungeonUIPanelGrass.activeSelf || 
-            DungeonUIPanelSand != null && DungeonUIPanelSand.activeSelf); 
+            (GameOverPanel != null && GameOverPanel.activeSelf) ||
+            (DungeonUIPanelSnow != null && DungeonUIPanelSnow.activeSelf) ||
+            (DungeonUIPanelGrass != null && DungeonUIPanelGrass.activeSelf) ||
+            (DungeonUIPanelSand != null && DungeonUIPanelSand.activeSelf) ||
+            (DungeonUIPanelSnowExit != null && DungeonUIPanelSnowExit.activeSelf);
 
-        if (anyPanelOpen)
+        // Check current scene
+        string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        bool alwaysFreeCursorScene = currentScene == "SnowBiomeDungeon";
+        bool alwaysFreeCursorScene2 = currentScene == "GrassBiomeDungeon";
+        bool alwaysFreeCursorScene3 = currentScene == "TheSandBiomeDungeon";
+
+
+
+        if (anyPanelOpen || alwaysFreeCursorScene || alwaysFreeCursorScene2 || alwaysFreeCursorScene3)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -214,6 +252,9 @@ public class FirstPersonController : MonoBehaviour
             Cursor.visible = false;
         }
     }
+
+
+
 
     public void SavePlayer()
     {
