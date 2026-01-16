@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Freeze Splash Potion
   m_EditorClassIdentifier: 
   itemName: Freeze Splash Potion
-  itemImg: {fileID: 21300000, guid: b1d38364826ea8a4e9164fa35486c2e4, type: 3}
+  itemImg: {fileID: 21300000, guid: 996e4268fefbe6942a939835cce139df, type: 3}
   usable: 1
   useSpeed: 1
   quantityLimit: 10
@@ -22,7 +22,6 @@ MonoBehaviour:
   childrenItems: []
   worldPrefab: {fileID: 5507235963131712768, guid: 67104cc023d3ad14e8ad9f74e55334e3, type: 3}
   action: {fileID: 11400000, guid: c7119e149633dc842b0b5c82f3e27231, type: 2}
-  minimapIconPrefab: {fileID: 0}
   newObject: {fileID: 0}
   objectToSpawn: {fileID: 5507235963131712768, guid: 00773adefbffdac44a9f9c772103acf6, type: 3}
   positionalGameObjectName: right hand_end

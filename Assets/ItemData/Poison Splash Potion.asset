@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Poison Splash Potion
   m_EditorClassIdentifier: 
   itemName: Poison Splash Potion
-  itemImg: {fileID: 21300000, guid: 015d8563f03326548a622516c6274194, type: 3}
+  itemImg: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
   usable: 1
   useSpeed: 1
   quantityLimit: 10
@@ -22,7 +22,6 @@ MonoBehaviour:
   childrenItems: []
   worldPrefab: {fileID: 2791510820410530136, guid: beb6946b3dcde5c4f9581722dea94039, type: 3}
   action: {fileID: 11400000, guid: f086dc4258e026948a4fa07afb695977, type: 2}
-  minimapIconPrefab: {fileID: 0}
   newObject: {fileID: 0}
   objectToSpawn: {fileID: 2791510820410530136, guid: c27e2b68b961440499dc61c89f931a71, type: 3}
   positionalGameObjectName: 

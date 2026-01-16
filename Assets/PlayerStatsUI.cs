@@ -1,19 +1,15 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerStatsUI : MonoBehaviour
 {
     [SerializeField] private PlayerStats playerStats;
-   
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Slider hungerSlider;
 
-    [SerializeField] private Slider xpSlider;
-    [SerializeField] private TMP_Text levelText; // optional
-
     private void Awake()
     {
+        // Auto-find if not assigned
         if (playerStats == null)
         {
             GameObject playerObj = GameObject.Find("mainCharacter");
@@ -55,12 +51,7 @@ public class PlayerStatsUI : MonoBehaviour
             hungerSlider.maxValue = playerStats.MaxHunger;
         }
 
-        if (xpSlider != null)
-        {
-            xpSlider.minValue = 0;
-            xpSlider.maxValue = playerStats.XPToNextLevel;
-        }
-
+        // Update values once at start
         Refresh();
     }
 
@@ -73,14 +64,5 @@ public class PlayerStatsUI : MonoBehaviour
 
         if (hungerSlider != null)
             hungerSlider.value = playerStats.Hunger;
-
-        if (xpSlider != null)
-        {
-            xpSlider.maxValue = playerStats.XPToNextLevel;
-            xpSlider.value = playerStats.CurrentXP;
-        }
-
-        if (levelText != null)
-            levelText.text = $"Lv. {playerStats.Level}";
     }
 }

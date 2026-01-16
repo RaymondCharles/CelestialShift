@@ -3,55 +3,55 @@ using UnityEngine;
 
 public class SwordBehaviour : MonoBehaviour
 {
-    [Header("Damage")]
-    [SerializeField] private float swordDamage = 10f;
+    
+    [SerializeField] private float swordDamage = 20f;
 
-    [Header("Debug")]
-    [SerializeField] private bool debugLogs = true;
+    public bool canAttack = true; // true = NOT currently swinging
+    private readonly HashSet<EnemyHealth> enemiesHit = new HashSet<EnemyHealth>();
 
-    private bool damageEnabled;
-    private readonly HashSet<EnemyHealth> hitThisSwing = new HashSet<EnemyHealth>();
-
+    // Call this when the player starts a swing
     public void BeginAttack()
     {
-        damageEnabled = true;
-        hitThisSwing.Clear();
-        if (debugLogs) Debug.Log("[Sword] BeginAttack");
+        canAttack = false;      // during swing -> can deal damage
+        enemiesHit.Clear();
     }
 
+    // Call this when the swing ends
     public void EndAttack()
     {
-        damageEnabled = false;
-        hitThisSwing.Clear();
-        if (debugLogs) Debug.Log("[Sword] EndAttack");
+        canAttack = true;       // not swinging -> no damage
+        enemiesHit.Clear();
     }
 
-    private void OnTriggerEnter(Collider other) => TryHit(other);
-    private void OnTriggerStay(Collider other) => TryHit(other);
+    private void OnTriggerEnter(Collider other)
+    {
+        TryHit(other);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        TryHit(other);
+    }
 
     private void TryHit(Collider other)
     {
-        if (!damageEnabled) return;
-        if (other == null) return;
+        // Only damage while swinging
+        if (canAttack) return;
 
-        // Look for EnemyHealth anywhere up the hierarchy
-        EnemyHealth enemyHealth =
-            other.GetComponent<EnemyHealth>() ??
-            other.GetComponentInParent<EnemyHealth>();
+        // Must be tagged Enemy (you said enemies are on Enemy layer too, but we use tag to match your prototype)
+        if (!other.CompareTag("Enemy")) return;
 
-        if (enemyHealth == null)
-        {
-            if (debugLogs)
-                Debug.Log($"[Sword] Hit {other.name} but NO EnemyHealth");
-            return;
-        }
+        // Find EnemyHealth on the object or parent
+        EnemyHealth enemyHealth = other.GetComponent<EnemyHealth>();
+        if (enemyHealth == null) enemyHealth = other.GetComponentInParent<EnemyHealth>();
+        if (enemyHealth == null) return;
 
-        // Prevent multiple hits per swing
-        if (!hitThisSwing.Add(enemyHealth)) return;
+        // prevent multi-hit per swing
+        if (enemiesHit.Contains(enemyHealth)) return;
 
+        enemiesHit.Add(enemyHealth);
         enemyHealth.TakeDamage(swordDamage);
 
-        if (debugLogs)
-            Debug.Log($"[Sword] HIT {enemyHealth.name} for {swordDamage}");
+        Debug.Log($"SWORD HIT -> {enemyHealth.name} took {swordDamage}");
     }
 }
