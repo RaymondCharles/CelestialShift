@@ -25,7 +25,6 @@ public class EndlessTerrain : MonoBehaviour
 
     public Dictionary<Vector2Int, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2Int, TerrainChunk>();
     static List<TerrainChunk> visibleTerrainChunksLastUpdate = new List<TerrainChunk>();
-    public static List<GameObject> globalEnemyList = new List<GameObject>();
 
     void Start()
     {
@@ -96,6 +95,17 @@ public class EndlessTerrain : MonoBehaviour
         List<GameObject> chunkEnemyList = new List<GameObject>();
         List<GameObject> grassList = new List<GameObject>();
         public int enemyCount = 0;
+        public bool navQueued = false;
+        GameObject navSourceObject;
+        MeshFilter navSourceFilter;
+        MeshCollider navSourceCollider;
+        public int navMeshLodIndex; // which lod to use for navmesh
+        int prevNMLodIndex;
+        public NavMeshData navMeshData;
+        public NavMeshDataInstance navMeshInstance;
+        public AsyncOperation navBuildOp;
+
+        private int size;
 
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen, GameManagerTemp gameManager, GPUInstancedGrassRenderer grassRenderer){// UPDATE FOR NEW GAME MANAGER
             this.coord = coord;
@@ -103,6 +113,9 @@ public class EndlessTerrain : MonoBehaviour
             this.mapGenerator = mapGen;
             this.gameManagerTemp = gameManager;// UPDATE FOR NEW GAME MANAGER
             this.grassRenderer = grassRenderer;
+            this.size = size;
+            this.coord = coord;
+
             // World origin (x,z)
             position = new Vector2(coord.x * size, coord.y * size);
             Vector3 positionV3 = new Vector3(position.x, 0f, position.y);
@@ -238,6 +251,7 @@ public class EndlessTerrain : MonoBehaviour
             try {
                 // place dungeons of chunk, default to invisible until highest LOD
                 foreach (TreeCoord treeCoord in mapData.treeCoords){
+                    
                     if (treeCoord.x < 0 || treeCoord.x >= mapData.chunkSize || treeCoord.y < 0 || treeCoord.y >= mapData.chunkSize){continue;}
 
                     float worldX = treeCoord.x + position.x - 0.5f * mapData.chunkSize;
@@ -290,9 +304,16 @@ public class EndlessTerrain : MonoBehaviour
                         LODmesh lodMesh = lodMeshes[lodIndex];
                         if (lodMesh.hasMesh){
                             // only place dungeon if highest detail LOD - this will change to visible if close enough to viewer
-                            if (lodIndex == 0){foreach (GameObject dungeon in dungeonList){dungeon.SetActive(true);}}
-                            if (lodIndex == 0){foreach (GameObject tree in treeList){tree.SetActive(true);}}
-                            if (lodIndex == 0){foreach (GameObject enemy in chunkEnemyList){enemy.SetActive(true);}}
+                            if (lodIndex == 0){
+                                foreach (GameObject dungeon in dungeonList){
+                                    dungeon.SetActive(true);
+                                }
+                            }if (lodIndex == 0){
+                                // hide trees if not highest LOD
+                                foreach (GameObject tree in treeList){
+                                    tree.SetActive(true);
+                                }
+                            }
                             previousLODIndex = lodIndex;
                             meshFilter.mesh = lodMesh.mesh;
                             meshCollider.sharedMesh = lodMesh.mesh;
@@ -300,7 +321,6 @@ public class EndlessTerrain : MonoBehaviour
                             lodMesh.RequestMesh(mapData);
                         }
                     }
-                    SetVisible(visible);
                     visibleTerrainChunksLastUpdate.Add(this);
                 }
                 else{
@@ -318,51 +338,17 @@ public class EndlessTerrain : MonoBehaviour
                     chunkEnemyList.Clear();
                     SetVisible(visible);
                 }
+                SetVisible(visible);
+
             }
-        }
-
-        public List<GameObject> spawnEnemies(int count){
-            try {
-                // place enemies, spawn only on chunk, store in global array, kill only if enemy in inactive chunk
-                System.Random prng = new System.Random ();
-                for (int i = 0; i < count; i++){
-                    // non-deterministic random position
-                    int x = prng.Next(0, mapData.chunkSize);
-                    int y = prng.Next(0, mapData.chunkSize);
-                    float worldX = x + position.x - 0.5f * mapData.chunkSize;
-                    float worldY = position.y + ((0.5f * mapData.chunkSize) - y);
-
-                    // obtain information via chunk-local coords
-                    BiomeCoord biomeCoord = mapData.biomeGenData.voronoiMap[x, y];
-                    BiomeScriptableObject biome = mapData.biomeDict[biomeCoord.getBiome()];
-
-                    // get random enemy prefab from biome
-                    int enemyIndex = prng.Next(0, biome.enemyPrefabs.Length);
-                    GameObject enemyPrefab = biome.enemyPrefabs[enemyIndex].prefab;
-
-                    float height = mapData.heightCurve.Evaluate(mapData.noiseMap[x, y]) * (mapGenerator.meshHeightMultiplier * biome.biomeHeightMultiplier);
-
-                    // position in world space
-                    Vector3 enemyPos = new Vector3(worldX * scale, height*scale, worldY * scale);
-
-                    GameObject enemy = GameObject.Instantiate(enemyPrefab, enemyPos, Quaternion.identity);
-                    enemy.transform.parent = meshObject.transform;
-                    enemy.SetActive(false);
-                    chunkEnemyList.Add(enemy);
-                    globalEnemyList.Add(enemy);
-                }
-            }catch (Exception e) {
-                Debug.LogError($"Enemy spawn failed for chunk {coord}: {e}");
-            }
-            return chunkEnemyList;
         }
 
         public void SetVisible(bool visible){
             // sets object to visible or not
-            if (meshObject != null) meshObject.SetActive(visible);
+            if (meshRenderer) meshRenderer.enabled = visible;
         }
         public bool IsVisible(){
-            return meshObject.activeSelf;
+            return meshRenderer.enabled;
         }
     }
 

@@ -5,8 +5,8 @@ public class PlayerStats : MonoBehaviour
 {
     public event Action OnStatsChanged;
 
-    // Health + Hunger 
-  
+    // Values
+
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int maxHunger = 100;
 
@@ -23,31 +23,11 @@ public class PlayerStats : MonoBehaviour
     public int Health => health;
     public int Hunger => hunger;
 
-
-    // XP + Level 
-
-    [SerializeField] private int level = 1;
-
-    [SerializeField] private int currentXP = 0;
-
-    // Linear XP requirement:
-    // XPToNext = baseXP + (level-1)*xpPerLevel
-    [SerializeField] private int baseXPToNext = 100;
-    [SerializeField] private int xpPerLevel = 50;
-
-    public int Level => level;
-    public int CurrentXP => currentXP;
-    public int XPToNextLevel => Mathf.Max(1, baseXPToNext + (level - 1) * xpPerLevel);
-
     private void Start()
     {
+        // clamp + update UI once on start
         health = Mathf.Clamp(health, 0, maxHealth);
         hunger = Mathf.Clamp(hunger, 0, maxHunger);
-
-        // clamp XP sanity
-        currentXP = Mathf.Max(0, currentXP);
-        level = Mathf.Max(1, level);
-
         OnStatsChanged?.Invoke();
     }
 
@@ -56,41 +36,11 @@ public class PlayerStats : MonoBehaviour
         DrainHungerOverTime();
     }
 
-
-    // XP methods
-
-    public void AddXP(int amount)
-    {
-        if (amount <= 0) return;
-
-        currentXP += amount;
-
-        // Level up as many times as needed
-        while (currentXP >= XPToNextLevel)
-        {
-            currentXP -= XPToNextLevel;
-            LevelUp();
-        }
-
-        OnStatsChanged?.Invoke();
-    }
-
-    private void LevelUp()
-    {
-        level++;
-        Debug.Log($"PLAYER LEVEL UP! Now Level {level}");
-
-
-        // Heal(10);
-        // Eat(10);
-    }
-
-    // Hunger drain (existing)
-
     private void DrainHungerOverTime()
     {
         if (hungerDrainPerSecond <= 0f) return;
 
+        // Convert per-second drain into integer ticks smoothly
         hungerDrainAccumulator += hungerDrainPerSecond * Time.deltaTime;
 
         if (hungerDrainAccumulator >= 1f)
@@ -101,8 +51,10 @@ public class PlayerStats : MonoBehaviour
             SetHunger(hunger - drainAmount);
         }
 
+        // starving damage if hunger empty
         if (hunger <= 0 && starvingDamagePerSecond > 0f)
         {
+            // damage as ints over time 
             float dmg = starvingDamagePerSecond * Time.deltaTime;
             if (dmg > 0f)
                 TakeDamage(Mathf.CeilToInt(dmg));

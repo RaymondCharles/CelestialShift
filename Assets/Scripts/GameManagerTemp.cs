@@ -6,10 +6,8 @@ public class GameManagerTemp : MonoBehaviour
 {
     public Item[] allItems;
     public GameObject player;
-    public int Level = 100;
-    public int GetLevel() { return Level; }
-    public static Dictionary<Vector2Int, List<GameObject>> globalEnemyDict;
-    public EndlessTerrain endlessTerrain;
+
+    public List<GameObject> enemies;
 
     private void Awake()
     {
