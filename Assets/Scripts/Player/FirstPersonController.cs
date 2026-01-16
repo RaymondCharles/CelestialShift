@@ -14,14 +14,7 @@ public class FirstPersonController : MonoBehaviour
     InputAction DropAction;
     InputAction UseAction;
     InputAction MapAction;
-    InputAction MapZoomAction;
-    public GameObject DungeonUIPanelSnowExit;
-    public GameObject DungeonUIPanelSnow;
-    public GameObject DungeonUIPanelGrass;
-    public GameObject DungeonUIPanelSand;
     public GameObject InventoryPanel;
-    public GameObject GameOverPanel;
-    public GameObject HotBar;
     public GameObject PausePanel;
     public GameObject SettingsPanel;
     public GameObject BigMapPanel;
@@ -148,23 +141,18 @@ public class FirstPersonController : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+
 
 
     }
-
     private void Start()
     {
-
         playerInput = GetComponent<PlayerInput>();
         InventoryAction = playerInput.actions.FindAction("Inventory");
         PauseAction = playerInput.actions.FindAction("Pause");
         DropAction = playerInput.actions.FindAction("Drop");
         UseAction = playerInput.actions.FindAction("Use");
         MapAction = playerInput.actions.FindAction("Map");
-        MapZoomAction = playerInput.actions.FindAction("MapZoom");
-        float zoomValue = MapZoomAction.ReadValue<float>();
-
 
 
         if (GameManager.Instance.loadGame)
@@ -182,66 +170,9 @@ public class FirstPersonController : MonoBehaviour
     }
 
 
-    //void LateUpdate()
-    //{
-    //    if (InventoryPanel.activeSelf || PausePanel.activeSelf || SettingsPanel.activeSelf || GameOverPanel.activeSelf)
-    //    {
-    //        Cursor.lockState = CursorLockMode.None;
-    //        Cursor.visible = true;
-    //    }
-    //    else
-    //    {
-    //        Cursor.lockState = CursorLockMode.Locked;
-    //        Cursor.visible = false;
-    //    }
-    //}
-    //void LateUpdate()
-    //{
-    //    bool anyPanelOpen =
-    //        (InventoryPanel != null && InventoryPanel.activeSelf) ||
-    //        (PausePanel != null && PausePanel.activeSelf) ||
-    //        (SettingsPanel != null && SettingsPanel.activeSelf) ||
-    //        (GameOverPanel != null && GameOverPanel.activeSelf) ||
-    //        (DungeonUIPanelSnow != null && DungeonUIPanelSnow.activeSelf) ||
-    //        (DungeonUIPanelGrass != null && DungeonUIPanelGrass.activeSelf) ||
-    //        (DungeonUIPanelSand != null && DungeonUIPanelSand.activeSelf) ||
-    //        (DungeonUIPanelSnowExit != null && DungeonUIPanelSnowExit.activeSelf);
-
-    //    if (anyPanelOpen)
-    //    {
-    //        Cursor.lockState = CursorLockMode.None;
-    //        Cursor.visible = true;
-    //    }
-    //    else
-    //    {
-    //        Cursor.lockState = CursorLockMode.Locked;
-    //        Cursor.visible = false;
-    //    }
-    //}
-
-    //}
     void LateUpdate()
     {
-        // Combine all panels safely
-        bool anyPanelOpen =
-            (InventoryPanel != null && InventoryPanel.activeSelf) ||
-            (PausePanel != null && PausePanel.activeSelf) ||
-            (SettingsPanel != null && SettingsPanel.activeSelf) ||
-            (GameOverPanel != null && GameOverPanel.activeSelf) ||
-            (DungeonUIPanelSnow != null && DungeonUIPanelSnow.activeSelf) ||
-            (DungeonUIPanelGrass != null && DungeonUIPanelGrass.activeSelf) ||
-            (DungeonUIPanelSand != null && DungeonUIPanelSand.activeSelf) ||
-            (DungeonUIPanelSnowExit != null && DungeonUIPanelSnowExit.activeSelf);
-
-        // Check current scene
-        string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        bool alwaysFreeCursorScene = currentScene == "SnowBiomeDungeon";
-        bool alwaysFreeCursorScene2 = currentScene == "GrassBiomeDungeon";
-        bool alwaysFreeCursorScene3 = currentScene == "TheSandBiomeDungeon";
-
-
-
-        if (anyPanelOpen || alwaysFreeCursorScene || alwaysFreeCursorScene2 || alwaysFreeCursorScene3)
+        if (InventoryPanel.activeSelf || PausePanel.activeSelf || SettingsPanel.activeSelf)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -252,21 +183,10 @@ public class FirstPersonController : MonoBehaviour
             Cursor.visible = false;
         }
     }
-
-
-
-
     public void SavePlayer()
     {
         SaveSystem.SavePlayer(this);
         Debug.Log("Player saved at position: " + playerTransform.position);
-
-        if (HotBar != null) PlayerPrefs.SetFloat("HotbARSize", HotBar.transform.localScale.x);
-        if (InventoryPanel != null) PlayerPrefs.SetFloat("InvSize", InventoryPanel.transform.localScale.x);
-        if (GameManager.Instance != null && GameManager.Instance.currentMusic != null)
-            PlayerPrefs.SetFloat("MusicVol", GameManager.Instance.currentMusic.volume);
-
-        PlayerPrefs.Save();
     }
     public void LoadPlayer()
     {
@@ -312,19 +232,6 @@ public class FirstPersonController : MonoBehaviour
         }
 
         Debug.Log("Player + Inventory/HotBar loaded");
-
-        // Apply HotBar size
-        if (HotBar != null)
-            HotBar.transform.localScale = Vector3.one * (PlayerPrefs.GetFloat("HotbARSize", 0.6f));
-
-        // Apply Inventory size
-        if (InventoryPanel != null)
-            InventoryPanel.transform.localScale = Vector3.one * (PlayerPrefs.GetFloat("InvSize", 1f));
-
-        // Apply music volume
-        if (GameManager.Instance != null && GameManager.Instance.currentMusic != null)
-            GameManager.Instance.currentMusic.volume = PlayerPrefs.GetFloat("MusicVol", 0.6f);
-
     }
 
     private void OnEnable()
@@ -338,78 +245,33 @@ public class FirstPersonController : MonoBehaviour
     }
     public void InventoryPanelShow()
     {
-        bool newState = !InventoryPanel.activeSelf;
-
-        if (newState)
+        InventoryPanel.SetActive(!InventoryPanel.activeSelf);
+        for (int i=0; i < Inventory.Instance.inventoryItems.Length; i++)
         {
-            // Close BigMap if open
-            if (isBigMapOpen) CloseBigMap();
-
-            // Close PausePanel if open
-            if (PausePanel.activeSelf) PausePanel.SetActive(false);
+            InventoryUI.Instance.UpdateSlot(i);
         }
-
-        InventoryPanel.SetActive(newState);
-
-        // Update all slots
-        if (Inventory.Instance != null && InventoryUI.Instance != null)
-        {
-            for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
-            {
-                InventoryUI.Instance.UpdateSlot(i);
-            }
-        }
-
         UpdateCrosshair();
     }
-
-    //public void EnterDungeon()
-    //{
-    //    SceneManager.LoadScene(GameManager.Instance.nextDungeonScene);
-    //}
-    //private void UpdateCrosshair()
-    //{
-
-    //    bool shouldHide = PausePanel.activeSelf || InventoryPanel.activeSelf || BigMapPanel.activeSelf || SettingsPanel.activeSelf;
-
-    //    if (Crosshair != null)
-    //        Crosshair.SetActive(!shouldHide);
-    //}
     private void UpdateCrosshair()
     {
-        bool shouldHide =
-            (PausePanel != null && PausePanel.activeSelf) ||
-            (InventoryPanel != null && InventoryPanel.activeSelf) ||
-            (BigMapPanel != null && BigMapPanel.activeSelf) ||
-            (SettingsPanel != null && SettingsPanel.activeSelf);
+
+        bool shouldHide = PausePanel.activeSelf || InventoryPanel.activeSelf || BigMapPanel.activeSelf || SettingsPanel.activeSelf;
 
         if (Crosshair != null)
             Crosshair.SetActive(!shouldHide);
     }
 
-
     public void PausePanelShow()
     {
-        if (PausePanel == null) return;
-
         bool isActive = !PausePanel.activeSelf;
-
-        if (isActive)
-        {
-            if (InventoryPanel != null && InventoryPanel.activeSelf)
-                InventoryPanel.SetActive(false);
-
-            if (isBigMapOpen)
-                CloseBigMap();
-        }
+        if (GameManager.Instance != null) GameManager.Instance.inGame = (!isActive);
+        Debug.Log(GameManager.Instance.inGame);
 
         PausePanel.SetActive(isActive);
 
-        if (GameManager.Instance != null)
-            GameManager.Instance.inGame = !isActive;
-
         if (isActive)
         {
+  
             Time.timeScale = 0f;
             CanMove = false;
             Cursor.lockState = CursorLockMode.None;
@@ -417,16 +279,14 @@ public class FirstPersonController : MonoBehaviour
         }
         else
         {
+    
             Time.timeScale = 1f;
             CanMove = true;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
-
         UpdateCrosshair();
     }
-
-
 
     public void ContinueGame()
     {
@@ -498,10 +358,6 @@ public class FirstPersonController : MonoBehaviour
 
     public void CloseSettingsPanel()
     {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.inGame = true; 
-        }
         if (SettingsPanel != null)
             SettingsPanel.SetActive(false);
 
@@ -607,8 +463,6 @@ public class FirstPersonController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-     
-
         // Read input from the New Input System each frame
         moveInput = inputActions.Player.Move.ReadValue<Vector2>(); // x = horizontal, y = vertical
         lookInput = inputActions.Player.Look.ReadValue<Vector2>();
@@ -805,8 +659,6 @@ public class FirstPersonController : MonoBehaviour
             moveDirection.y = jumpForce;
         }
     }
-
-
 
     private void HandleCrouch()
     {

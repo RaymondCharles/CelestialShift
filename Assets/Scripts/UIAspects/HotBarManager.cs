@@ -13,24 +13,6 @@ public class HotBarManager : MonoBehaviour, UIManager
     public int selectedSlot = -1;
 
 
-    //private void Awake()
-    //{
-    //    // Set singleton instance
-    //    if (Instance != null && Instance != this)
-    //    {
-    //        Destroy(gameObject);
-    //        return;
-    //    }
-    //    Instance = this;
-
-
-    //    // Initialize slots
-    //    slotItems = new SlotItem[Slots.Length];
-    //    for (int i = 0; i < Slots.Length; i++)
-    //    {
-    //        Slots[i].image.sprite = emptySlotSprite;
-    //    }
-    //}
     private void Awake()
     {
         // Set singleton instance
@@ -40,9 +22,6 @@ public class HotBarManager : MonoBehaviour, UIManager
             return;
         }
         Instance = this;
-
-        // Persist across scenes
-        DontDestroyOnLoad(gameObject);
 
         // Initialize slots
         slotItems = new SlotItem[Slots.Length];

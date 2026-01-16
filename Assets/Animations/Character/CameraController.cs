@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
 using UnityEngine.Rendering;
-using UnityEngine.SceneManagement;
 using System;
 
 public class CameraController : MonoBehaviour
@@ -21,9 +20,11 @@ public class CameraController : MonoBehaviour
     public GameObject TPCamera;
     private bool isThirdPerson = false;
     public bool IsThirdPerson => isThirdPerson;
-    public Key toggleKey = Key.Q;
-    public Key CameraLockKey = Key.LeftAlt;
+    public Key toggleKey = Key.Q; //Keybind for switching between cameras
+    //public Key enemyLock = Key.F; //Keybind for locking in on an enemy
+    public Key CameraLockKey = Key.LeftAlt; //Keybind for locking the camera
 
+    
     private float prevXInput;
     private float prevYInput;
     public bool cameraLock = true;
@@ -44,51 +45,15 @@ public class CameraController : MonoBehaviour
     public float transitionSpeed = 3f;
     public float targetFXRate = 300f;
 
+    
+
+
     [SerializeField] private CinemachineFreeLook freeLookCamera;
     [SerializeField] private CinemachineVirtualCamera virtualCam;
     private CinemachinePOV pov;
 
-    // --- NEW: Persistent & scene load support ---
-    private void Awake()
-    {
-        // Prevent duplicates
-        if (UnityEngine.Object.FindObjectsByType<CameraController>(UnityEngine.FindObjectsSortMode.None).Length > 1)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        DontDestroyOnLoad(gameObject); // Keep camera across dungeon scenes
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        AssignPlayerIfExists();
-    }
-
-    private void AssignPlayerIfExists()
-    {
-        if (followTarget == null)
-        {
-            GameObject playerObj = GameObject.FindWithTag("Player");
-            if (playerObj != null)
-            {
-                followTarget = playerObj.transform;
-            }
-        }
-    }
-    // --- END NEW ---
-
     private void Start()
     {
-        AssignPlayerIfExists();
-
         if (freeLookCamera == null)
             freeLookCamera = GetComponent<CinemachineFreeLook>();
 
@@ -99,53 +64,52 @@ public class CameraController : MonoBehaviour
 
         SetSensitivity(sensX, sensY);
 
+        // Lock cursor on start for FPV movement
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
+    //Changes cinemachine sensitivity
     public void SetSensitivity(float horizontal, float vertical)
     {
-        freeLookCamera.m_XAxis.m_MaxSpeed = horizontal;
-        freeLookCamera.m_YAxis.m_MaxSpeed = vertical / 100;
+        freeLookCamera.m_XAxis.m_MaxSpeed = horizontal; // horizontal rotation speed
+        freeLookCamera.m_YAxis.m_MaxSpeed = vertical / 100;   // vertical rotation speed
         pov.m_HorizontalAxis.m_MaxSpeed = horizontal;
         pov.m_VerticalAxis.m_MaxSpeed = vertical / 2;
     }
 
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        // Cursor lock
+        
+        
+        // 1. Cursor Management for Resuming Control (Click to lock)
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked)
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
 
-        // Camera toggle
+        // 2. Toggling between camera views (Press q to swap)
         if (Keyboard.current != null && Keyboard.current[toggleKey].wasPressedThisFrame) ToggleView();
+        // 3. Toggling camera lock Twmode (Press Left Alt to swap).
         if (Keyboard.current != null && Keyboard.current[CameraLockKey].wasPressedThisFrame && isThirdPerson) cameraLock = !cameraLock;
 
         string prevBiome = biome;
         biome = CheckBiome();
         TransitionBiome(biome);
     }
+    
 
-    private void LateUpdate()
+
+    void LateUpdate()
     {
-        if (followTarget == null)
-        {
-            AssignPlayerIfExists();
-            if (followTarget == null) return;
-        }
-
-        // Only rotate player to match camera in FP mode
-        if (!isThirdPerson && playerCam != null)
-        {
-            Vector3 cameraYaw = new Vector3(0f, playerCam.eulerAngles.y, 0f);
-            followTarget.rotation = Quaternion.Euler(cameraYaw);
-        }
+        Vector3 cameraYaw = new Vector3(0f, playerCam.eulerAngles.y, 0f);
+        followTarget.rotation = Quaternion.Euler(cameraYaw);
     }
 
-    // --- Biome / terrain functions remain unchanged ---
+
+
     private string CheckBiome()
     {
         Ray ray = new Ray(followTarget.position, Vector3.down);
@@ -155,35 +119,49 @@ public class CameraController : MonoBehaviour
             if (hit.collider.name == "Terrain Chunk")
             {
                 const float scale = 5f;
-                int chunkSize = mapGenerator.chunkSize - 1;
+                int chunkSize = mapGenerator.chunkSize - 1; // 240 if mapChunkSize = 241
 
                 float newHitX = hit.point.x + (0.5f * (chunkSize * scale));
                 float newHitZ = hit.point.z + (0.5f * (chunkSize * scale));
+                // world -> scaled terrain space
                 Vector2 hitScaled = new Vector2(newHitX, newHitZ) / scale;
 
+                // scaled -> chunk coord (dictionary key)
                 Vector2Int chunkCoord = new Vector2Int(
                     Mathf.FloorToInt(hitScaled.x / chunkSize),
                     Mathf.FloorToInt(hitScaled.y / chunkSize)
                 );
 
+                // lookup the correct TerrainChunk
                 if (!mapGenerator.terrainChunkDictionary.TryGetValue(chunkCoord, out EndlessTerrain.TerrainChunk terrainChunk))
                 {
                     Debug.LogWarning($"No chunk found for {chunkCoord}");
                     return "ERROR";
                 }
 
+                // compute local indices (array coords) using the chunk object's min corner
                 int size = terrainChunk.mapData.chunkSize;
-                Transform chunkRoot = hit.collider.transform;
 
+                Transform chunkRoot = hit.collider.transform;
+                //Debug.Log((hit.point.x - (chunkRoot.position.x - (chunkSize * scale * 0.5f))) / scale);
+                //Debug.Log(hit.point.x);
                 int localX = Mathf.FloorToInt((hit.point.x - (chunkRoot.position.x - (chunkSize * scale * 0.5f))) / scale);
                 int localY = chunkSize - Mathf.FloorToInt((hit.point.z - (chunkRoot.position.z - (chunkSize * scale * 0.5f))) / scale);
 
+                // clamp to prevent out-of-bounds
                 localX = Mathf.Clamp(localX, 0, size - 1);
                 localY = Mathf.Clamp(localY, 0, size - 1);
 
+                // read biome
                 BiomeCoord biomeCoord = terrainChunk.mapData.biomeGenData.voronoiMap[localX, localY];
+                //Debug.Log($"{biomeCoord.getBiome()}  chunk={chunkCoord}  local=({localX},{localY})");
 
-                Debug.DrawLine(chunkRoot.position, hit.point, Color.red, 0.1f);
+                Debug.DrawLine(
+                chunkRoot.position,
+                hit.point,
+                Color.red,
+                0.1f
+                );
 
                 return biomeCoord.getBiome();
             }
@@ -191,44 +169,49 @@ public class CameraController : MonoBehaviour
         return "";
     }
 
+
     void TransitionBiome(string biome)
     {
         var sandEmission = sandFX.emission;
         var snowEmission = snowFX.emission;
         var grassEmission = grassFX.emission;
-
         if (biome == "Desert")
         {
+            Debug.Log("transitioning to Desert");
             sandVolume.weight = Mathf.Lerp(sandVolume.weight, 1, transitionSpeed * Time.deltaTime);
             snowVolume.weight = Mathf.Lerp(snowVolume.weight, 0, transitionSpeed * Time.deltaTime);
             grassVolume.weight = Mathf.Lerp(grassVolume.weight, 0, transitionSpeed * Time.deltaTime);
-
-            sandEmission.rateOverTime = Mathf.Lerp(sandFX.emission.rateOverTime.constant, (targetFXRate / 20), transitionSpeed * Time.deltaTime);
+            sandEmission.rateOverTime = Mathf.Lerp(sandFX.emission.rateOverTime.constant, (targetFXRate/20), transitionSpeed * Time.deltaTime);
             snowEmission.rateOverTime = Mathf.Lerp(snowFX.emission.rateOverTime.constant, 0f, transitionSpeed * Time.deltaTime);
             grassEmission.rateOverTime = Mathf.Lerp(grassFX.emission.rateOverTime.constant, 0f, transitionSpeed * Time.deltaTime);
+
         }
         else if (biome == "Snow")
         {
+            Debug.Log("transitioning to Snow");
             sandVolume.weight = Mathf.Lerp(sandVolume.weight, 0, transitionSpeed * Time.deltaTime);
             snowVolume.weight = Mathf.Lerp(snowVolume.weight, 1, transitionSpeed * Time.deltaTime);
             grassVolume.weight = Mathf.Lerp(grassVolume.weight, 0, transitionSpeed * Time.deltaTime);
-
             sandEmission.rateOverTime = Mathf.Lerp(sandFX.emission.rateOverTime.constant, 0f, transitionSpeed * Time.deltaTime);
             snowEmission.rateOverTime = Mathf.Lerp(snowFX.emission.rateOverTime.constant, targetFXRate, transitionSpeed * Time.deltaTime);
             grassEmission.rateOverTime = Mathf.Lerp(grassFX.emission.rateOverTime.constant, 0f, transitionSpeed * Time.deltaTime);
         }
         else if (biome == "Grass Plains")
         {
+            Debug.Log("transitioning to Grass");
             sandVolume.weight = Mathf.Lerp(sandVolume.weight, 0, transitionSpeed * Time.deltaTime);
             snowVolume.weight = Mathf.Lerp(snowVolume.weight, 0, transitionSpeed * Time.deltaTime);
             grassVolume.weight = Mathf.Lerp(grassVolume.weight, 1, transitionSpeed * Time.deltaTime);
-
             sandEmission.rateOverTime = Mathf.Lerp(sandFX.emission.rateOverTime.constant, 0f, transitionSpeed * Time.deltaTime);
             snowEmission.rateOverTime = Mathf.Lerp(snowFX.emission.rateOverTime.constant, 0f, transitionSpeed * Time.deltaTime);
             grassEmission.rateOverTime = Mathf.Lerp(grassFX.emission.rateOverTime.constant, (targetFXRate / 20), transitionSpeed * Time.deltaTime);
         }
     }
 
+
+
+
+    // Public method called by the UI button (or Q key)
     void ToggleView()
     {
         isThirdPerson = !isThirdPerson;
@@ -247,6 +230,7 @@ public class CameraController : MonoBehaviour
             cameraLock = true;
             tpVolume.weight = 0;
             fpVolume.weight = 1;
-        }
-    }
+        }
+    }
+
 }

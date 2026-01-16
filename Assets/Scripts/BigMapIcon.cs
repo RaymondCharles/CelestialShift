@@ -8,29 +8,16 @@ public class BigMapIcon : MonoBehaviour
     public RectTransform mapPanel;
     public Transform dungeonWorldObject;
     public GameObject dungeonIconPrefab;
-    public GameObject playerIconPrefab;
+
     private GameObject dungeonIcon;
-    private RectTransform playerIcon;
 
     void Start()
     {
         dungeonIcon = Instantiate(dungeonIconPrefab, mapPanel);
-
-        if (playerIconPrefab != null)
-        {
-            GameObject obj = Instantiate(playerIconPrefab, mapPanel);
-            playerIcon = obj.GetComponent<RectTransform>();
-            playerIcon.anchoredPosition = Vector2.zero;
-        }
     }
 
     void Update()
     {
-        if (playerIcon != null)
-        {
-            playerIcon.anchoredPosition = Vector2.zero;
-        }
-
         if (dungeonWorldObject == null) return;
 
         Vector3 viewportPos = mapCamera.WorldToViewportPoint(dungeonWorldObject.position);

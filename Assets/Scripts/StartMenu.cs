@@ -8,7 +8,6 @@ public class StartMenu : MonoBehaviour
 {
     public GameObject PlayerViewScreen;
     public GameObject MainScreen;
-    public GameObject SettingsScreen;
 
     // Change to Player View Screen When Start is Pressed
 
@@ -22,17 +21,6 @@ public class StartMenu : MonoBehaviour
     {
         PlayerViewScreen.SetActive(false);
     }
-    public void ChangeScreenToSettings()
-    {
-        SettingsScreen.SetActive(true);
-
-    }
-    public void ChangeSettingsToMain()
-    {
-
-        SettingsScreen.SetActive(false);
-    }
-
 
     // Change to Game Scene When Play is Pressed
     public void OnClickPlay()
