@@ -29,6 +29,9 @@ public class EndlessTerrain : MonoBehaviour
 
     private Vector2Int _currentPlayerChunk = new Vector2Int (0,0);
     private TerrainChunk currentPlayerChunkRef;
+
+    //async navmesh fields.
+    public const float NavMeshOverlapWorld = 5f;
     
     
     void Awake() => Instance = this;
@@ -189,6 +192,11 @@ public class EndlessTerrain : MonoBehaviour
         int prevNMLodIndex;
 
 
+        public NavMeshData navMeshData;
+        public NavMeshDataInstance navMeshInstance;
+        public AsyncOperation navBuildOp;
+
+
         
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen){
             this.coord = coord;
@@ -237,6 +245,10 @@ public class EndlessTerrain : MonoBehaviour
             surface.voxelSize = 0.4f; // tune
             surface.overrideTileSize = true;
             surface.tileSize = 128; // tune
+
+            // Create per-chunk runtime NavMeshData (only once)
+            navMeshData = new NavMeshData(surface.agentTypeID);
+            navMeshInstance = NavMesh.AddNavMeshData(navMeshData);
 
 
             Debug.Log(NavMeshBuildQueue.Instance ? "Queue exists" : "Queue is NULL");
@@ -324,7 +336,7 @@ public class EndlessTerrain : MonoBehaviour
 
             Texture2D texture = TextureGenerator.TextureFromColourMap(flipped, size, size);
             */
-            Texture2D texture = TextureGenerator.TextureFromColourMap(mapData.colourMap, mapGenerator.mapChunkSize, mapGenerator.mapChunkSize);
+            Texture2D texture = TextureGenerator.TextureFromColourMap(mapData.colourMap, mapGenerator.mapChunkSize - 1, mapGenerator.mapChunkSize);
             meshRenderer.material.mainTexture = texture;
 
 
@@ -403,7 +415,7 @@ public class EndlessTerrain : MonoBehaviour
                     if (!navQueued)
                     {
                         navQueued = true;
-                        NavMeshBuildQueue.Instance.Enqueue(surface, this);
+                        NavMeshBuildQueue.Instance.Enqueue(surface, this, EndlessTerrain.NavMeshOverlapWorld);
                     }
                 }
                 Vector3 viewerPos3 = new Vector3(viewerPosition.x, 0f, viewerPosition.y);
@@ -479,10 +491,28 @@ public class EndlessTerrain : MonoBehaviour
 
         public void SetVisible(bool visible){
             // sets object to visible or not
-            if (meshObject != null) meshObject.SetActive(visible);
+                if (meshRenderer) meshRenderer.enabled = visible;
         }
         public bool IsVisible(){
             return meshObject.activeSelf;
+        }
+
+
+
+        public Bounds GetNavBuildBounds(float overlapWorld, float ySize = 200f)
+        {
+            float chunkWorldSize = mapGenerator.mapChunkSize * scale;
+
+            Vector3 center = meshObject.transform.position +
+                            new Vector3(chunkWorldSize * 0.5f, 0f, chunkWorldSize * 0.5f);
+
+            Vector3 size = new Vector3(
+                chunkWorldSize + overlapWorld * 2f,
+                ySize,
+                chunkWorldSize + overlapWorld * 2f
+            );
+
+            return new Bounds(center, size);
         }
     }
 
