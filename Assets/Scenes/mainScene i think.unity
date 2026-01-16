@@ -39620,7 +39620,7 @@ MonoBehaviour:
   playerStats: {fileID: 7902220941128870779}
   healthSlider: {fileID: 2060225859}
   hungerSlider: {fileID: 1196941583}
-  gameOverPanel: {fileID: 0}
+  gameOverPanel: {fileID: 2111610173}
   mainMenuButton: {fileID: 0}
   Crosshair: {fileID: 0}
   xpSlider: {fileID: 0}
@@ -52074,7 +52074,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494344952}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2756825, y: 3e-45, z: -1e-45, w: 0.96124876}
+  m_LocalRotation: {x: 0.2756825, y: -1e-45, z: -0, w: 0.96124876}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -72311,6 +72311,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!1 &2111610173 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4468738707382310166, guid: de8c9b2135c3c42448ac23216656bed7, type: 3}
+  m_PrefabInstance: {fileID: 1397741877}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2129499437
 GameObject:
   m_ObjectHideFlags: 0
@@ -72591,7 +72596,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144748341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24058327, y: 0.00000001670101, z: -0.0000000041395687, w: 0.97062856}
+  m_LocalRotation: {x: 0.24058327, y: -0.000000016701, z: 0.0000000041395665, w: 0.97062856}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
