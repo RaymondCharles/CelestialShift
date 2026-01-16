@@ -66,13 +66,17 @@ public class DungeonLocation : MonoBehaviour
 
     public void Travel()
     {
-      
         if (string.IsNullOrEmpty(targetSceneName))
         {
             Debug.LogWarning("Target scene not set!");
             return;
         }
 
+        // Close the UI panel immediately
+        if (UIPanel != null)
+            UIPanel.SetActive(false);
+
+        // Store data in GameManager
         if (GameManager.Instance != null)
         {
             GameManager.Instance.TravelToScene(targetSceneName, targetSpawnID);
@@ -83,10 +87,11 @@ public class DungeonLocation : MonoBehaviour
         }
 
         // Unlock cursor if this is a return point or UI should be shown
-        if (isReturnPoint || UIPanel != null)
+        if (isReturnPoint)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
     }
+
 }

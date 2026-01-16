@@ -607,7 +607,7 @@ public class FirstPersonController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Time.timeScale = " + Time.timeScale);
+     
 
         // Read input from the New Input System each frame
         moveInput = inputActions.Player.Move.ReadValue<Vector2>(); // x = horizontal, y = vertical

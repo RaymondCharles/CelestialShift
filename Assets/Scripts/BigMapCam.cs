@@ -3,8 +3,7 @@ using UnityEngine.InputSystem;
 
 public class BigMapCam : MonoBehaviour
 {
-    public Transform player;
-
+    public Transform player; 
     public float height = 600f;
     public float zoomSpeed = 50f;
     public float minHeight = 200f;
@@ -12,6 +11,14 @@ public class BigMapCam : MonoBehaviour
 
     void LateUpdate()
     {
+      
+        if (player == null && FirstPersonController.Instance != null)
+        {
+            player = FirstPersonController.Instance.transform;
+        }
+
+        if (player == null) return; 
+
         HandleZoom();
 
         Vector3 newPos = player.position;
