@@ -196,9 +196,13 @@ public class EndlessTerrain : MonoBehaviour
         public NavMeshDataInstance navMeshInstance;
         public AsyncOperation navBuildOp;
 
+        private int size;
+
 
         
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen){
+            this.size = size;
+            Debug.Log(this.size);
             this.coord = coord;
             this.detailLevels = detailLevels;
             this.mapGenerator = mapGen;
@@ -499,21 +503,23 @@ public class EndlessTerrain : MonoBehaviour
 
 
 
-        public Bounds GetNavBuildBounds(float overlapWorld, float ySize = 200f)
+        public Bounds GetNavBuildBounds(float overlapWorld, float ySize = 2000f)
         {
-            float chunkWorldSize = mapGenerator.mapChunkSize * scale;
+            float chunkWorldSize = size * scale; // size == chunkSize passed into TerrainChunk
 
-            Vector3 center = meshObject.transform.position +
-                            new Vector3(chunkWorldSize * 0.5f, 0f, chunkWorldSize * 0.5f);
+            // IMPORTANT:
+            // meshObject.transform.position is the CHUNK CENTER in your setup (matches your CheckBiome math).
+            Vector3 center = meshObject.transform.position;
 
-            Vector3 size = new Vector3(
+            Vector3 boundsSize = new Vector3(
                 chunkWorldSize + overlapWorld * 2f,
                 ySize,
                 chunkWorldSize + overlapWorld * 2f
             );
 
-            return new Bounds(center, size);
-        }
+            return new Bounds(center, boundsSize);
+}
+
     }
 
     class LODmesh{
