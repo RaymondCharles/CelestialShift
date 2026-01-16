@@ -15,6 +15,8 @@ public class FirstPersonController : MonoBehaviour
     InputAction MapAction;
     InputAction MapZoomAction;
     public GameObject DungeonUIPanelSnowExit;
+    public GameObject DungeonUIPanelSandExit;
+    public GameObject DungeonUIPanelGrassExit;
     public GameObject DungeonUIPanelSnow;
     public GameObject DungeonUIPanelGrass;
     public GameObject DungeonUIPanelSand;
@@ -118,7 +120,7 @@ public class FirstPersonController : MonoBehaviour
     public Vector3 slideVelocity;
 
     //Mouse Settings
-    [SerializeField] private float mouseSmoothTime = 0.03f; // 0.03�0.08 is good
+    [SerializeField] private float mouseSmoothTime = 0.03f; // 0.03-0.08 is good
 
     private Vector2 currentMouseDelta;
     private Vector2 currentMouseDeltaVelocity;
@@ -126,6 +128,10 @@ public class FirstPersonController : MonoBehaviour
 
     public CameraController cameraController;
     [SerializeField] private float turnSpeed = 12f; // degrees per second
+
+
+    public bool isGameOver = false;
+    public DayNightCycle time;
 
 
 
@@ -183,44 +189,6 @@ public class FirstPersonController : MonoBehaviour
     }
 
 
-    //void LateUpdate()
-    //{
-    //    if (InventoryPanel.activeSelf || PausePanel.activeSelf || SettingsPanel.activeSelf || GameOverPanel.activeSelf)
-    //    {
-    //        Cursor.lockState = CursorLockMode.None;
-    //        Cursor.visible = true;
-    //    }
-    //    else
-    //    {
-    //        Cursor.lockState = CursorLockMode.Locked;
-    //        Cursor.visible = false;
-    //    }
-    //}
-    //void LateUpdate()
-    //{
-    //    bool anyPanelOpen =
-    //        (InventoryPanel != null && InventoryPanel.activeSelf) ||
-    //        (PausePanel != null && PausePanel.activeSelf) ||
-    //        (SettingsPanel != null && SettingsPanel.activeSelf) ||
-    //        (GameOverPanel != null && GameOverPanel.activeSelf) ||
-    //        (DungeonUIPanelSnow != null && DungeonUIPanelSnow.activeSelf) ||
-    //        (DungeonUIPanelGrass != null && DungeonUIPanelGrass.activeSelf) ||
-    //        (DungeonUIPanelSand != null && DungeonUIPanelSand.activeSelf) ||
-    //        (DungeonUIPanelSnowExit != null && DungeonUIPanelSnowExit.activeSelf);
-
-    //    if (anyPanelOpen)
-    //    {
-    //        Cursor.lockState = CursorLockMode.None;
-    //        Cursor.visible = true;
-    //    }
-    //    else
-    //    {
-    //        Cursor.lockState = CursorLockMode.Locked;
-    //        Cursor.visible = false;
-    //    }
-    //}
-
-    //}
     void LateUpdate()
     {
         // Combine all panels safely
@@ -259,16 +227,19 @@ public class FirstPersonController : MonoBehaviour
 
     public void SavePlayer()
     {
-        SaveSystem.SavePlayer(this);
+        SaveSystem.SavePlayer(this, time);
         Debug.Log("Player saved at position: " + playerTransform.position);
 
-        if (HotBar != null) PlayerPrefs.SetFloat("HotbARSize", HotBar.transform.localScale.x);
+        if (HotBar != null) PlayerPrefs.SetFloat("HotbarSize", HotBar.transform.localScale.x);
         if (InventoryPanel != null) PlayerPrefs.SetFloat("InvSize", InventoryPanel.transform.localScale.x);
         if (GameManager.Instance != null && GameManager.Instance.currentMusic != null)
             PlayerPrefs.SetFloat("MusicVol", GameManager.Instance.currentMusic.volume);
 
         PlayerPrefs.Save();
     }
+
+
+
     public void LoadPlayer()
     {
         PlayerData data = SaveSystem.LoadPlayer();
@@ -376,6 +347,7 @@ public class FirstPersonController : MonoBehaviour
     //    if (Crosshair != null)
     //        Crosshair.SetActive(!shouldHide);
     //}
+
     private void UpdateCrosshair()
     {
         bool shouldHide =
@@ -609,7 +581,6 @@ public class FirstPersonController : MonoBehaviour
     void Update()
     {
      
-
         // Read input from the New Input System each frame
         moveInput = inputActions.Player.Move.ReadValue<Vector2>(); // x = horizontal, y = vertical
         lookInput = inputActions.Player.Look.ReadValue<Vector2>();
@@ -617,46 +588,52 @@ public class FirstPersonController : MonoBehaviour
         bool isFalling = false;
 
 
-        //Inventory 
-        if (InventoryAction.triggered)
+        if (!GameManagerTemp.Instance.isGameOver)
         {
-            if (isBigMapOpen)
+            //Inventory 
+            if (InventoryAction.triggered)
             {
-                CloseBigMap();
-                InventoryPanelShow();
+                if (isBigMapOpen)
+                {
+                    CloseBigMap();
+                    InventoryPanelShow();
+                }
+                else
+                {
+                    InventoryPanelShow();
+                }
             }
-            else
-            {
-                InventoryPanelShow();
-            }
-        }
 
-        if (PauseAction.triggered)
-        {
-            PausePanelShow();
-        }
-        if (DropAction.triggered)
-        {
-            DropSelectedItem();
-        }
-        if (UseAction.triggered)
-        {
-            UseSelectedItem();
-        }
-        if (MapAction.triggered)
-        {
-            if (InventoryPanel.activeSelf)
+            if (PauseAction.triggered)
             {
-                InventoryPanel.SetActive(false);
-                MiniMapPanel.SetActive(false);
-                OpenBigMap();
+                PausePanelShow();
             }
-            else
+            if (DropAction.triggered)
             {
-                ToggleBigMap();
+                DropSelectedItem();
+            }
+            if (UseAction.triggered)
+            {
+                UseSelectedItem();
+            }
+            if (MapAction.triggered)
+            {
+                if (InventoryPanel.activeSelf)
+                {
+                    InventoryPanel.SetActive(false);
+                    MiniMapPanel.SetActive(false);
+                    OpenBigMap();
+                }
+                else
+                {
+                    ToggleBigMap();
+                }
             }
         }
-
+        else
+        {
+            isGameOver = true;
+        }
 
 
         if (CanMove)

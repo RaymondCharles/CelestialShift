@@ -25,6 +25,8 @@ public class PlayerStats : MonoBehaviour
     public int Health => health;
     public int Hunger => hunger;
 
+    public int Defense;
+
 
     // XP + Level 
 
@@ -40,6 +42,7 @@ public class PlayerStats : MonoBehaviour
     public int Level => level;
     public int CurrentXP => currentXP;
     public int XPToNextLevel => Mathf.Max(1, baseXPToNext + (level - 1) * xpPerLevel);
+    
 
 
     void Awake()

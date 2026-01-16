@@ -5,7 +5,8 @@ public enum SlotType
     {
         Hotbar,
         Inventory,
-        Crafting
+        Crafting,
+        Extra
     }
 
 public class SlotItem

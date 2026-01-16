@@ -10,11 +10,27 @@ public class PlayerData
     public float hotBarSize;
     public float inventorySize;
     public float musicVolume;
+    public bool isGameOver;
+
+    public int day;
+    public string timeText;
 
 
 
-    public PlayerData(FirstPersonController player)
+
+
+    public PlayerData(FirstPersonController player, DayNightCycle time)
     {
+        day = time.dayNumber;
+        timeText = time.clockText.text;
+
+
+
+        
+        isGameOver = player.isGameOver;
+
+
+
         // Save position
         position = new float[3];
         position[0] = player.transform.position.x;
@@ -67,7 +83,7 @@ public class PlayerData
                 }
             }
         }
-        hotBarSize = PlayerPrefs.GetFloat("HotbARSize", 0.6f);
+        hotBarSize = PlayerPrefs.GetFloat("HotbarSize", 0.6f);
         inventorySize = PlayerPrefs.GetFloat("InvSize", 1f);
         musicVolume = PlayerPrefs.GetFloat("MusicVol", 0.6f);
     }

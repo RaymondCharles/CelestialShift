@@ -41,11 +41,13 @@ public class Item : ScriptableObject
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             ItemAnimator = player.transform.Find("ItemAnimator")?.gameObject;
-
-            positionalTransform = FindChildRecursive(player.transform, positionalGameObjectName);
-            if (positionalTransform == null || ItemAnimator == null) return;
-
-            newObject = Instantiate(objectToSpawn, positionalTransform);
+            
+            if (positionalGameObjectName != "armor")
+            {
+                positionalTransform = FindChildRecursive(player.transform, positionalGameObjectName);
+                if (positionalTransform == null || ItemAnimator == null) return;
+                newObject = Instantiate(objectToSpawn, positionalTransform);
+            }
             ItemAnimator.GetComponent<ItemEffect>().equippedItem = newObject;
             ItemAnimator.GetComponent<ItemEffect>().swingable = swingable;
             ItemAnimator.GetComponent<ItemEffect>().throwable = throwable;

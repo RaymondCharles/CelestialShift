@@ -10,6 +10,8 @@ public class SwordAttackController : MonoBehaviour
     [SerializeField] private float attackCooldown = 0.45f;
     [SerializeField] private float attackWindow = 0.20f;
 
+    public Animator swordColliderAnim;
+
     private bool isSwinging;
     private float nextAttackTime;
 

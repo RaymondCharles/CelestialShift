@@ -6,6 +6,10 @@ public class ItemEffect : MonoBehaviour
 {
     public GameObject equippedShield;
     public GameObject equippedItem; //For now it's sword.
+    public GameObject equippedArmorObject;
+    public Item equippedArmor;
+
+
     private PlayerInputActions inputActions;
     public FirstPersonController fpController;
     [SerializeField] private Animator playerAnimator;
@@ -27,6 +31,8 @@ public class ItemEffect : MonoBehaviour
     float cooldownUntil = 0f;
 
     bool isFading = false;
+
+
 
     void Awake()
     {
@@ -133,5 +139,36 @@ public class ItemEffect : MonoBehaviour
         {
             itemCollisionScript.ResetHit();
         }
+    }
+
+
+    public void UpdatePlayerArmor(Item armor)
+    {
+        if (armor.positionalGameObjectName != "armor" || armor == null) 
+        {
+            equippedArmor = null;
+            equippedArmorObject.SetActive(false);
+
+
+            return;
+        }
+
+
+        
+        equippedArmor = armor;
+
+
+        if (armor.itemName == "Wooden Armor")
+        {
+            Debug.Log("Wood Armor");
+            //CHANGE MATERIAL HERE FOR ARMOR.
+            //equippedArmorObject is gameobject to get material and set material.
+            //equippedArmor
+        }
+        
+        Debug.Log("CHANGED ARMOR");
+        equippedArmorObject.SetActive(true);
+
+
     }
 }

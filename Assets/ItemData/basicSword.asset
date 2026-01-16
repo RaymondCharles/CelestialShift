@@ -22,8 +22,8 @@ MonoBehaviour:
   childrenItems:
   - items:
     - {fileID: 11400000, guid: 0b5a77da78534954d9b52f9bb09a3d80, type: 2}
-    - {fileID: 11400000, guid: cd5d8a7376879d6488f9a10b76739983, type: 2}
-    itemQuantities: 05000000
+    - {fileID: 11400000, guid: 847fe812ad48bd246ad52ad4e73e4f6f, type: 2}
+    itemQuantities: 0a0000000f000000
   - items:
     - {fileID: 11400000, guid: a14e1eda2b10d374a813241505cc5b44, type: 2}
     - {fileID: 11400000, guid: a14e1eda2b10d374a813241505cc5b44, type: 2}

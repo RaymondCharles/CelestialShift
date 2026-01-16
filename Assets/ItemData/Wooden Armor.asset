@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
-  m_Name: basicPickaxe
+  m_Name: Wooden Armor
   m_EditorClassIdentifier: 
-  itemName: basicPickaxe
-  itemImg: {fileID: -194952269, guid: 8cb1dcea1a57eab4eb8406a7cedd9ea4, type: 3}
+  itemName: Wooden Armor
+  itemImg: {fileID: 21300000, guid: 8287effc14877324bbc83ae18a8dffa0, type: 3}
   usable: 0
   useSpeed: 1
   quantityLimit: 1
   selected: 0
   parentItems: []
   childrenItems: []
-  worldPrefab: {fileID: 3279265994378489053, guid: f9ac752608c3a3c4b84475b859aa4298, type: 3}
+  worldPrefab: {fileID: 4838005253792636186, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
   action: {fileID: 0}
   minimapIconPrefab: {fileID: 0}
   newObject: {fileID: 0}
-  objectToSpawn: {fileID: 3279265994378489053, guid: cfbfa17b7ab552343bb56a81a7729ef2, type: 3}
-  positionalGameObjectName: right hand_end
-  swingable: 1
+  objectToSpawn: {fileID: 0}
+  positionalGameObjectName: armor
+  swingable: 0
   throwable: 0
   consumable: 0

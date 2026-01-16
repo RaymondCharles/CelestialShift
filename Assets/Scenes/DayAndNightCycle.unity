@@ -469,6 +469,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 0
+  xpReward: 25
   destroyOnDeath: 1
   destroyDelay: 0
 --- !u!114 &35737137
@@ -487,6 +488,7 @@ MonoBehaviour:
   playerTransform: {fileID: 1859747035}
   firePoint: {fileID: 805072779}
   projectilePrefab: {fileID: 5707355380771048469, guid: 53ad627e614ac9241be5c5f0174b2ccd, type: 3}
+  enemyLevel: {fileID: 0}
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -499,6 +501,7 @@ MonoBehaviour:
   aimHeightOffset: 1.2
   usePrediction: 1
   maxLeadTime: 1
+  lastPlayerPosition: {x: 0, y: 0, z: 0}
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
@@ -2301,7 +2304,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67da5c4bd5b70b4daf840942380199f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DungeonUIPanelSnowExit: {fileID: 0}
+  DungeonUIPanelSnow: {fileID: 0}
+  DungeonUIPanelGrass: {fileID: 0}
+  DungeonUIPanelSand: {fileID: 0}
   InventoryPanel: {fileID: 1182029023}
+  GameOverPanel: {fileID: 0}
+  HotBar: {fileID: 0}
   PausePanel: {fileID: 1470794236}
   SettingsPanel: {fileID: 0}
   BigMapPanel: {fileID: 0}
@@ -3175,6 +3184,8 @@ MonoBehaviour:
   burnIcon: {fileID: 1324649460}
   faceCamera: 1
   targetCamera: {fileID: 773641357}
+  enemyLevel: {fileID: 0}
+  levelText: {fileID: 0}
 --- !u!114 &163850819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9526,6 +9537,7 @@ MonoBehaviour:
   playerTransform: {fileID: 133917463}
   firePoint: {fileID: 762510587}
   projectilePrefab: {fileID: 1729211062053963970, guid: 03cda2cc4edbfe84cb847d28ce2bb9f2, type: 3}
+  enemyLevel: {fileID: 0}
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -9538,6 +9550,7 @@ MonoBehaviour:
   aimHeightOffset: 1.2
   usePrediction: 1
   maxLeadTime: 1
+  lastPlayerPosition: {x: 0, y: 0, z: 0}
   rotationSpeed: 1000
   visionRange: 20
   engagementRange: 10
@@ -10307,7 +10320,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67da5c4bd5b70b4daf840942380199f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DungeonUIPanelSnowExit: {fileID: 0}
+  DungeonUIPanelSnow: {fileID: 0}
+  DungeonUIPanelGrass: {fileID: 0}
+  DungeonUIPanelSand: {fileID: 0}
   InventoryPanel: {fileID: 0}
+  GameOverPanel: {fileID: 0}
+  HotBar: {fileID: 0}
   PausePanel: {fileID: 0}
   SettingsPanel: {fileID: 0}
   BigMapPanel: {fileID: 0}
@@ -19070,7 +19089,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 525319169}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.25815228, y: 0.000000016623154, z: -0.000000004441866, w: 0.96610427}
+  m_LocalRotation: {x: 0.25815228, y: -0.000000016623162, z: 0.0000000044418673, w: 0.96610427}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -19870,8 +19889,6 @@ MonoBehaviour:
   clockText: {fileID: 0}
   _timeOfDay: 0
   _dayNumber: 0
-  _yearNumber: 0
-  _yearLength: 100
   pause: 0
   timeCurve:
     serializedVersion: 2
@@ -19949,8 +19966,6 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 4
     m_NumAlphaKeys: 2
-  sunSeasonalRotation: {fileID: 0}
-  maxSeasonalTilt: 0
 --- !u!4 &584959626
 Transform:
   m_ObjectHideFlags: 0
@@ -22971,6 +22986,8 @@ MonoBehaviour:
   burnIcon: {fileID: 140148800}
   faceCamera: 1
   targetCamera: {fileID: 773641357}
+  enemyLevel: {fileID: 0}
+  levelText: {fileID: 0}
 --- !u!114 &797153837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30631,7 +30648,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9c3abf2dd8216ec48ae11ac167b80437, type: 2}
   player: {fileID: 1859747032}
   Level: 10
-  endlessTerrain: {fileID: 0}
 --- !u!114 &968197791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31292,6 +31308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 0
+  xpReward: 25
   destroyOnDeath: 1
   destroyDelay: 0
 --- !u!114 &996861154
@@ -31310,6 +31327,7 @@ MonoBehaviour:
   playerTransform: {fileID: 1859747035}
   firePoint: {fileID: 1478764495}
   projectilePrefab: {fileID: 1729211062053963970, guid: 03cda2cc4edbfe84cb847d28ce2bb9f2, type: 3}
+  enemyLevel: {fileID: 0}
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -31322,6 +31340,7 @@ MonoBehaviour:
   aimHeightOffset: 1.2
   usePrediction: 1
   maxLeadTime: 1
+  lastPlayerPosition: {x: 0, y: 0, z: 0}
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
@@ -37706,6 +37725,155 @@ Transform:
   - {fileID: 1272522359}
   m_Father: {fileID: 429209246}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1142073557
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1142073558}
+  - component: {fileID: 1142073560}
+  - component: {fileID: 1142073559}
+  - component: {fileID: 1142073561}
+  m_Layer: 5
+  m_Name: TimeText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1142073558
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142073557}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1556140995}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -280, y: 176}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1142073559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142073557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 'Day 1
+
+    Time : 00:00'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 22.05
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1142073560
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142073557}
+  m_CullTransparentMesh: 1
+--- !u!114 &1142073561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142073557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19e71a8033c25d848a1e176e78287f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1143954080
 GameObject:
   m_ObjectHideFlags: 0
@@ -38341,7 +38509,6 @@ MonoBehaviour:
   sandFX: {fileID: 0}
   snowFX: {fileID: 0}
   grassFX: {fileID: 0}
-  mapGenerator: {fileID: 0}
   biome: 
   transitionSpeed: 3
   targetFXRate: 300
@@ -43873,6 +44040,11 @@ MonoBehaviour:
   playerStats: {fileID: 1859747036}
   healthSlider: {fileID: 1317409755}
   hungerSlider: {fileID: 1892533839}
+  gameOverPanel: {fileID: 0}
+  mainMenuButton: {fileID: 0}
+  Crosshair: {fileID: 0}
+  xpSlider: {fileID: 0}
+  levelText: {fileID: 0}
 --- !u!1 &1215495098
 GameObject:
   m_ObjectHideFlags: 0
@@ -45352,7 +45524,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1316773214}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2756825, y: -1e-45, z: -0, w: 0.96124876}
+  m_LocalRotation: {x: 0.2756825, y: 3e-45, z: -1e-45, w: 0.96124876}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -56732,6 +56904,7 @@ RectTransform:
   - {fileID: 1214839660}
   - {fileID: 2006105429}
   - {fileID: 310885230}
+  - {fileID: 1142073558}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -56823,6 +56996,7 @@ MonoBehaviour:
   mapPanel: {fileID: 1022795753}
   dungeonWorldObject: {fileID: 0}
   dungeonIconPrefab: {fileID: 6396928237148603949, guid: 609bc6a80952462468285a9b155447c0, type: 3}
+  playerIconPrefab: {fileID: 0}
 --- !u!224 &1558745427 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3069733611736105204, guid: 40ac5525f5ade654ebdc5424db828663, type: 3}
@@ -62277,6 +62451,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 0
+  xpReward: 25
   destroyOnDeath: 1
   destroyDelay: 0
 --- !u!4 &1626396301 stripped
@@ -62843,6 +63018,8 @@ MonoBehaviour:
   burnIcon: {fileID: 478208271}
   faceCamera: 1
   targetCamera: {fileID: 773641357}
+  enemyLevel: {fileID: 0}
+  levelText: {fileID: 0}
 --- !u!114 &1661400091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63288,6 +63465,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 0
+  xpReward: 25
   destroyOnDeath: 1
   destroyDelay: 0
 --- !u!114 &1676281266
@@ -63306,6 +63484,7 @@ MonoBehaviour:
   playerTransform: {fileID: 1859747035}
   firePoint: {fileID: 1137799262}
   projectilePrefab: {fileID: 1729211062053963970, guid: 03cda2cc4edbfe84cb847d28ce2bb9f2, type: 3}
+  enemyLevel: {fileID: 0}
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -63318,6 +63497,7 @@ MonoBehaviour:
   aimHeightOffset: 2
   usePrediction: 1
   maxLeadTime: 1
+  lastPlayerPosition: {x: 0, y: 0, z: 0}
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
@@ -65790,7 +65970,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1787945175}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24058327, y: -0.000000016701, z: 0.0000000041395665, w: 0.97062856}
+  m_LocalRotation: {x: 0.24058327, y: 0.00000001670101, z: -0.0000000041395687, w: 0.97062856}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -66901,7 +67081,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67da5c4bd5b70b4daf840942380199f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DungeonUIPanelSnowExit: {fileID: 0}
+  DungeonUIPanelSnow: {fileID: 0}
+  DungeonUIPanelGrass: {fileID: 0}
+  DungeonUIPanelSand: {fileID: 0}
   InventoryPanel: {fileID: 1182029023}
+  GameOverPanel: {fileID: 0}
+  HotBar: {fileID: 0}
   PausePanel: {fileID: 1470794236}
   SettingsPanel: {fileID: 0}
   BigMapPanel: {fileID: 0}
@@ -67013,6 +67199,10 @@ MonoBehaviour:
   hunger: 100
   hungerDrainPerSecond: 1
   starvingDamagePerSecond: 2
+  level: 1
+  currentXP: 0
+  baseXPToNext: 100
+  xpPerLevel: 50
 --- !u!114 &1859747037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70390,6 +70580,8 @@ MonoBehaviour:
   burnIcon: {fileID: 434046030}
   faceCamera: 1
   targetCamera: {fileID: 773641357}
+  enemyLevel: {fileID: 0}
+  levelText: {fileID: 0}
 --- !u!114 &2010448036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70494,6 +70686,8 @@ MonoBehaviour:
   viewer: {fileID: 1859747035}
   mapMaterial: {fileID: 2100000, guid: 104e02422de5065449fc2ee3ba6ffe22, type: 2}
   chunkSize: 0
+  gameManagerTemp: {fileID: 0}
+  grassRenderer: {fileID: 0}
 --- !u!114 &2011331626
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@ public class GameManagerTemp : MonoBehaviour
     public static Dictionary<Vector2Int, List<GameObject>> globalEnemyDict;
 
     public static GameManagerTemp Instance;
+    public bool isGameOver = false;
 
 
     private void Awake()
@@ -66,6 +67,17 @@ public class GameManagerTemp : MonoBehaviour
                     terrainChunk.enemyCount = Level;
                     Debug.Log(terrainChunk.enemyCount < Level);
                 }
+            }
+        }
+    }
+
+    public void UpdateEnemyLevels()
+    {
+        foreach (var (key, value) in globalEnemyDict)
+        {
+            foreach (GameObject enemy in value)
+            {
+                enemy.GetComponent<EnemyLevel>().level = Level;
             }
         }
     }

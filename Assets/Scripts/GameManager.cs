@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     private float savedTime = 0f;
     public float loopGap = 20f;
 
+    public bool isGameOver = false;
+
 
     //Dungeon 
     public string nextDungeonScene;
@@ -181,7 +183,7 @@ public class GameManager : MonoBehaviour
     {
         loadGame = false;
         inGame = true;
-        SceneManager.LoadScene("Game Scene");
+        SceneManager.LoadScene(5);
     }
 
     public void LoadGame()
@@ -195,7 +197,7 @@ public class GameManager : MonoBehaviour
         }
 
         loadGame = true;
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene(5);
     }
 
 

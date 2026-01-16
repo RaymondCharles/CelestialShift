@@ -26,13 +26,21 @@ public class SlotFunctions : MonoBehaviour
             }
             return Inventory.Instance.inventoryItems[index];
         }
-        else
+        else if (slotType == SlotType.Crafting)
         {
             if (CraftingUI.Instance == null || index < 0 || index >= CraftingUI.Instance.craftingItems.Length)
             {
                 return null;
             }
             return CraftingUI.Instance.craftingItems[index];
+        }
+        else
+        {
+            if (ArmorUI.Instance == null || index < 0 || index >= ArmorUI.Instance.armorItem.Length)
+            {
+                return null;
+            }
+            return ArmorUI.Instance.armorItem[index];
         }
     }
 
@@ -58,7 +66,7 @@ public class SlotFunctions : MonoBehaviour
             Inventory.Instance.inventoryItems[index] = item;
             InventoryUI.Instance.UpdateSlot(index);
         }
-        else
+        else if (slotType == SlotType.Inventory)
         {
             if (CraftingUI.Instance == null || index < 0 || index >= CraftingUI.Instance.craftingItems.Length)
             {
@@ -66,6 +74,15 @@ public class SlotFunctions : MonoBehaviour
             }
             CraftingUI.Instance.craftingItems[index] = item;
             CraftingUI.Instance.UpdateSlot(index);
+        }
+        else
+        {
+            if (ArmorUI.Instance == null || index < 0 || index >= ArmorUI.Instance.armorItem.Length)
+            {
+                return;
+            }
+            ArmorUI.Instance.armorItem[index] = item;
+            ArmorUI.Instance.UpdateSlot(index);
         }
     }
 
@@ -125,52 +142,6 @@ public class SlotFunctions : MonoBehaviour
 
 
 
-
-    /*
-    ///Hotbar - Hotbar
-    if (fromType == SlotType.Hotbar && toType == SlotType.Hotbar)
-    {
-        HotBarManager.Instance.SlotSwap(fromIndex, toIndex);
-        return;
-    }
-
-    //Inventory - Inventory
-    if (fromType == SlotType.Inventory && toType == SlotType.Inventory)
-    {
-        SlotItem temp = InventoryUI.Instance.inventoryItems[fromIndex];
-        InventoryUI.Instance.inventoryItems[fromIndex] = InventoryUI.Instance.inventoryItems[toIndex];
-        InventoryUI.Instance.inventoryItems[toIndex] = temp;
-
-        InventoryUI.Instance.UpdateSlot(fromIndex);
-        InventoryUI.Instance.UpdateSlot(toIndex);
-        return;
-    }
-
-    //Hotbar - Inventory
-    if (fromType == SlotType.Hotbar && toType == SlotType.Inventory)
-    {
-        InventoryUI.Instance.inventoryItems[toIndex] = new SlotItem(ScriptableObject.Instantiate(draggedItem.itemDetails), draggedItem.quantity);
-        InventoryUI.Instance.UpdateSlot(toIndex);
-
-        HotBarManager.Instance.slotItems[fromIndex] = null;
-        HotBarManager.Instance.UpdateSlot(fromIndex);
-        return;
-    }
-
-    //Inventory - Hotbar
-    if (fromType == SlotType.Inventory && toType == SlotType.Hotbar)
-    {
-        SlotItem item = InventoryUI.Instance.inventoryItems[fromIndex];
-        if (item == null)
-        {
-            return;
-        }
-        HotBarManager.Instance.slotItems[toIndex] = new SlotItem(ScriptableObject.Instantiate(item.itemDetails), item.quantity);
-        HotBarManager.Instance.UpdateSlot(toIndex);
-
-        InventoryUI.Instance.inventoryItems[fromIndex] = null;
-        InventoryUI.Instance.UpdateSlot(fromIndex);
-    }*/
 }
 
 

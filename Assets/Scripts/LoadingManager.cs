@@ -25,12 +25,13 @@ public class LoadingManager : MonoBehaviour
     {
         LoadingScreen.SetActive(true);
         LoadingBar.value = 0;
-        StartCoroutine(ChangeSceneAsync(i))   ;
+        StartCoroutine(ChangeSceneAsync(i));
 
     }
 
     IEnumerator ChangeSceneAsync(int i) 
     {
+        Debug.Log("LOADING SCENE " + i.ToString());
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(i);
         while (!asyncLoad.isDone)
         {

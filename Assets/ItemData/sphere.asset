@@ -16,12 +16,14 @@ MonoBehaviour:
   itemImg: {fileID: 546601033, guid: 58b91ef4865cd7b49b8b7cb46d9b40c2, type: 3}
   usable: 0
   useSpeed: 1
-  quantityLimit: 1
+  quantityLimit: 20
   selected: 0
-  parentItems: []
+  parentItems:
+  - {fileID: 11400000, guid: 9a90bd727caa45547b707076098b03e2, type: 2}
   childrenItems: []
   worldPrefab: {fileID: 1511610720200220097, guid: 333e561fa06c9de44b5667f8cad08949, type: 3}
   action: {fileID: 11400000, guid: d786cde816a62944fa8f5bc7ee18d737, type: 2}
+  minimapIconPrefab: {fileID: 0}
   newObject: {fileID: 0}
   objectToSpawn: {fileID: 1511610720200220097, guid: d5595e707efa55c4c8c6afa1b8e64afc, type: 3}
   positionalGameObjectName: right hand_end

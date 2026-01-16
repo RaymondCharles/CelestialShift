@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 
 public class DayNightCycle : MonoBehaviour {
@@ -25,8 +26,7 @@ public class DayNightCycle : MonoBehaviour {
     [SerializeField]
     private bool use24Clock = true;
 
-    [SerializeField]
-    private Text clockText;
+    public TMP_Text clockText;
 
     [SerializeField]
     [Range(0f, 1f)]
@@ -72,6 +72,7 @@ public class DayNightCycle : MonoBehaviour {
     private Gradient sunColor;
     GameManagerTemp gameManagerTemp;
 
+
     private void Start()
     {
         NormalTimeCurve(); 
@@ -97,7 +98,7 @@ public class DayNightCycle : MonoBehaviour {
         {
             UpdateTimeScale();
             UpdateTime();
-            //UpdateClock();
+            UpdateClock();
         }
 
 
@@ -141,7 +142,8 @@ public class DayNightCycle : MonoBehaviour {
             elapsedTime = 0;
             _dayNumber++;
             _timeOfDay -= 1;
-            gameManagerTemp.Level++; // increase player level each day
+            gameManagerTemp.Level+=10; // increase enemy level each day
+            gameManagerTemp.UpdateEnemyLevels();
         }
     }
 
@@ -152,9 +154,10 @@ public class DayNightCycle : MonoBehaviour {
         float hour = Mathf.FloorToInt(time * 24);
         float minute = Mathf.FloorToInt(((time * 24) - hour) * 60);
 
-
         string hourString;
         string minuteString;
+
+        clockText.text = "Day : " + dayNumber.ToString() + "\n Time : ";
 
 
         if (!use24Clock && hour > 12)
@@ -173,11 +176,11 @@ public class DayNightCycle : MonoBehaviour {
             minuteString = minute.ToString();
         
         if(use24Clock)
-            clockText.text = hourString + " : " + minuteString;
+            clockText.text += hourString + " : " + minuteString;
         else if (time > 0.5f)
-            clockText.text = hourString + " : " + minuteString + " pm";
+            clockText.text += hourString + " : " + minuteString + " pm";
         else
-            clockText.text = hourString + " : " + minuteString + " am";
+            clockText.text += hourString + " : " + minuteString + " am";
 
     }
 
