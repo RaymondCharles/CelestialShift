@@ -14,7 +14,7 @@ public class mapGenerator : MonoBehaviour
 
     public noise.NormalizeMode normalizeMode;
     
-    public const int mapChunkSize = 241;
+    public const int mapChunkSize = 61;
     [Range(0,6)] // clamped to 0-6 to prevent LOD errors
     public int editorLevelOfDetail;
     public float noiseScale;
@@ -210,7 +210,7 @@ public class mapGenerator : MonoBehaviour
                        (t < thirdBiomeRegions.Length && currentHeight > thirdBiomeRegions[t].height)) {
                     if (f < firstBiomeRegions.Length && currentHeight > firstBiomeRegions[f].height) {f++;}
                     if (s < secondBiomeRegions.Length && currentHeight > secondBiomeRegions[s].height) {s++;}
-                    if (t < thirdBiomeRegions.Length && currentHeight > thirdBiomeRegions[t].height) {t++;}     
+                    if (t < thirdBiomeRegions.Length && currentHeight > thirdBiomeRegions[t].height) {t++;}
                 }
 
                 f = Mathf.Min(f, firstBiomeRegions.Length - 1);
