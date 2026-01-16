@@ -44,7 +44,8 @@ public class EndlessTerrain : MonoBehaviour
     void Start()
     {
         mapGenerator = FindObjectOfType<mapGenerator>();
-     
+        gameManagerTemp = FindObjectOfType<GameManagerTemp>();
+        grassRenderer = FindObjectOfType<GPUInstancedGrassRenderer>();
         maxViewDistance = detailLevels[detailLevels.Length -1].visibleDstThreshold;
         chunkSize = mapGenerator.mapChunkSize - 1;
         // calculate how many chunks are visible in view distance
@@ -112,8 +113,14 @@ public class EndlessTerrain : MonoBehaviour
             }
         }
 
+    }
 
-
+    public void RemoveChunk(Vector2Int coord)
+    {
+        if (terrainChunkDictionary.ContainsKey(coord))
+        {
+            terrainChunkDictionary.Remove(coord);
+        }
     }
 
     void UpdateVisibleChunks(){
@@ -368,32 +375,35 @@ public class EndlessTerrain : MonoBehaviour
                 Debug.LogError($"Dungeon spawn failed for chunk {coord}: {e}");
             }
             // Tree Logic - rememeber to scale height by mult and biome mult
-            try {
-                // place dungeons of chunk, default to invisible until highest LOD
-                foreach (TreeCoord treeCoord in mapData.treeCoords){
-                    
-                    if (treeCoord.x < 0 || treeCoord.x >= mapData.chunkSize || treeCoord.y < 0 || treeCoord.y >= mapData.chunkSize){continue;}
+            /*try {
+                // place trees of chunk, default to invisible until highest LOD
+                if (treeList.Count == 0){
+                    foreach (TreeCoord treeCoord in mapData.treeCoords){
+                        
+                        if (treeCoord.x < 0 || treeCoord.x >= mapData.chunkSize || treeCoord.y < 0 || treeCoord.y >= mapData.chunkSize){continue;}
 
-                    float worldX = treeCoord.x + position.x - 0.5f * mapData.chunkSize;
-                    float worldY = position.y + ((0.5f * mapData.chunkSize) - treeCoord.y);
+                        float worldX = treeCoord.x + position.x - 0.5f * mapData.chunkSize;
+                        float worldY = position.y + ((0.5f * mapData.chunkSize) - treeCoord.y);
 
-                    // obtain information via chunk-local coords
-                    BiomeCoord biomeCoord = mapData.biomeGenData.voronoiMap[treeCoord.x, treeCoord.y];
-                    
-                    // position in world space
-                    float height = mapData.heightCurve.Evaluate(treeCoord.z) * (mapGenerator.meshHeightMultiplier * treeCoord.biomeType.biomeHeightMultiplier);
-                    Vector3 treePos = new Vector3(worldX * scale, height*scale, worldY * scale);
-                    
-                    GameObject tree = GameObject.Instantiate(treeCoord.biomeType.treePrefabs[treeCoord.objectIndex].prefab, treePos, Quaternion.identity);
-                    tree.transform.parent = meshObject.transform;
-                    tree.layer = LayerMask.NameToLayer("Ground");
-                    tree.SetActive(false);
-                    treeList.Add(tree);
+                        // obtain information via chunk-local coords
+                        BiomeCoord biomeCoord = mapData.biomeGenData.voronoiMap[treeCoord.x, treeCoord.y];
+                        
+                        // position in world space
+                        float height = mapData.heightCurve.Evaluate(treeCoord.z) * (mapGenerator.meshHeightMultiplier * treeCoord.biomeType.biomeHeightMultiplier);
+                        Vector3 treePos = new Vector3(worldX * scale, height*scale, worldY * scale);
+                        
+                        GameObject tree = GameObject.Instantiate(treeCoord.biomeType.treePrefabs[treeCoord.objectIndex].prefab, treePos, Quaternion.identity);
+                        tree.transform.parent = meshObject.transform;
+                        tree.layer = LayerMask.NameToLayer("Ground");
+                        tree.SetActive(false);
+                        treeList.Add(tree);
+                    }
                 }
             }
             catch (Exception e) {
                 Debug.LogError($"Tree spawn failed for chunk {coord}: {e}");
-            }
+            }*/
+            SpawnTrees();
             // Grass Logic
             grassRenderer.BuildGrassForChunk(coord, scale, position, worldBounds, mapGenerator, mapData);
             //chunkEnemyList = spawnEnemies(gameManagerTemp.GetLevel());// UPDATE TO BE SOME FUNCTION OF LEVEL
@@ -445,7 +455,7 @@ public class EndlessTerrain : MonoBehaviour
                         if (lodMesh.hasMesh){
                             // only place dungeon if highest detail LOD - this will change to visible if close enough to viewer
                             if (lodIndex == 0){foreach (GameObject dungeon in dungeonList){dungeon.SetActive(true);}}
-                            if (lodIndex == 0){foreach (GameObject tree in treeList){tree.SetActive(true);}}
+                            if (lodIndex == 0){SpawnTrees();}
                             if (lodIndex == 0){foreach (GameObject enemy in chunkEnemyList){enemy.SetActive(true);}}
                             previousLODIndex = lodIndex;
                             meshFilter.mesh = lodMesh.mesh;
@@ -462,13 +472,13 @@ public class EndlessTerrain : MonoBehaviour
                     foreach (GameObject dungeon in dungeonList){
                         dungeon.SetActive(false);
                     }
-                    foreach (GameObject tree in treeList){
-                        tree.SetActive(false);
-                    }
                     if (grassRenderer != null){
                         grassRenderer.RemoveChunk(coord);
                     }
-                    grassRenderer.RemoveChunk(coord);
+                    foreach (GameObject tree in treeList){
+                        GameObject.Destroy(tree);
+                    }
+                    treeList.Clear();
                     chunkEnemyList.Clear();
                     enemyCount = 0;
                     if (GameManagerTemp.globalEnemyDict.ContainsKey(coord)) 
@@ -476,10 +486,15 @@ public class EndlessTerrain : MonoBehaviour
                         GameManagerTemp.globalEnemyDict[coord].Clear();
                         GameManagerTemp.globalEnemyDict.Remove(coord);
                     }
-                    SetVisible(visible);
+                    if (viewerDstFromNearestEdge > maxViewDistance + Instance.chunkSize){
+                        // destroy chunk if too far away
+                        if (meshObject) GameObject.Destroy(meshObject);
+                        Instance.RemoveChunk(coord);
+                    }
                 }
             }
         }
+        
         public List<GameObject> spawnEnemies(int count){
             try {
                 Debug.Log("SPAWNING " + count.ToString() + " ENEMIES");
@@ -522,7 +537,45 @@ public class EndlessTerrain : MonoBehaviour
             return chunkEnemyList;
         }
 
+        void SpawnTrees()
+        {
+            if (!mapDataReceived) return;
+            if (treeList.Count > 0) return;
 
+            try
+            {
+                foreach (TreeCoord treeCoord in mapData.treeCoords)
+                {
+                    if (treeCoord.x < 0 || treeCoord.x >= mapData.chunkSize ||
+                        treeCoord.y < 0 || treeCoord.y >= mapData.chunkSize)
+                        continue;
+
+                    float worldX = treeCoord.x + position.x - 0.5f * mapData.chunkSize;
+                    float worldY = position.y + ((0.5f * mapData.chunkSize) - treeCoord.y);
+
+                    // position in world space
+                    float height = mapData.heightCurve.Evaluate(treeCoord.z) *
+                                (mapGenerator.meshHeightMultiplier * treeCoord.biomeType.biomeHeightMultiplier);
+
+                    Vector3 treePos = new Vector3(worldX * scale, height * scale, worldY * scale);
+
+                    GameObject tree = GameObject.Instantiate(
+                        treeCoord.biomeType.treePrefabs[treeCoord.objectIndex].prefab,
+                        treePos,
+                        Quaternion.identity
+                    );
+
+                    tree.transform.parent = meshObject.transform;
+                    tree.layer = LayerMask.NameToLayer("Ground");
+                    tree.SetActive(false); // stays hidden until LOD 0
+                    treeList.Add(tree);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Tree spawn failed for chunk {coord}: {e}");
+            }
+        }
 
         public void SetVisible(bool visible){
             // sets object to visible or not
