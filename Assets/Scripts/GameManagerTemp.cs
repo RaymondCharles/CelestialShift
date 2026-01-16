@@ -7,11 +7,19 @@ public class GameManagerTemp : MonoBehaviour
     public Item[] allItems;
     public GameObject player;
 
-    public List<GameObject> enemies;
+    public  Dictionary<Vector2Int, List<GameObject>> globalEnemyDict;
+    private int Level = 10;
+
+    public int GetLevel(){
+        return Level;
+    }
+    public EndlessTerrain endlessTerrain;
+    
 
     private void Awake()
     {
         globalEnemyDict = new Dictionary<Vector2Int, List<GameObject>>();
+        endlessTerrain = GetComponent<EndlessTerrain>();
     }
 
     private void Update()

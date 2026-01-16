@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 10606633}
   - component: {fileID: 10606635}
   - component: {fileID: 10606636}
+  - component: {fileID: 10606637}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -322,7 +323,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 847fe812ad48bd246ad52ad4e73e4f6f, type: 2}
   - {fileID: 11400000, guid: 9c3abf2dd8216ec48ae11ac167b80437, type: 2}
   player: {fileID: 3459231171067390903}
-  enemies: []
+  endlessTerrain: {fileID: 2103651205}
 --- !u!114 &10606636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,6 +334,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88a2a712ec744484898e2c5b92205220, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &10606637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10606632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 316972bfaf0b2854892cdf879dc9ccd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &12099129
@@ -1235,8 +1248,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 85440563}
-  - component: {fileID: 85440565}
-  - component: {fileID: 85440564}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
@@ -1261,52 +1272,6 @@ Transform:
   - {fileID: 1573638975}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &85440564
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 85440562}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1778cbfcab47641428790aa099a0dd6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 4272359964722229517}
-  surface: {fileID: 85440565}
-  buildSize: {x: 300, y: 80, z: 300}
-  rebuildDistance: 100
-  allowRequestedRebuilds: 1
---- !u!114 &85440565
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 85440562}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b50731da17847d4aad524844ab14de1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AgentTypeID: 0
-  m_CollectObjects: 2
-  m_Size: {x: 10, y: 10, z: 10}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  m_UseGeometry: 0
-  m_DefaultArea: 0
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
-  m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 0}
 --- !u!1 &87280563
 GameObject:
   m_ObjectHideFlags: 0
@@ -29592,7 +29557,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 903206890}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.25815228, y: 0.000000016623162, z: -0.0000000044418673, w: 0.96610427}
+  m_LocalRotation: {x: 0.25815228, y: -0.000000016623154, z: 0.000000004441866, w: 0.96610427}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -47711,6 +47676,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1476874123}
   m_CullTransparentMesh: 1
+--- !u!1 &1478577794
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1478577796}
+  - component: {fileID: 1478577795}
+  m_Layer: 0
+  m_Name: GPU Instancing
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1478577795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1478577794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3be77da1ed37b2d449babc0e02491322, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grassMesh: {fileID: 4579454407841743219, guid: 9a2f11d98ba18c940838b4076c3c54c6, type: 3}
+  grassMaterial: {fileID: 2100000, guid: 8b0fed9912a7f054bb0dbd2136b1e859, type: 2}
+  spacing: 0.4
+  grassScale: 300
+--- !u!4 &1478577796
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1478577794}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.708, y: 0.96, z: 4.21}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1480164082
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -49815,23 +49828,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b50731da17847d4aad524844ab14de1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AgentTypeID: 0
-  m_CollectObjects: 1
-  m_Size: {x: 50, y: 20, z: 50}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 1
-  m_DefaultArea: 0
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
-  m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 0}
 --- !u!114 &1569091385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49844,8 +49840,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cfb2bc632de1504caf5c4a15613dd74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  surface: {fileID: 1569091384}
-  maxConcurrentBuilds: 1
 --- !u!114 &1569091386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49858,8 +49852,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 419f9823bd8b9cd41a27a3c59035820f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trackedAgent: {fileID: 7902220941128870780}
-  quantizationFactor: 0.1
 --- !u!1 &1570515394
 GameObject:
   m_ObjectHideFlags: 0
@@ -66527,14 +66519,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detailLevels:
   - lod: 0
-    visibleDstThreshold: 200
+    visibleDstThreshold: 100
   - lod: 1
-    visibleDstThreshold: 400
+    visibleDstThreshold: 200
   - lod: 2
-    visibleDstThreshold: 600
+    visibleDstThreshold: 300
   viewer: {fileID: 4272359964722229517}
   mapMaterial: {fileID: 2100000, guid: 104e02422de5065449fc2ee3ba6ffe22, type: 2}
   chunkSize: 0
+  gameManagerTemp: {fileID: 10606635}
+  grassRenderer: {fileID: 1478577795}
 --- !u!1 &2105842799
 GameObject:
   m_ObjectHideFlags: 0
@@ -67149,7 +67143,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144748341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24058327, y: 0.00000001670101, z: -0.0000000041395687, w: 0.97062856}
+  m_LocalRotation: {x: 0.24058327, y: -0.000000016701, z: 0.0000000041395665, w: 0.97062856}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -73209,6 +73203,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 705507995}
+  - {fileID: 1478577796}
   - {fileID: 615117695}
   - {fileID: 953572739}
   - {fileID: 1236211059}
