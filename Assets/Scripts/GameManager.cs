@@ -114,16 +114,8 @@ public class GameManager : MonoBehaviour
         while (FirstPersonController.Instance == null)
             yield return null;
 
-        while (EndlessTerrain.Instance == null)
-            yield return null;
-
-            
         // Let the player load itself
         FirstPersonController.Instance.LoadPlayer();
-
-        
-        EndlessTerrain.Instance.LoadTerrain();
-
         inGame = true;
     }
 

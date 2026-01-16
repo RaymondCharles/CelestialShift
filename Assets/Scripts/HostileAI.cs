@@ -232,7 +232,7 @@ public class HostileAI : MonoBehaviour
 
         if (hasPatrolPoint)
         {
-            if (EnsureOnNavMesh(navAgent)) navAgent.SetDestination(currentPatrolPoint);
+            navAgent.SetDestination(currentPatrolPoint);
             RotateTowardsMovement();
         }
 
@@ -244,21 +244,9 @@ public class HostileAI : MonoBehaviour
     {
         if (playerTransform != null)
         {
-            if (EnsureOnNavMesh(navAgent)) navAgent.SetDestination(playerTransform.position);
+            navAgent.SetDestination(playerTransform.position);
             RotateTowardsPlayer();
         }
-    }
-
-    bool EnsureOnNavMesh(NavMeshAgent agent, float snap = 5f)
-    {
-        if (agent.isOnNavMesh) return true;
-
-        if (NavMesh.SamplePosition(agent.transform.position, out var hit, snap, NavMesh.AllAreas))
-        {
-            agent.Warp(hit.position);
-            return agent.isOnNavMesh;
-        }
-        return false;
     }
 
     private AttackChoice ChooseAttack(float dist)
@@ -279,7 +267,7 @@ public class HostileAI : MonoBehaviour
     private void PerformAttack()
     {
         if (navAgent != null)
-            if (EnsureOnNavMesh(navAgent)) navAgent.SetDestination(transform.position);
+            navAgent.SetDestination(transform.position);
 
         RotateTowardsPlayer();
 
