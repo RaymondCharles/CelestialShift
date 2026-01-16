@@ -32,6 +32,8 @@ public class EndlessTerrain : MonoBehaviour
 
     //async navmesh fields.
     public const float NavMeshOverlapWorld = 5f;
+    private int oldQuarter = -1;
+    private int newQuarter;
     
     
     void Awake() => Instance = this;
@@ -76,6 +78,9 @@ public class EndlessTerrain : MonoBehaviour
         // (Optional) keep viewerPosition if you use it elsewhere for visibility logic
         viewerPosition = new Vector2(scaledX, scaledY);
 
+
+        bool canSwap = false;
+
         // 4) Detect entering a new chunk
         if (playerChunkCoord != _currentPlayerChunk)
         {
@@ -84,32 +89,68 @@ public class EndlessTerrain : MonoBehaviour
             
             if (terrainChunkDictionary.TryGetValue(playerChunkCoord, out var chunk))
             {
-                // Promote navmesh detail ONLY for the chunk the player is on (your choice)
-                // chunk.SetNavMeshLodOverride(0);
-
                 currentPlayerChunkRef = chunk;
-                if (chunk.navMeshLodIndex != 0)
-                {
-                    chunk.navMeshLodIndex = 0;
-                    chunk.navQueued = false;
-                    chunk.UpdateTerrainChunk();
-                }
+                canSwap = true;
             }
             else
             {
                 // This can happen for 1 frame if the chunk isn't created yet.
                 // It will be handled once UpdateVisibleChunks creates it.
                 currentPlayerChunkRef = null;
+                return;
             }
         }
 
 
+        
         // 5) Update visible chunks only when moved enough (uses viewerPosition in scaled space)
         if ((previousViewerPosition - viewerPosition).sqrMagnitude > sqrChunkUpdateMoveThreshold)
         {
             previousViewerPosition = viewerPosition;
             UpdateVisibleChunks();
         }
+
+        if (currentPlayerChunkRef == null) return;
+
+        // Promote navmesh detail ONLY for the chunk the player is on (your choice)
+        // chunk.SetNavMeshLodOverride(0);
+
+        // viewer world pos
+        Vector3 wp = viewer.position;
+
+        // chunk center in world space:
+        Vector3 chunkCenter = currentPlayerChunkRef.meshObject.transform.position; // (you may need a getter if private)
+
+        // local offset inside chunk
+        Vector3 d = wp - chunkCenter;
+
+        float halfChunk = (chunkSize * scale) * 0.5f;
+
+        // normalize to [-1..+1]
+        float nx = d.x / halfChunk;
+        float nz = d.z / halfChunk;
+
+        // determine 2x2 quarter
+        int qx = (nx >= 0f) ? 1 : 0;
+        int qz = (nz >= 0f) ? 1 : 0;
+
+        // map to 0..3
+        newQuarter = (qz == 1) ? (qx == 1 ? 3 : 2) : (qx == 1 ? 1 : 0);
+
+        if (newQuarter != oldQuarter)
+        {
+            canSwap = true;
+        }
+
+        if (canSwap && currentPlayerChunkRef.hasHighLODQuarters[newQuarter] != true)
+        {
+            Debug.Log("DOING QUARTILE " + newQuarter);
+            currentPlayerChunkRef.SetPlayerQuarter(newQuarter);
+            oldQuarter = newQuarter;
+            currentPlayerChunkRef.hasHighLODQuarters[newQuarter] = true;
+        }
+
+
     }
 
 /*
@@ -166,7 +207,7 @@ public class EndlessTerrain : MonoBehaviour
 
     public class TerrainChunk {
         // constructs a terrain chunk at given coord with given size
-        GameObject meshObject;
+        public GameObject meshObject;
         public Vector2Int coord;
         public Vector2 position;
         Bounds bounds;
@@ -184,20 +225,29 @@ public class EndlessTerrain : MonoBehaviour
         List<GameObject> treeList = new List<GameObject>();
         NavMeshSurface surface;
 
-        public bool navQueued = false;
         GameObject navSourceObject;
         MeshFilter navSourceFilter;
         MeshCollider navSourceCollider;
         public int navMeshLodIndex; // which lod to use for navmesh
         int prevNMLodIndex;
+        public bool[] hasHighLODQuarters = new bool[4];
 
-
-        public NavMeshData navMeshData;
-        public NavMeshDataInstance navMeshInstance;
-        public AsyncOperation navBuildOp;
 
         private int size;
 
+
+        //Update LOD of Quartile implementation
+        public const int QuarterCount = 4; // 2x2
+        public NavMeshData[] hiNavData = new NavMeshData[QuarterCount];
+        public NavMeshDataInstance[] hiNavInst = new NavMeshDataInstance[QuarterCount];
+        public bool[] hiQueued = new bool[QuarterCount];
+
+        public int currentHiQuarter = -1;
+
+        public bool navQueued = false;
+        public NavMeshData navMeshData;
+        public NavMeshDataInstance navMeshInstance;
+        public AsyncOperation navBuildOp;
 
         
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen){
@@ -253,6 +303,14 @@ public class EndlessTerrain : MonoBehaviour
             // Create per-chunk runtime NavMeshData (only once)
             navMeshData = new NavMeshData(surface.agentTypeID);
             navMeshInstance = NavMesh.AddNavMeshData(navMeshData);
+
+            // High-detail per quarter
+            for (int i = 0; i < QuarterCount; i++)
+            {
+                hiNavData[i] = new NavMeshData(surface.agentTypeID);
+                hiNavInst[i] = NavMesh.AddNavMeshData(hiNavData[i]);
+                hiQueued[i] = false;
+            }
 
 
             Debug.Log(NavMeshBuildQueue.Instance ? "Queue exists" : "Queue is NULL");
@@ -404,24 +462,50 @@ public class EndlessTerrain : MonoBehaviour
         public void UpdateTerrainChunk(){
             // determine if chunk is visible based on viewer position, visible true if within maxViewDistance
             if (mapDataReceived){
-                // Ensure navmesh LOD mesh is requested at least once
-                LODmesh navLod = lodMeshes[navMeshLodIndex];
-                if (!navLod.hasMesh && !navLod.hasRequestedMesh)
-                {
-                    navLod.RequestMesh(mapData);
-                }
-                else
-                {
-                    navSourceFilter.sharedMesh = navLod.mesh;
-                    navSourceCollider.sharedMesh = navLod.mesh;
-
-                    // Only queue nav build once nav source is actually ready
-                    if (!navQueued)
+                // low LOD for full chunk
+                if (!navQueued)
                     {
+                    navMeshLodIndex = detailLevels.Length - 1;
+
+
+                    // Ensure navmesh LOD mesh is requested at least once
+                    LODmesh navLod = lodMeshes[navMeshLodIndex];
+                    if (!navLod.hasMesh && !navLod.hasRequestedMesh)
+                    {
+                        navLod.RequestMesh(mapData);
+                    }
+                    else
+                    {
+                        navSourceFilter.sharedMesh = navLod.mesh;
+                        navSourceCollider.sharedMesh = navLod.mesh;
+
                         navQueued = true;
-                        NavMeshBuildQueue.Instance.Enqueue(surface, this, EndlessTerrain.NavMeshOverlapWorld);
+                        NavMeshBuildQueue.Instance.EnqueueFull(surface, this, EndlessTerrain.NavMeshOverlapWorld);
                     }
                 }
+
+                // 2) Ensure current quarter hi detail is baked (LOD0) when needed
+                if (currentHiQuarter != -1 && !hiQueued[currentHiQuarter])
+                {
+                    int hiLodIndex = 0; // LOD0
+                    LODmesh hiLod = lodMeshes[hiLodIndex];
+
+                    if (!hiLod.hasMesh && !hiLod.hasRequestedMesh)
+                        hiLod.RequestMesh(mapData);
+                    else
+                    {
+                        navSourceFilter.sharedMesh = hiLod.mesh;
+                        navSourceCollider.sharedMesh = hiLod.mesh;
+
+                        hiQueued[currentHiQuarter] = true;
+                        NavMeshBuildQueue.Instance.EnqueueQuarter(surface, this, currentHiQuarter, EndlessTerrain.NavMeshOverlapWorld);
+                    }
+                }
+
+
+
+
+
                 Vector3 viewerPos3 = new Vector3(viewerPosition.x, 0f, viewerPosition.y);
                 float viewerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(viewerPos3));
                 
@@ -518,7 +602,54 @@ public class EndlessTerrain : MonoBehaviour
             );
 
             return new Bounds(center, boundsSize);
-}
+        }
+
+
+        public Bounds GetQuarterBounds(int quarter, float overlapWorld, float ySize = 2000f)
+        {
+            float chunkWorldSize = size * scale;     // size == chunkSize
+            float half = chunkWorldSize * 0.5f;
+            float quarterSize = chunkWorldSize * 0.5f; // half chunk
+
+            // Your chunk transform is the CENTER (we fixed this earlier)
+            Vector3 center = meshObject.transform.position;
+
+            // quarter offsets in world space (relative to chunk center)
+            // quarter mapping:
+            // 0 = (-x, -z) bottom-left
+            // 1 = (+x, -z) bottom-right
+            // 2 = (-x, +z) top-left
+            // 3 = (+x, +z) top-right
+            float ox = (quarter == 1 || quarter == 3) ? +quarterSize * 0.5f : -quarterSize * 0.5f;
+            float oz = (quarter >= 2) ? +quarterSize * 0.5f : -quarterSize * 0.5f;
+
+            Vector3 qCenter = center + new Vector3(ox, 0f, oz);
+
+            Vector3 qSize = new Vector3(
+                quarterSize + overlapWorld * 2f,
+                ySize,
+                quarterSize + overlapWorld * 2f
+            );
+
+            return new Bounds(qCenter, qSize);
+        }
+
+
+        public void SetPlayerQuarter(int quarter)
+        {
+            quarter = Mathf.Clamp(quarter, 0, 3);
+            if (quarter == currentHiQuarter) return;
+
+            currentHiQuarter = quarter;
+
+            // force that quarter to (re)build in hi detail
+            hiQueued[quarter] = false;
+
+            // Make nav build use LOD0 for this hi bake only:
+            navMeshLodIndex = 0;
+
+            UpdateTerrainChunk();
+        }
 
     }
 

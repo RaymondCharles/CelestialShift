@@ -77,7 +77,7 @@ public class PlayerStats : MonoBehaviour
     {
         if (amount <= 0) return;
         SetHealth(health - amount);
-        Debug.Log($"Player took {amount} damage. Health = {health}");
+        //Debug.Log($"Player took {amount} damage. Health = {health}");
     }
 
     private void SetHealth(int newValue)
