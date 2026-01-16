@@ -14,7 +14,7 @@ public class mapGenerator : MonoBehaviour
 
     public noise.NormalizeMode normalizeMode;
     
-    public const int mapChunkSize = 241;
+    public const int mapChunkSize = 61;
     [Range(0,6)] // clamped to 0-6 to prevent LOD errors
     public int editorLevelOfDetail;
     public float noiseScale;

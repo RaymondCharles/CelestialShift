@@ -300,9 +300,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: b5d5da3c3de1b724fba32153f7a21a9c, type: 2}
-  quantity: 1
   hotBarManager: {fileID: 0}
-  minimapIconPrefab: {fileID: 0}
+  quantity: 1
 --- !u!65 &1496019669482009348
 BoxCollider:
   m_ObjectHideFlags: 0
