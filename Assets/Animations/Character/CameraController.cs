@@ -177,6 +177,7 @@ public class CameraController : MonoBehaviour
         var grassEmission = grassFX.emission;
         if (biome == "Desert")
         {
+            Debug.Log("transitioning to Desert");
             sandVolume.weight = Mathf.Lerp(sandVolume.weight, 1, transitionSpeed * Time.deltaTime);
             snowVolume.weight = Mathf.Lerp(snowVolume.weight, 0, transitionSpeed * Time.deltaTime);
             grassVolume.weight = Mathf.Lerp(grassVolume.weight, 0, transitionSpeed * Time.deltaTime);
@@ -187,6 +188,7 @@ public class CameraController : MonoBehaviour
         }
         else if (biome == "Snow")
         {
+            Debug.Log("transitioning to Snow");
             sandVolume.weight = Mathf.Lerp(sandVolume.weight, 0, transitionSpeed * Time.deltaTime);
             snowVolume.weight = Mathf.Lerp(snowVolume.weight, 1, transitionSpeed * Time.deltaTime);
             grassVolume.weight = Mathf.Lerp(grassVolume.weight, 0, transitionSpeed * Time.deltaTime);
@@ -196,6 +198,7 @@ public class CameraController : MonoBehaviour
         }
         else if (biome == "Grass Plains")
         {
+            Debug.Log("transitioning to Grass");
             sandVolume.weight = Mathf.Lerp(sandVolume.weight, 0, transitionSpeed * Time.deltaTime);
             snowVolume.weight = Mathf.Lerp(snowVolume.weight, 0, transitionSpeed * Time.deltaTime);
             grassVolume.weight = Mathf.Lerp(grassVolume.weight, 1, transitionSpeed * Time.deltaTime);

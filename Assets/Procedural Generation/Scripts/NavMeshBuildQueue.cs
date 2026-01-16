@@ -17,8 +17,6 @@ public class NavMeshBuildQueue : MonoBehaviour
         public NavMeshSurface surface;
         public EndlessTerrain.TerrainChunk chunk;
         public float overlap;
-        public bool isQuarter;
-        public int quarterIndex;
     }
 
     private readonly Queue<Request> queue = new Queue<Request>();
@@ -47,24 +45,6 @@ public class NavMeshBuildQueue : MonoBehaviour
             StartCoroutine(Process());
     }
 
-    public void EnqueueFull(NavMeshSurface surface, EndlessTerrain.TerrainChunk chunk, float overlapWorld = 5f)
-    {
-        queue.Enqueue(new Request { surface = surface, chunk = chunk, overlap = overlapWorld, isQuarter = false });
-        if (!building) StartCoroutine(Process());
-    }
-
-    public void EnqueueQuarter(NavMeshSurface surface, EndlessTerrain.TerrainChunk chunk, int quarter, float overlapWorld = 5f)
-    {
-        queue.Enqueue(new Request { surface = surface, chunk = chunk, overlap = overlapWorld, isQuarter = true, quarterIndex = quarter });
-        if (!building) StartCoroutine(Process());
-    }
-
-
-
-
-
-
-
     private IEnumerator Process()
     {
         building = true;
@@ -75,21 +55,8 @@ public class NavMeshBuildQueue : MonoBehaviour
             if (r.surface == null || r.chunk == null) continue;
             if (r.chunk.navMeshData == null) continue; // chunk must have created it
 
-            Bounds bounds;
-            NavMeshData data;
-
-            if (!r.isQuarter)
-            {
-                bounds = r.chunk.GetNavBuildBounds(r.overlap);      // your full-chunk bounds method
-                data = r.chunk.navMeshData;                         // low/full data
-            }
-            else
-            {
-                bounds = r.chunk.GetQuarterBounds(r.quarterIndex, r.overlap);
-                data = r.chunk.hiNavData[r.quarterIndex];           // hi quarter data
-            }
-
-            
+            // 1) Build bounds (with overlap to remove seams)
+            Bounds bounds = r.chunk.GetNavBuildBounds(r.overlap);
 
             // 2) Collect sources within bounds
             sources.Clear();
@@ -108,7 +75,7 @@ public class NavMeshBuildQueue : MonoBehaviour
 
             // 3) Kick async build
             r.chunk.navBuildOp = NavMeshBuilder.UpdateNavMeshDataAsync(
-                data,
+                r.chunk.navMeshData,
                 r.surface.GetBuildSettings(),
                 sources,
                 bounds
