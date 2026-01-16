@@ -60,6 +60,7 @@ public class EndlessTerrain : MonoBehaviour
 
     public void LoadTerrain()
     {
+        if (viewer == null) return;
         viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / scale;
         if ((previousViewerPosition - viewerPosition).sqrMagnitude > sqrChunkUpdateMoveThreshold){
             previousViewerPosition = viewerPosition;
@@ -133,7 +134,7 @@ public class EndlessTerrain : MonoBehaviour
                 if (terrainChunkDictionary.ContainsKey(viewedChunkCoord)){
                     terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
                 } else {
-                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, mapGenerator, gameManagerTemp, grassRenderer));
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, mapGenerator, gameManagerTemp, grassRenderer, viewer));
                 }
             }
         }
@@ -184,15 +185,18 @@ public class EndlessTerrain : MonoBehaviour
 
         private int size;
 
+        private Transform viewer;
+
 
         
-        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen, GameManagerTemp gameManager, GPUInstancedGrassRenderer grassRenderer){
+        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen, GameManagerTemp gameManager, GPUInstancedGrassRenderer grassRenderer, Transform viewer){
             this.size = size;
             this.coord = coord;
             this.detailLevels = detailLevels;
             this.mapGenerator = mapGen;
             this.gameManagerTemp = gameManager;
             this.grassRenderer = grassRenderer;
+            this.viewer = viewer;
 
             // World origin (x,z)
             position = new Vector2(coord.x * size, coord.y * size);
@@ -466,12 +470,19 @@ public class EndlessTerrain : MonoBehaviour
                     }
                     grassRenderer.RemoveChunk(coord);
                     chunkEnemyList.Clear();
+                    enemyCount = 0;
+                    if (GameManagerTemp.globalEnemyDict.ContainsKey(coord)) 
+                    {
+                        GameManagerTemp.globalEnemyDict[coord].Clear();
+                        GameManagerTemp.globalEnemyDict.Remove(coord);
+                    }
                     SetVisible(visible);
                 }
             }
         }
         public List<GameObject> spawnEnemies(int count){
             try {
+                Debug.Log("SPAWNING " + count.ToString() + " ENEMIES");
                 // place enemies, spawn only on chunk, store in global array, kill only if enemy in inactive chunk
                 System.Random prng = new System.Random ();
                 for (int i = 0; i < count; i++){
@@ -495,10 +506,15 @@ public class EndlessTerrain : MonoBehaviour
                     Vector3 enemyPos = new Vector3(worldX * scale, height * scale, worldY * scale);
 
                     GameObject enemy = GameObject.Instantiate(enemyPrefab, enemyPos, Quaternion.identity);
+                    HostileAI hostileAI = enemy.GetComponent<HostileAI>();
+                    hostileAI.playerTransform = viewer;
+                    hostileAI.lastPlayerPosition = viewer.position;
+                    EnemyLevel enemyLevel = enemy.GetComponent<EnemyLevel>();
+                    enemyLevel.level = GameManagerTemp.Instance.Level;
+
                     enemy.transform.parent = meshObject.transform;
-                    enemy.SetActive(false);
+                    enemy.SetActive(true);
                     chunkEnemyList.Add(enemy);
-                    globalEnemyList.Add(enemy);
                 }
             }catch (Exception e) {
                 Debug.LogError($"Enemy spawn failed for chunk {coord}: {e}");

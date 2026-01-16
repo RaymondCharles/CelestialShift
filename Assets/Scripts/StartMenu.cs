@@ -37,7 +37,7 @@ public class StartMenu : MonoBehaviour
     // Change to Game Scene When Play is Pressed
     public void OnClickPlay()
     {
-        LoadingManager.Instance.ChangeToGameScene(1);
+        LoadingManager.Instance.ChangeToGameScene(5);
     }
  
 

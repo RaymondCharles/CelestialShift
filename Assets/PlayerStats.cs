@@ -16,6 +16,8 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float hungerDrainPerSecond = 1f;
     [SerializeField] private float starvingDamagePerSecond = 2f;
 
+    public static GameObject player;
+
     private float hungerDrainAccumulator;
 
     public int MaxHealth => maxHealth;
@@ -38,6 +40,13 @@ public class PlayerStats : MonoBehaviour
     public int Level => level;
     public int CurrentXP => currentXP;
     public int XPToNextLevel => Mathf.Max(1, baseXPToNext + (level - 1) * xpPerLevel);
+
+
+    void Awake()
+    {
+        player = this.gameObject;
+    }
+
 
     private void Start()
     {

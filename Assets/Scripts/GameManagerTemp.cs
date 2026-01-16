@@ -6,19 +6,22 @@ public class GameManagerTemp : MonoBehaviour
 {
     public Item[] allItems;
     public GameObject player;
-    public int Level = 100;
+    public int Level;
     public int GetLevel() { return Level; }
     public static Dictionary<Vector2Int, List<GameObject>> globalEnemyDict;
-    public EndlessTerrain endlessTerrain;
+
+    public static GameManagerTemp Instance;
 
 
     private void Awake()
     {
+        Instance = this;
         globalEnemyDict = new Dictionary<Vector2Int, List<GameObject>>();
     }
 
     private void Update()
     {   
+        if (player == null) return;
         Ray ray = new Ray(player.transform.position, Vector3.down);
         EndlessTerrain.TerrainChunk terrainChunk = null;
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
@@ -26,7 +29,7 @@ public class GameManagerTemp : MonoBehaviour
             if (hit.collider.name == "Terrain Chunk")
             {
                 const float scale = 5f;
-                int chunkSize = endlessTerrain.chunkSize - 1; // 240 if mapChunkSize = 241
+                int chunkSize = mapGenerator.mapChunkSize - 1; // 240 if mapChunkSize = 241
                 float newHitX = hit.point.x + (0.5f * (chunkSize * scale));
                 float newHitZ = hit.point.z + (0.5f * (chunkSize * scale));
                 // world -> scaled terrain space
@@ -39,7 +42,7 @@ public class GameManagerTemp : MonoBehaviour
                 );
 
                 // lookup the correct TerrainChunk
-                if (!endlessTerrain.terrainChunkDictionary.TryGetValue(chunkCoord, out terrainChunk))
+                if (!EndlessTerrain.Instance.terrainChunkDictionary.TryGetValue(chunkCoord, out terrainChunk))
                 {
                     Debug.LogWarning($"No chunk found for {chunkCoord}");
                     return;
@@ -50,7 +53,18 @@ public class GameManagerTemp : MonoBehaviour
                 // enemies can chase until limit of 100 or whatever we decide and will just be added to new terrain chunk list
                 // new enemies will only be spawned in a terrain chunk if the current chunk enemy count is less than 100
                 // enemy spawning per chunk is tied to count
-                globalEnemyDict.Add(terrainChunk.coord, terrainChunk.spawnEnemies(Level - terrainChunk.enemyCount));
+                    if (globalEnemyDict.ContainsKey(terrainChunk.coord))
+                    {
+                        globalEnemyDict[terrainChunk.coord].AddRange(terrainChunk.spawnEnemies(Level - terrainChunk.enemyCount));
+                        Debug.Log(globalEnemyDict[terrainChunk.coord].Count);
+                    }
+                    else 
+                    {
+                        globalEnemyDict.Add(terrainChunk.coord, terrainChunk.spawnEnemies(Level - terrainChunk.enemyCount));
+                        Debug.Log(globalEnemyDict[terrainChunk.coord].Count);
+                    }
+                    terrainChunk.enemyCount = Level;
+                    Debug.Log(terrainChunk.enemyCount < Level);
                 }
             }
         }

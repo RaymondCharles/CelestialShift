@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class LoadButton : MonoBehaviour
 {
-    public int gameSceneIndex = 1; 
+    public int gameSceneIndex = 5; 
+
 
     public void OnClickLoadGame()
     {

@@ -6,7 +6,7 @@ public class HostileAI : MonoBehaviour
 {
     // References
     [SerializeField] private NavMeshAgent navAgent;
-    [SerializeField] private Transform playerTransform;
+    public Transform playerTransform;
     [SerializeField] private Transform firePoint;
     [SerializeField] public GameObject projectilePrefab;
     [SerializeField] private EnemyLevel enemyLevel;
@@ -30,7 +30,7 @@ public class HostileAI : MonoBehaviour
     [SerializeField] private bool usePrediction = true;
     [SerializeField] private float maxLeadTime = 1f;          // clamp prediction time
 
-    private Vector3 lastPlayerPosition;
+    public Vector3 lastPlayerPosition;
     private Vector3 playerVelocity;
 
     [Header("Rotation Settings")]
@@ -77,13 +77,6 @@ public class HostileAI : MonoBehaviour
 
     private void Awake()
     {
-        if (playerTransform == null)
-        {
-            GameObject playerObj = GameObject.Find("mainCharacter");
-            if (playerObj != null)
-                playerTransform = playerObj.transform;
-        }
-
         if (navAgent == null)
             navAgent = GetComponent<NavMeshAgent>();
 
@@ -98,10 +91,8 @@ public class HostileAI : MonoBehaviour
         // We will control rotation manually for fast tracking
         if (navAgent != null)
             navAgent.updateRotation = false;
-
-        if (playerTransform != null)
-            lastPlayerPosition = playerTransform.position;
     }
+    
 
     private void Update()
     {

@@ -37,8 +37,15 @@ public class LoadingManager : MonoBehaviour
             LoadingBar.value = asyncLoad.progress;
             yield return null;
         }
-        yield return new WaitForSeconds(0.2f  );
+        yield return new WaitForSeconds(0.2f);
         LoadingScreen.SetActive(false);
+        GameObject player = PlayerStats.player;
+        if (player!= null)
+        {
+            GameManagerTemp.Instance.player = player;
+            EndlessTerrain.Instance.viewer = player.transform;
+        }
+
     }
  
 }

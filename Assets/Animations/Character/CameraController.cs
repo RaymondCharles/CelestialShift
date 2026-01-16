@@ -38,7 +38,6 @@ public class CameraController : MonoBehaviour
     public ParticleSystem snowFX;
     public ParticleSystem grassFX;
 
-    public EndlessTerrain mapGenerator;
 
     public string biome = "";
     public float transitionSpeed = 3f;
@@ -155,7 +154,7 @@ public class CameraController : MonoBehaviour
             if (hit.collider.name == "Terrain Chunk")
             {
                 const float scale = 5f;
-                int chunkSize = mapGenerator.chunkSize - 1;
+                int chunkSize = mapGenerator.mapChunkSize - 1;
 
                 float newHitX = hit.point.x + (0.5f * (chunkSize * scale));
                 float newHitZ = hit.point.z + (0.5f * (chunkSize * scale));
@@ -166,7 +165,7 @@ public class CameraController : MonoBehaviour
                     Mathf.FloorToInt(hitScaled.y / chunkSize)
                 );
 
-                if (!mapGenerator.terrainChunkDictionary.TryGetValue(chunkCoord, out EndlessTerrain.TerrainChunk terrainChunk))
+                if (!EndlessTerrain.Instance.terrainChunkDictionary.TryGetValue(chunkCoord, out EndlessTerrain.TerrainChunk terrainChunk))
                 {
                     Debug.LogWarning($"No chunk found for {chunkCoord}");
                     return "ERROR";

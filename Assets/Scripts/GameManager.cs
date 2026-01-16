@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
             yield return null;
 
         // Handle save loading
-        if (loadGame && sceneName == "SampleScene")
+        if (loadGame && sceneName == "GameScene")
         {
             FirstPersonController.Instance.LoadPlayer();
             inGame = true;
@@ -181,7 +181,7 @@ public class GameManager : MonoBehaviour
     {
         loadGame = false;
         inGame = true;
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Game Scene");
     }
 
     public void LoadGame()
@@ -195,7 +195,7 @@ public class GameManager : MonoBehaviour
         }
 
         loadGame = true;
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("GameScene");
     }
 
 

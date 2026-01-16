@@ -39,7 +39,7 @@ MonoBehaviour:
     groupProbability: 0
   enemyPrefabs:
   - name: Snowman
-    prefab: {fileID: 4314119411018377698, guid: f8f9b93315a786242bcb2cdd71a6a0d2, type: 3}
+    prefab: {fileID: 7636542395391348652, guid: 2970473c560af9144b7d1d4e5d45d3ca, type: 3}
     countPerBiome: 0
     groupSize: 0
     groupProbability: 0

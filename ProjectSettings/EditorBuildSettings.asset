@@ -8,9 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MenuScene.unity
     guid: 75dd01ab16e450440b102b54af299fd4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    guid: 73958c42b65769145be7b10afd95d70b
   - enabled: 1
     path: Assets/Scenes/InGameScenes/GrassBiomeDungeon.unity
     guid: 4b2f2976f54016143afde28770e826b3
@@ -20,5 +20,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/InGameScenes/TheSandBiomeDungeon.unity
     guid: d860a3269259d6c4ab5ca3881a61ff61
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: 73958c42b65769145be7b10afd95d70b
+  - enabled: 0
+    path: Assets/Scenes/AdvancedFeatures.unity
+    guid: b28e95901c17ce14fa20cd3a3121a34a
+  - enabled: 1
+    path: Assets/Scenes/GameScene.unity
+    guid: 6887a7bfb27e8294fbd78f2c62f95921
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
