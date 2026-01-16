@@ -4419,6 +4419,10 @@ MonoBehaviour:
   hunger: 100
   hungerDrainPerSecond: 1
   starvingDamagePerSecond: 2
+  level: 1
+  currentXP: 0
+  baseXPToNext: 100
+  xpPerLevel: 50
 --- !u!114 &506062153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25130,7 +25134,7 @@ PrefabInstance:
     - target: {fileID: 7209746182273383796, guid: 49f378c5016ce5a428dccbefe78e09c6, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 1557730168, guid: e78b3d820b1142d4293528cf016ae6d8, type: 3}
+      objectReference: {fileID: -1592324224, guid: 6b3bb339dbb3b2e41a105aa26abb2df2, type: 3}
     - target: {fileID: 7209746182273383796, guid: 49f378c5016ce5a428dccbefe78e09c6, type: 3}
       propertyPath: m_Color.b
       value: 1
