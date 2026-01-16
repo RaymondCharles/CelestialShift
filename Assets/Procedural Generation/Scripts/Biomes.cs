@@ -15,5 +15,4 @@ public class BiomeScriptableObject : ScriptableObject
     public GameObject dungeonPrefab;
     public objectGenInfo[] treePrefabs;
     public objectGenInfo[] enemyPrefabs;
-    public GameObject grassPrefab;
 }

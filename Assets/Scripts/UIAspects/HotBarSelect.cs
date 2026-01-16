@@ -11,6 +11,11 @@ public class HotBarSelect : MonoBehaviour
 
     void Start()
     {
+        if (HotBarManager.Instance == null)
+        {
+            Debug.LogWarning("HotBarManager instance not found. HotBarSelect will not function.");
+            return;
+        }
         hotbarAction = playerInput.actions["HotBarSelect"];
         hotbarAction.performed += OnHotbarPressed;
         hotbarAction.Enable();

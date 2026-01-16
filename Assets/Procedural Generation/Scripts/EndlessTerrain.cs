@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class EndlessTerrain : MonoBehaviour
 {
@@ -19,6 +18,7 @@ public class EndlessTerrain : MonoBehaviour
     public static Vector2 viewerPosition;
     public static Vector2  previousViewerPosition;
     static mapGenerator mapGenerator;
+    GameManagerTemp gameManagerTemp; // UPDATE FOR NEW GAME MANAGER
     public int chunkSize;
     int chunksVisibleInVD;
 
@@ -26,25 +26,10 @@ public class EndlessTerrain : MonoBehaviour
     static List<TerrainChunk> visibleTerrainChunksLastUpdate = new List<TerrainChunk>();
     public static List<GameObject> globalEnemyList = new List<GameObject>();
 
-    public static EndlessTerrain Instance;
-    public GameManagerTemp gameManagerTemp;
-    public GPUInstancedGrassRenderer grassRenderer;
-
-    private Vector2Int _currentPlayerChunk = new Vector2Int (0,0);
-    private TerrainChunk currentPlayerChunkRef;
-
-
-    //async navmesh fields.
-    public const float NavMeshOverlapWorld = 5f;
-
-    
-    
-    void Awake() => Instance = this;
-
     void Start()
     {
         mapGenerator = FindObjectOfType<mapGenerator>();
-     
+        gameManagerTemp = FindObjectOfType<GameManagerTemp>();
         maxViewDistance = detailLevels[detailLevels.Length -1].visibleDstThreshold;
         chunkSize = mapGenerator.mapChunkSize - 1;
         // calculate how many chunks are visible in view distance
@@ -55,64 +40,11 @@ public class EndlessTerrain : MonoBehaviour
 
     void Update()
     {
-        LoadTerrain();
-    }
-
-    public void LoadTerrain()
-    {
         viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / scale;
         if ((previousViewerPosition - viewerPosition).sqrMagnitude > sqrChunkUpdateMoveThreshold){
             previousViewerPosition = viewerPosition;
             UpdateVisibleChunks();
         }
-
-        Vector3 wpos = viewer.position;
-        float halfChunkWorld = 0.5f * (chunkSize * scale);
-
-        float scaledX = (wpos.x + halfChunkWorld) / scale;
-        float scaledY = (wpos.z + halfChunkWorld) / scale; // use z like CheckBiome
-
-        // 3) Now convert scaled -> chunk coord (dictionary key)
-        Vector2Int playerChunkCoord = new Vector2Int(
-            Mathf.FloorToInt(scaledX / chunkSize),
-            Mathf.FloorToInt(scaledY / chunkSize)
-        );
-
-        // (Optional) keep viewerPosition if you use it elsewhere for visibility logic
-        viewerPosition = new Vector2(scaledX, scaledY);
-
-
-        bool canSwap = false;
-
-        // 4) Detect entering a new chunk
-        if (playerChunkCoord != _currentPlayerChunk)
-        {
-            _currentPlayerChunk = playerChunkCoord;
-            Debug.Log($"changed chunks -> {playerChunkCoord}");
-
-            if (terrainChunkDictionary.TryGetValue(playerChunkCoord, out var chunk))
-            {
-                // Promote navmesh detail ONLY for the chunk the player is on (your choice)
-                // chunk.SetNavMeshLodOverride(0);
-
-                currentPlayerChunkRef = chunk;
-                if (chunk.navMeshLodIndex != 0)
-                {
-                    chunk.navMeshLodIndex = 0;
-                    chunk.navQueued = false;
-                    chunk.UpdateTerrainChunk();
-                }
-            }
-            else
-            {
-                // This can happen for 1 frame if the chunk isn't created yet.
-                // It will be handled once UpdateVisibleChunks creates it.
-                currentPlayerChunkRef = null;
-            }
-        }
-
-
-
     }
 
     void UpdateVisibleChunks(){
@@ -133,7 +65,7 @@ public class EndlessTerrain : MonoBehaviour
                 if (terrainChunkDictionary.ContainsKey(viewedChunkCoord)){
                     terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
                 } else {
-                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, mapGenerator, gameManagerTemp, grassRenderer));
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, mapGenerator, gameManagerTemp));// UPDATE FOR NEW GAME MANAGER
                 }
             }
         }
@@ -146,19 +78,6 @@ public class EndlessTerrain : MonoBehaviour
         public Vector2 position;
         Bounds bounds;
 
-        Bounds worldBounds;
-        public GameManagerTemp gameManagerTemp;
-        public GPUInstancedGrassRenderer grassRenderer;
-        List<GameObject> dungeonList = new List<GameObject>();
-        List<GameObject> treeList = new List<GameObject>();
-        List<GameObject> chunkEnemyList = new List<GameObject>();
-        List<GameObject> grassList = new List<GameObject>();
-        public int enemyCount = 0;
-
-
-
-
-
         MeshRenderer meshRenderer;
         MeshFilter meshFilter;
         MeshCollider meshCollider;
@@ -166,33 +85,19 @@ public class EndlessTerrain : MonoBehaviour
         LODInfo[] detailLevels;
         LODmesh[] lodMeshes;
         public MapData mapData;
+        public GameManagerTemp gameManagerTemp;
         bool mapDataReceived;
         int previousLODIndex = -1;
-        NavMeshSurface surface;
+        List<GameObject> dungeonList = new List<GameObject>();
+        List<GameObject> treeList = new List<GameObject>();
+        List<GameObject> chunkEnemyList = new List<GameObject>();
+        public int enemyCount = 0;
 
-        public bool navQueued = false;
-        GameObject navSourceObject;
-        MeshFilter navSourceFilter;
-        MeshCollider navSourceCollider;
-        public int navMeshLodIndex; // which lod to use for navmesh
-        int prevNMLodIndex;
-
-
-        public NavMeshData navMeshData;
-        public NavMeshDataInstance navMeshInstance;
-        public AsyncOperation navBuildOp;
-
-        private int size;
-
-
-        
-        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen, GameManagerTemp gameManager, GPUInstancedGrassRenderer grassRenderer){
-            this.size = size;
+        public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen, GameManagerTemp gameManager){// UPDATE FOR NEW GAME MANAGER
             this.coord = coord;
             this.detailLevels = detailLevels;
             this.mapGenerator = mapGen;
-            this.gameManagerTemp = gameManager;
-            this.grassRenderer = grassRenderer;
+            this.gameManagerTemp = gameManager;// UPDATE FOR NEW GAME MANAGER
 
             // World origin (x,z)
             position = new Vector2(coord.x * size, coord.y * size);
@@ -203,11 +108,6 @@ public class EndlessTerrain : MonoBehaviour
             Vector3 boundsSize   = new Vector3(size, 10000f, size); // tall Y so height doesn't matter
             bounds = new Bounds(boundsCenter, boundsSize);
             
-            var worldCenter = new Vector3(bounds.center.x * scale, 0f, bounds.center.z * scale);
-            var worldSize = new Vector3(bounds.size.x * scale, 10000f, bounds.size.z * scale);
-            worldBounds = new Bounds(worldCenter, worldSize);
-
-
 
             //create mesh object, set 3d position and scale, add renderer, filter, collider
             meshObject = new GameObject("Terrain Chunk");
@@ -216,42 +116,6 @@ public class EndlessTerrain : MonoBehaviour
             meshCollider = meshObject.AddComponent<MeshCollider>();
             meshRenderer.material = material;
             meshObject.layer = LayerMask.NameToLayer("Ground");
-            
-
-
-
-
-            navSourceObject = new GameObject("NavMeshSource");
-            navSourceObject.transform.parent = meshObject.transform;
-            navSourceObject.transform.localPosition = Vector3.zero;
-            navSourceObject.transform.localRotation = Quaternion.identity;
-            navSourceObject.transform.localScale = Vector3.one; // IMPORTANT: do not scale this one
-
-            navSourceObject.layer = LayerMask.NameToLayer("NavMeshOnly");
-
-            navSourceFilter = navSourceObject.AddComponent<MeshFilter>();
-            navSourceCollider = navSourceObject.AddComponent<MeshCollider>();
-
-            // NavMeshSurface should ONLY collect from NavMeshOnly
-            surface = meshObject.AddComponent<NavMeshSurface>();
-            surface.collectObjects = CollectObjects.Children;
-            surface.layerMask = LayerMask.GetMask("NavMeshOnly");
-            surface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
-            surface.overrideVoxelSize = true;
-            surface.voxelSize = 0.4f; // tune
-            surface.overrideTileSize = true;
-            surface.tileSize = 128; // tune
-
-
-            // Create per-chunk runtime NavMeshData (only once)
-            navMeshData = new NavMeshData(surface.agentTypeID);
-            navMeshInstance = NavMesh.AddNavMeshData(navMeshData);
-
-
-
-            navMeshLodIndex = 0; //detailLevels.Length - 1; // highest LOD index = lowest detail
-            prevNMLodIndex = detailLevels.Length;
-
             
 
             meshObject.transform.position = positionV3 * scale;
@@ -354,7 +218,6 @@ public class EndlessTerrain : MonoBehaviour
                     Vector3 dungeonPos = new Vector3(worldX * scale, height*scale, worldY * scale);
                     
                     GameObject dungeon = GameObject.Instantiate(biome.dungeonPrefab, dungeonPos, Quaternion.identity);
-                    dungeon.layer = LayerMask.NameToLayer("Ground");
                     dungeon.transform.parent = meshObject.transform;
                     dungeon.SetActive(false);
                     dungeonList.Add(dungeon);
@@ -367,7 +230,6 @@ public class EndlessTerrain : MonoBehaviour
             try {
                 // place dungeons of chunk, default to invisible until highest LOD
                 foreach (TreeCoord treeCoord in mapData.treeCoords){
-                    
                     if (treeCoord.x < 0 || treeCoord.x >= mapData.chunkSize || treeCoord.y < 0 || treeCoord.y >= mapData.chunkSize){continue;}
 
                     float worldX = treeCoord.x + position.x - 0.5f * mapData.chunkSize;
@@ -382,7 +244,6 @@ public class EndlessTerrain : MonoBehaviour
                     
                     GameObject tree = GameObject.Instantiate(treeCoord.biomeType.treePrefabs[treeCoord.objectIndex].prefab, treePos, Quaternion.identity);
                     tree.transform.parent = meshObject.transform;
-                    tree.layer = LayerMask.NameToLayer("Ground");
                     tree.SetActive(false);
                     treeList.Add(tree);
                 }
@@ -390,34 +251,13 @@ public class EndlessTerrain : MonoBehaviour
             catch (Exception e) {
                 Debug.LogError($"Tree spawn failed for chunk {coord}: {e}");
             }
-            // Grass Logic
-            grassRenderer.BuildGrassForChunk(coord, scale, position, worldBounds, mapGenerator, mapData);
-            //chunkEnemyList = spawnEnemies(gameManagerTemp.GetLevel());// UPDATE TO BE SOME FUNCTION OF LEVEL
+            chunkEnemyList = spawnEnemies(gameManagerTemp.GetLevel());// UPDATE TO BE SOME FUNCTION OF LEVEL
             UpdateTerrainChunk();
         }
 
         public void UpdateTerrainChunk(){
             // determine if chunk is visible based on viewer position, visible true if within maxViewDistance
             if (mapDataReceived){
-
-                // Ensure navmesh LOD mesh is requested at least once
-                LODmesh navLod = lodMeshes[navMeshLodIndex];
-                if (!navLod.hasMesh && !navLod.hasRequestedMesh)
-                {
-                    navLod.RequestMesh(mapData);
-                }
-                else
-                {
-                    navSourceFilter.sharedMesh = navLod.mesh;
-                    navSourceCollider.sharedMesh = navLod.mesh;
-
-                    // Only queue nav build once nav source is actually ready
-                    if (!navQueued)
-                    {
-                        navQueued = true;
-                        NavMeshBuildQueue.Instance.Enqueue(surface, this, EndlessTerrain.NavMeshOverlapWorld);
-                    }
-                }
                 Vector3 viewerPos3 = new Vector3(viewerPosition.x, 0f, viewerPosition.y);
                 float viewerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(viewerPos3));
                 
@@ -461,15 +301,12 @@ public class EndlessTerrain : MonoBehaviour
                     foreach (GameObject tree in treeList){
                         tree.SetActive(false);
                     }
-                    if (grassRenderer != null){
-                        grassRenderer.RemoveChunk(coord);
-                    }
-                    grassRenderer.RemoveChunk(coord);
                     chunkEnemyList.Clear();
                     SetVisible(visible);
                 }
             }
         }
+
         public List<GameObject> spawnEnemies(int count){
             try {
                 // place enemies, spawn only on chunk, store in global array, kill only if enemy in inactive chunk
@@ -492,7 +329,7 @@ public class EndlessTerrain : MonoBehaviour
                     float height = mapData.heightCurve.Evaluate(mapData.noiseMap[x, y]) * (mapGenerator.meshHeightMultiplier * biome.biomeHeightMultiplier);
 
                     // position in world space
-                    Vector3 enemyPos = new Vector3(worldX * scale, height * scale, worldY * scale);
+                    Vector3 enemyPos = new Vector3(worldX * scale, height*scale, worldY * scale);
 
                     GameObject enemy = GameObject.Instantiate(enemyPrefab, enemyPos, Quaternion.identity);
                     enemy.transform.parent = meshObject.transform;
@@ -506,25 +343,13 @@ public class EndlessTerrain : MonoBehaviour
             return chunkEnemyList;
         }
 
-
-
         public void SetVisible(bool visible){
             // sets object to visible or not
-            if (meshRenderer) meshRenderer.enabled = visible;
+            if (meshObject != null) meshObject.SetActive(visible);
         }
         public bool IsVisible(){
-            return meshRenderer.enabled;
+            return meshObject.activeSelf;
         }
-
-
-        public Bounds GetNavBuildBounds(float overlapWorld, float ySize = 2000f)
-        {
-            float chunkWorldSize = size * scale; // size == chunkSize passed into TerrainChunk
-            Vector3 center = meshObject.transform.position;
-            Vector3 boundsSize = new Vector3(chunkWorldSize + overlapWorld * 2f, ySize, chunkWorldSize + overlapWorld * 2f);
-            return new Bounds(center, boundsSize);
-        }
-
     }
 
     class LODmesh{
