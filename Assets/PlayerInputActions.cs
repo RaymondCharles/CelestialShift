@@ -143,6 +143,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MapZoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""6822879d-7b38-45f6-ae60-15f55603a800"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -409,6 +418,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Map"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""723464ab-fe1c-41d3-9d5c-2a0898b71f51"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MapZoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -430,6 +450,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         m_Player_HotBarSelect = m_Player.FindAction("HotBarSelect", throwIfNotFound: true);
         m_Player_Map = m_Player.FindAction("Map", throwIfNotFound: true);
+        m_Player_MapZoom = m_Player.FindAction("MapZoom", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -504,6 +525,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Pause;
     private readonly InputAction m_Player_HotBarSelect;
     private readonly InputAction m_Player_Map;
+    private readonly InputAction m_Player_MapZoom;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -521,6 +543,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputAction @HotBarSelect => m_Wrapper.m_Player_HotBarSelect;
         public InputAction @Map => m_Wrapper.m_Player_Map;
+        public InputAction @MapZoom => m_Wrapper.m_Player_MapZoom;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -569,6 +592,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Map.started += instance.OnMap;
             @Map.performed += instance.OnMap;
             @Map.canceled += instance.OnMap;
+            @MapZoom.started += instance.OnMapZoom;
+            @MapZoom.performed += instance.OnMapZoom;
+            @MapZoom.canceled += instance.OnMapZoom;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -612,6 +638,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Map.started -= instance.OnMap;
             @Map.performed -= instance.OnMap;
             @Map.canceled -= instance.OnMap;
+            @MapZoom.started -= instance.OnMapZoom;
+            @MapZoom.performed -= instance.OnMapZoom;
+            @MapZoom.canceled -= instance.OnMapZoom;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -644,5 +673,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnPause(InputAction.CallbackContext context);
         void OnHotBarSelect(InputAction.CallbackContext context);
         void OnMap(InputAction.CallbackContext context);
+        void OnMapZoom(InputAction.CallbackContext context);
     }
 }

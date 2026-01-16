@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerStatsUI : MonoBehaviour
@@ -33,6 +34,21 @@ public class PlayerStatsUI : MonoBehaviour
     {
         if (playerStats == null)
         {
+            FirstPersonController player = FirstPersonController.Instance;
+            if (player != null)
+            {
+                playerStats = player.GetComponent<PlayerStats>();
+            }
+        }
+
+        if (playerStats == null)
+        {
+            Debug.LogError("PlayerStatsUI: playerStats not found! Make sure the persistent player has PlayerStats component.");
+            enabled = false; // disable script to prevent further errors
+            return;
+        }
+        if (playerStats == null)
+        {
             Debug.LogError("PlayerStatsUI: playerStats not assigned and mainCharacter not found.");
             enabled = false;
             return;
@@ -53,6 +69,9 @@ public class PlayerStatsUI : MonoBehaviour
 
         // Update values once at start
         Refresh();
+
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (mainMenuButton != null) mainMenuButton.onClick.AddListener(ReturnToMainMenu);
     }
 
     private void Refresh()
@@ -64,5 +83,60 @@ public class PlayerStatsUI : MonoBehaviour
 
         if (hungerSlider != null)
             hungerSlider.value = playerStats.Hunger;
+
+        if (playerStats.Health <= 0)
+        {
+            TriggerGameOver();
+
+            UpdateCrosshair();
+        }
+        if (xpSlider != null)
+        {
+            xpSlider.maxValue = playerStats.XPToNextLevel;
+            xpSlider.value = playerStats.CurrentXP;
+        }
+
+        if (levelText != null)
+            levelText.text = $"Lv. {playerStats.Level}";
     }
+    private void UpdateCrosshair()
+    {
+
+        bool shouldHide = gameOverPanel.activeSelf;
+
+        if (Crosshair != null)
+            Crosshair.SetActive(!shouldHide);
+    }
+    private void TriggerGameOver()
+    {
+        if (isGameOver) return; 
+        isGameOver = true;
+
+        Time.timeScale = 0f; 
+
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.inGame = false; 
+        }
+
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
+
+        UpdateCrosshair();
+    }
+
+    private void ReturnToMainMenu()
+    {
+        Time.timeScale = 1f; 
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.inGame = false; 
+        }
+        SceneManager.LoadScene("MenuScene");
+    }
+
+
+
+
 }
