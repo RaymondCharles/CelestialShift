@@ -14,6 +14,15 @@ public class GameManager : MonoBehaviour
     private float savedTime = 0f;
     public float loopGap = 20f;
 
+
+    //Dungeon 
+    public string nextDungeonScene;
+    public string nextSpawnPointID;
+    public bool enteringDungeon = false;
+    public string nextSceneName;
+    public string nextSpawnID;
+
+
     private void Awake()
     {
         if (Instance != null)
@@ -106,34 +115,78 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    //private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    //{
+    //    if (loadGame && scene.name == "SampleScene")
+    //    {
+    //        StartCoroutine(WaitForPlayerAndLoad());
+    //    }
+    //}
+
+    //private IEnumerator WaitForPlayerAndLoad()
+    //{
+    //    // Wait until the FirstPersonController exists
+    //    while (FirstPersonController.Instance == null)
+    //        yield return null;
+
+    //    // Let the player load itself
+    //    FirstPersonController.Instance.LoadPlayer();
+    //    inGame = true;
+    //}
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (loadGame && scene.name == "SampleScene")
-        {
-            StartCoroutine(WaitForPlayerAndLoad());
-        }
+        StartCoroutine(HandleSceneLoaded(scene.name));
     }
 
-    private IEnumerator WaitForPlayerAndLoad()
+    private IEnumerator HandleSceneLoaded(string sceneName)
     {
-        // Wait until the FirstPersonController exists
         while (FirstPersonController.Instance == null)
             yield return null;
 
-        // Let the player load itself
-        FirstPersonController.Instance.LoadPlayer();
-        inGame = true;
+        // Handle save loading
+        if (loadGame && sceneName == "SampleScene")
+        {
+            FirstPersonController.Instance.LoadPlayer();
+            inGame = true;
+        }
+
+        // Handle spawn points
+        if (!string.IsNullOrEmpty(nextSpawnID))
+        {
+            SpawnPointPlayer[] points = FindObjectsByType<SpawnPointPlayer>(FindObjectsSortMode.None);
+            foreach (var p in points)
+            {
+                if (p.spawnID == nextSpawnID)
+                {
+                    FirstPersonController.Instance.transform.position = p.transform.position;
+                    break;
+                }
+            }
+
+            nextSpawnID = null; 
+        }
+    }
+
+
+    public void TravelToScene(string sceneName, string spawnID)
+    {
+        nextSceneName = sceneName;
+        nextSpawnID = spawnID;
+        SceneManager.LoadScene(sceneName);
     }
 
     public void NewGame()
     {
         loadGame = false;
+        inGame = true;
         SceneManager.LoadScene("SampleScene");
     }
 
     public void LoadGame()
     {
         savedTime = 0f;
+
         if (!SaveSystem.SaveExists())
         {
             Debug.LogWarning("No save found!");

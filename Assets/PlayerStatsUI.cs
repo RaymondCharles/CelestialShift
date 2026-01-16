@@ -40,6 +40,21 @@ public class PlayerStatsUI : MonoBehaviour
     {
         if (playerStats == null)
         {
+            FirstPersonController player = FirstPersonController.Instance;
+            if (player != null)
+            {
+                playerStats = player.GetComponent<PlayerStats>();
+            }
+        }
+
+        if (playerStats == null)
+        {
+            Debug.LogError("PlayerStatsUI: playerStats not found! Make sure the persistent player has PlayerStats component.");
+            enabled = false; // disable script to prevent further errors
+            return;
+        }
+        if (playerStats == null)
+        {
             Debug.LogError("PlayerStatsUI: playerStats not assigned and mainCharacter not found.");
             enabled = false;
             return;

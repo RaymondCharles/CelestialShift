@@ -2609,7 +2609,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &323528030
 Transform:
   m_ObjectHideFlags: 0
@@ -2762,6 +2762,11 @@ MonoBehaviour:
   currentMusic: {fileID: 346463233}
   volume: 0.6
   loopGap: 20
+  nextDungeonScene: 
+  nextSpawnPointID: 
+  enteringDungeon: 0
+  nextSceneName: 
+  nextSpawnID: 
 --- !u!4 &346463232
 Transform:
   m_ObjectHideFlags: 0
@@ -4395,7 +4400,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &506062152
 MonoBehaviour:
   m_ObjectHideFlags: 0

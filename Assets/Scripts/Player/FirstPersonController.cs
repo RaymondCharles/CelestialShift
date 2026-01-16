@@ -15,6 +15,9 @@ public class FirstPersonController : MonoBehaviour
     InputAction UseAction;
     InputAction MapAction;
     InputAction MapZoomAction;
+    public GameObject DungeonUIPanelSnow;
+    public GameObject DungeonUIPanelGrass;
+    public GameObject DungeonUIPanelSand;
     public GameObject InventoryPanel;
     public GameObject GameOverPanel;
     public GameObject HotBar;
@@ -144,7 +147,7 @@ public class FirstPersonController : MonoBehaviour
             return;
         }
         Instance = this;
-
+        DontDestroyOnLoad(gameObject);
 
 
     }
@@ -176,9 +179,31 @@ public class FirstPersonController : MonoBehaviour
     }
 
 
+    //void LateUpdate()
+    //{
+    //    if (InventoryPanel.activeSelf || PausePanel.activeSelf || SettingsPanel.activeSelf || GameOverPanel.activeSelf)
+    //    {
+    //        Cursor.lockState = CursorLockMode.None;
+    //        Cursor.visible = true;
+    //    }
+    //    else
+    //    {
+    //        Cursor.lockState = CursorLockMode.Locked;
+    //        Cursor.visible = false;
+    //    }
+    //}
     void LateUpdate()
     {
-        if (InventoryPanel.activeSelf || PausePanel.activeSelf || SettingsPanel.activeSelf || GameOverPanel.activeSelf)
+        bool anyPanelOpen =
+            (InventoryPanel != null && InventoryPanel.activeSelf) ||
+            (PausePanel != null && PausePanel.activeSelf) ||
+            (SettingsPanel != null && SettingsPanel.activeSelf) ||
+            (GameOverPanel != null && GameOverPanel.activeSelf ||
+            DungeonUIPanelSnow != null && DungeonUIPanelSnow.activeSelf ||
+            DungeonUIPanelGrass != null && DungeonUIPanelGrass.activeSelf || 
+            DungeonUIPanelSand != null && DungeonUIPanelSand.activeSelf); 
+
+        if (anyPanelOpen)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -189,6 +214,7 @@ public class FirstPersonController : MonoBehaviour
             Cursor.visible = false;
         }
     }
+
     public void SavePlayer()
     {
         SaveSystem.SavePlayer(this);
@@ -295,31 +321,51 @@ public class FirstPersonController : MonoBehaviour
 
         UpdateCrosshair();
     }
+
+    //public void EnterDungeon()
+    //{
+    //    SceneManager.LoadScene(GameManager.Instance.nextDungeonScene);
+    //}
+    //private void UpdateCrosshair()
+    //{
+
+    //    bool shouldHide = PausePanel.activeSelf || InventoryPanel.activeSelf || BigMapPanel.activeSelf || SettingsPanel.activeSelf;
+
+    //    if (Crosshair != null)
+    //        Crosshair.SetActive(!shouldHide);
+    //}
     private void UpdateCrosshair()
     {
-
-        bool shouldHide = PausePanel.activeSelf || InventoryPanel.activeSelf || BigMapPanel.activeSelf || SettingsPanel.activeSelf;
+        bool shouldHide =
+            (PausePanel != null && PausePanel.activeSelf) ||
+            (InventoryPanel != null && InventoryPanel.activeSelf) ||
+            (BigMapPanel != null && BigMapPanel.activeSelf) ||
+            (SettingsPanel != null && SettingsPanel.activeSelf);
 
         if (Crosshair != null)
             Crosshair.SetActive(!shouldHide);
     }
 
+
     public void PausePanelShow()
     {
+        if (PausePanel == null) return;
+
         bool isActive = !PausePanel.activeSelf;
 
         if (isActive)
         {
-            // Close Inventory if open
-            if (InventoryPanel.activeSelf) InventoryPanel.SetActive(false);
+            if (InventoryPanel != null && InventoryPanel.activeSelf)
+                InventoryPanel.SetActive(false);
 
-            // Close BigMap if open
-            if (isBigMapOpen) CloseBigMap();
+            if (isBigMapOpen)
+                CloseBigMap();
         }
 
         PausePanel.SetActive(isActive);
 
-        if (GameManager.Instance != null) GameManager.Instance.inGame = !isActive;
+        if (GameManager.Instance != null)
+            GameManager.Instance.inGame = !isActive;
 
         if (isActive)
         {
@@ -520,6 +566,8 @@ public class FirstPersonController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("Time.timeScale = " + Time.timeScale);
+
         // Read input from the New Input System each frame
         moveInput = inputActions.Player.Move.ReadValue<Vector2>(); // x = horizontal, y = vertical
         lookInput = inputActions.Player.Look.ReadValue<Vector2>();
@@ -716,6 +764,8 @@ public class FirstPersonController : MonoBehaviour
             moveDirection.y = jumpForce;
         }
     }
+
+
 
     private void HandleCrouch()
     {
