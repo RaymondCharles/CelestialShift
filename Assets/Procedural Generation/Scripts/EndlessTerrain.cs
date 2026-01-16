@@ -228,7 +228,7 @@ public class EndlessTerrain : MonoBehaviour
 
 
 
-            navMeshLodIndex = detailLevels.Length - 1; // highest LOD index = lowest detail
+            navMeshLodIndex = 0; //detailLevels.Length - 1; // highest LOD index = lowest detail
             prevNMLodIndex = detailLevels.Length;
 
             

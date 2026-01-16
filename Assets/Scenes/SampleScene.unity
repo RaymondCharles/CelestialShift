@@ -47962,7 +47962,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494344952}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2756825, y: 3e-45, z: -1e-45, w: 0.96124876}
+  m_LocalRotation: {x: 0.2756825, y: -1e-45, z: -0, w: 0.96124876}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -50181,7 +50181,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1573638975
 Transform:
   m_ObjectHideFlags: 0
@@ -66527,11 +66527,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detailLevels:
   - lod: 0
-    visibleDstThreshold: 250
-  - lod: 4
-    visibleDstThreshold: 300
-  - lod: 8
-    visibleDstThreshold: 500
+    visibleDstThreshold: 200
+  - lod: 1
+    visibleDstThreshold: 400
+  - lod: 2
+    visibleDstThreshold: 600
   viewer: {fileID: 4272359964722229517}
   mapMaterial: {fileID: 2100000, guid: 104e02422de5065449fc2ee3ba6ffe22, type: 2}
   chunkSize: 0
