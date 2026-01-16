@@ -21,15 +21,16 @@ MonoBehaviour:
   parentItems: []
   childrenItems:
   - items:
+    - {fileID: 11400000, guid: 0b5a77da78534954d9b52f9bb09a3d80, type: 2}
     - {fileID: 11400000, guid: cd5d8a7376879d6488f9a10b76739983, type: 2}
-    - {fileID: 11400000, guid: 68f8d68dcb7337742a29d74270a74edf, type: 2}
-    itemQuantities: 0900000005000000
+    itemQuantities: 05000000
   - items:
     - {fileID: 11400000, guid: a14e1eda2b10d374a813241505cc5b44, type: 2}
     - {fileID: 11400000, guid: a14e1eda2b10d374a813241505cc5b44, type: 2}
     itemQuantities: 0100000004000000
   worldPrefab: {fileID: 1601993921236731519, guid: 4dd769bcbc63dde4e9b2ffc6fe9cce85, type: 3}
   action: {fileID: 0}
+  minimapIconPrefab: {fileID: 0}
   newObject: {fileID: 0}
   objectToSpawn: {fileID: 967905765742540190, guid: 8adc890f7b787f44fa0fd482990cf67d, type: 3}
   positionalGameObjectName: right hand_end
