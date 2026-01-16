@@ -172,13 +172,13 @@ public class EndlessTerrain : MonoBehaviour
         public AsyncOperation navBuildOp;
 
         private int size;
+        List<GameObject> chunkEnemyList = new List<GameObject>();
+        public int enemyCount = 0;
 
 
         
         public TerrainChunk(Vector2Int coord, int size, LODInfo[] detailLevels, Transform parent, Material material, mapGenerator mapGen, GameManagerTemp gameManager){// UPDATE FOR NEW GAME MANAGER
             this.size = size;
-            List<GameObject> chunkEnemyList = new List<GameObject>();
-            public int enemyCount = 0;
             this.coord = coord;
             this.detailLevels = detailLevels;
             this.mapGenerator = mapGen;
