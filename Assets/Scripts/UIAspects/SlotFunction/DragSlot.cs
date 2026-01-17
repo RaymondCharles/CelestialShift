@@ -127,6 +127,8 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
                 InventoryUI.Instance.ClearSlot(index);
             else if (slotType == SlotType.Crafting && CraftingUI.Instance != null)
                 CraftingUI.Instance.ClearSlot(index);
+            else if (slotType == SlotType.Extra && ArmorUI.Instance != null)
+                ArmorUI.Instance.ClearSlot(index);
 
             draggedItem = null;
         }

@@ -1154,7 +1154,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &85440563
 Transform:
   m_ObjectHideFlags: 0
@@ -28823,7 +28823,7 @@ GameObject:
   - component: {fileID: 1113972050}
   - component: {fileID: 1113972053}
   - component: {fileID: 1113972052}
-  - component: {fileID: 1113972051}
+  - component: {fileID: 1113972054}
   m_Layer: 5
   m_Name: TimeText
   m_TagString: Untagged
@@ -28850,18 +28850,6 @@ RectTransform:
   m_AnchoredPosition: {x: -279.99994, y: 176}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1113972051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1113972049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19e71a8033c25d848a1e176e78287f5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1113972052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28961,6 +28949,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1113972049}
   m_CullTransparentMesh: 1
+--- !u!114 &1113972054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1113972049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e04726cef21f4b489f951648d212eb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clockText: {fileID: 1113972052}
 --- !u!224 &1114585902 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7713581030048529006, guid: c39ea5572abe4884daafcf31a070b0dd, type: 3}
@@ -29438,7 +29439,7 @@ PrefabInstance:
     - target: {fileID: 2257739987000824222, guid: de8c9b2135c3c42448ac23216656bed7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1376318064}
+      objectReference: {fileID: 7902220941128870778}
     - target: {fileID: 2257739987000824222, guid: de8c9b2135c3c42448ac23216656bed7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnClickSaveAndQuit
@@ -34709,7 +34710,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494344952}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2756825, y: -1e-45, z: -0, w: 0.96124876}
+  m_LocalRotation: {x: 0.2756825, y: 3e-45, z: -1e-45, w: 0.96124876}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

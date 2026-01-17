@@ -34,6 +34,7 @@ public class EndlessTerrain : MonoBehaviour
     private TerrainChunk currentPlayerChunkRef;
 
 
+
     //async navmesh fields.
     public const float NavMeshOverlapWorld = 5f;
 

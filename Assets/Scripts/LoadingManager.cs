@@ -44,7 +44,6 @@ public class LoadingManager : MonoBehaviour
         if (player!= null)
         {
             GameManagerTemp.Instance.player = player;
-            EndlessTerrain.Instance.viewer = player.transform;
         }
 
     }

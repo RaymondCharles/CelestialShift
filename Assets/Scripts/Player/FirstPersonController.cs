@@ -193,14 +193,14 @@ public class FirstPersonController : MonoBehaviour
     {
         // Combine all panels safely
         bool anyPanelOpen =
-            (InventoryPanel != null && InventoryPanel.activeSelf) ||
+            ((InventoryPanel != null && InventoryPanel.activeSelf) ||
             (PausePanel != null && PausePanel.activeSelf) ||
             (SettingsPanel != null && SettingsPanel.activeSelf) ||
             (GameOverPanel != null && GameOverPanel.activeSelf) ||
             (DungeonUIPanelSnow != null && DungeonUIPanelSnow.activeSelf) ||
             (DungeonUIPanelGrass != null && DungeonUIPanelGrass.activeSelf) ||
             (DungeonUIPanelSand != null && DungeonUIPanelSand.activeSelf) ||
-            (DungeonUIPanelSnowExit != null && DungeonUIPanelSnowExit.activeSelf);
+            (DungeonUIPanelSnowExit != null && DungeonUIPanelSnowExit.activeSelf)) && (GameManager.Instance != null && GameManager.Instance.inGame);
 
         // Check current scene
         string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
@@ -227,7 +227,7 @@ public class FirstPersonController : MonoBehaviour
 
     public void SavePlayer()
     {
-        SaveSystem.SavePlayer(this, time);
+        SaveSystem.SavePlayer(this);
         Debug.Log("Player saved at position: " + playerTransform.position);
 
         if (HotBar != null) PlayerPrefs.SetFloat("HotbarSize", HotBar.transform.localScale.x);
@@ -242,6 +242,8 @@ public class FirstPersonController : MonoBehaviour
 
     public void LoadPlayer()
     {
+        if (PausePanel.active == true) PausePanelShow();
+
         PlayerData data = SaveSystem.LoadPlayer();
         if (data == null) return;
 
@@ -297,6 +299,11 @@ public class FirstPersonController : MonoBehaviour
         if (GameManager.Instance != null && GameManager.Instance.currentMusic != null)
             GameManager.Instance.currentMusic.volume = PlayerPrefs.GetFloat("MusicVol", 0.6f);
 
+        if (EndlessTerrain.Instance!= null)
+        {
+            EndlessTerrain.Instance.viewer = this.transform;
+        }
+
     }
 
     private void OnEnable()
@@ -312,6 +319,21 @@ public class FirstPersonController : MonoBehaviour
     {
         bool newState = !InventoryPanel.activeSelf;
 
+        if (!newState)
+        {
+            Vector3 dropPos = playerTransform.position +
+                playerTransform.forward * 1.5f +
+                Vector3.up * 0.5f;
+
+            for (int i=0; i<CraftingUI.Instance.craftingItems.Length; i++)
+            {
+                if (CraftingUI.Instance.craftingItems[i] != null)
+                { 
+                    Inventory.Instance.DropItem(CraftingUI.Instance.craftingItems[i], dropPos);
+                    CraftingUI.Instance.ClearSlot(i);
+                }
+            }
+        }
         if (newState)
         {
             // Close BigMap if open
@@ -588,7 +610,7 @@ public class FirstPersonController : MonoBehaviour
         bool isFalling = false;
 
 
-        if (!GameManagerTemp.Instance.isGameOver)
+        if (!GameManagerTemp.Instance.isGameOver && (GameManager.Instance == null || GameManager.Instance.inGame))
         {
             //Inventory 
             if (InventoryAction.triggered)
@@ -596,12 +618,8 @@ public class FirstPersonController : MonoBehaviour
                 if (isBigMapOpen)
                 {
                     CloseBigMap();
-                    InventoryPanelShow();
                 }
-                else
-                {
-                    InventoryPanelShow();
-                }
+                InventoryPanelShow();
             }
 
             if (PauseAction.triggered)

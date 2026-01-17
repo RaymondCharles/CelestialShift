@@ -11,6 +11,7 @@ public class DayNightCycle : MonoBehaviour {
     [Tooltip("Day Length in Minutes")]
     [SerializeField]
     private float _targetDayLength = 0.5f; //length of day in minutes
+    public static DayNightCycle Instance;
 
     public float targetDayLength
     {
@@ -73,6 +74,10 @@ public class DayNightCycle : MonoBehaviour {
     GameManagerTemp gameManagerTemp;
 
 
+    void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         NormalTimeCurve(); 
@@ -148,7 +153,7 @@ public class DayNightCycle : MonoBehaviour {
     }
 
 
-    private void UpdateClock()
+    public string UpdateClock()
     {
         float time = elapsedTime / (targetDayLength * 60);
         float hour = Mathf.FloorToInt(time * 24);
@@ -157,7 +162,7 @@ public class DayNightCycle : MonoBehaviour {
         string hourString;
         string minuteString;
 
-        clockText.text = "Day : " + dayNumber.ToString() + "\n Time : ";
+        string text = "Day : " + dayNumber.ToString() + "\n Time : ";
 
 
         if (!use24Clock && hour > 12)
@@ -176,11 +181,13 @@ public class DayNightCycle : MonoBehaviour {
             minuteString = minute.ToString();
         
         if(use24Clock)
-            clockText.text += hourString + " : " + minuteString;
+            text += hourString + " : " + minuteString;
         else if (time > 0.5f)
-            clockText.text += hourString + " : " + minuteString + " pm";
+            text += hourString + " : " + minuteString + " pm";
         else
-            clockText.text += hourString + " : " + minuteString + " am";
+            text += hourString + " : " + minuteString + " am";
+
+        return text;
 
     }
 

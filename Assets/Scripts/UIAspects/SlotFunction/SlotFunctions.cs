@@ -66,7 +66,7 @@ public class SlotFunctions : MonoBehaviour
             Inventory.Instance.inventoryItems[index] = item;
             InventoryUI.Instance.UpdateSlot(index);
         }
-        else if (slotType == SlotType.Inventory)
+        else if (slotType == SlotType.Crafting)
         {
             if (CraftingUI.Instance == null || index < 0 || index >= CraftingUI.Instance.craftingItems.Length)
             {

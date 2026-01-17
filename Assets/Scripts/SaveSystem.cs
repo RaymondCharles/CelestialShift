@@ -5,13 +5,13 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 public static class SaveSystem
 {
-    public static void SavePlayer(FirstPersonController player, DayNightCycle time)
+    public static void SavePlayer(FirstPersonController player)
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "/player.data";
         FileStream stream = new FileStream(path,FileMode.Create);
 
-        PlayerData data = new PlayerData(player, time);
+        PlayerData data = new PlayerData(player, DayNightCycle.Instance);
 
         formatter.Serialize(stream,data);
         stream.Close();
