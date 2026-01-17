@@ -34,7 +34,7 @@ MonoBehaviour:
   treePrefabs:
   - name: Rock
     prefab: {fileID: 6057102198567465640, guid: 731c45c19a171374190a9a14a22abfe3, type: 3}
-    countPerBiome: 10
+    countPerBiome: 5
     groupSize: 0
     groupProbability: 0
   enemyPrefabs:
