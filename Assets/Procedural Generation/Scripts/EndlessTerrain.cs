@@ -407,7 +407,7 @@ public class EndlessTerrain : MonoBehaviour
             SpawnTrees();
             // Grass Logic
             grassRenderer.BuildGrassForChunk(coord, scale, position, worldBounds, mapGenerator, mapData);
-            //chunkEnemyList = spawnEnemies(gameManagerTemp.GetLevel());// UPDATE TO BE SOME FUNCTION OF LEVEL
+            chunkEnemyList = spawnEnemies(gameManagerTemp.GetLevel());// UPDATE TO BE SOME FUNCTION OF LEVEL
             UpdateTerrainChunk();
         }
 
@@ -540,8 +540,8 @@ public class EndlessTerrain : MonoBehaviour
 
         void SpawnTrees()
         {
-            if (!mapDataReceived) return;
-            if (treeList.Count > 0) return;
+            if (!mapDataReceived){Debug.LogError("Map data not received yet."); return; }
+            //if (treeList.Count > 0) {Debug.LogError("Trees have already been spawned."); return; }
 
             try
             {
@@ -568,7 +568,7 @@ public class EndlessTerrain : MonoBehaviour
 
                     tree.transform.parent = meshObject.transform;
                     tree.layer = LayerMask.NameToLayer("Ground");
-                    tree.SetActive(false); // stays hidden until LOD 0
+                    //tree.SetActive(false); // stays hidden until LOD 0
                     treeList.Add(tree);
                 }
             }
