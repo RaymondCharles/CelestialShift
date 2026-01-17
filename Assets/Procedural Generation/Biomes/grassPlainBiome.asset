@@ -42,13 +42,23 @@ MonoBehaviour:
   dungeonPrefab: {fileID: 2506315355552738149, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
   treePrefabs:
   - name: Tree
-    prefab: {fileID: 4098151115256204285, guid: e08f9d7c970be444d9c4087f3af53976, type: 3}
+    prefab: {fileID: 792983895732814469, guid: 7a3a069f08b8e4643a82df429a15c510, type: 3}
     countPerBiome: 5
     groupSize: 0
     groupProbability: 0
-  - name: Tree
-    prefab: {fileID: 4098151115256204285, guid: e08f9d7c970be444d9c4087f3af53976, type: 3}
-    countPerBiome: 5
+  - name: Stone Block 1
+    prefab: {fileID: 584483054966486574, guid: 553ea262bbed41f4e9fad2ad66ce6eb8, type: 3}
+    countPerBiome: 2
+    groupSize: 0
+    groupProbability: 0
+  - name: Stone Block 2
+    prefab: {fileID: 6328009572658776171, guid: 80f801b13dc25334baa24c7685192034, type: 3}
+    countPerBiome: 2
+    groupSize: 0
+    groupProbability: 0
+  - name: Stone Block 3
+    prefab: {fileID: 4945389321966997897, guid: 15557693a5546464cb34d6c4ced95a51, type: 3}
+    countPerBiome: 2
     groupSize: 0
     groupProbability: 0
   enemyPrefabs:

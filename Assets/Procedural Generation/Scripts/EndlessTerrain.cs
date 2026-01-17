@@ -366,6 +366,7 @@ public class EndlessTerrain : MonoBehaviour
                     Vector3 dungeonPos = new Vector3(worldX * scale, height*scale, worldY * scale);
                     
                     GameObject dungeon = GameObject.Instantiate(biome.dungeonPrefab, dungeonPos, Quaternion.identity);
+                    Debug.Log("SPAWNED DUNGOEN");
                     dungeon.layer = LayerMask.NameToLayer("Ground");
                     dungeon.transform.parent = meshObject.transform;
                     dungeon.SetActive(true);

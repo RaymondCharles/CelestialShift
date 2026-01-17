@@ -14,9 +14,7 @@ public class FirstPersonController : MonoBehaviour
     InputAction UseAction;
     InputAction MapAction;
     InputAction MapZoomAction;
-    public GameObject DungeonUIPanelSnowExit;
-    public GameObject DungeonUIPanelSandExit;
-    public GameObject DungeonUIPanelGrassExit;
+    public GameObject DungeonUIPanelExit;
     public GameObject DungeonUIPanelSnow;
     public GameObject DungeonUIPanelGrass;
     public GameObject DungeonUIPanelSand;
@@ -200,8 +198,9 @@ public class FirstPersonController : MonoBehaviour
             (DungeonUIPanelSnow != null && DungeonUIPanelSnow.activeSelf) ||
             (DungeonUIPanelGrass != null && DungeonUIPanelGrass.activeSelf) ||
             (DungeonUIPanelSand != null && DungeonUIPanelSand.activeSelf) ||
-            (DungeonUIPanelSnowExit != null && DungeonUIPanelSnowExit.activeSelf));
+            (DungeonUIPanelExit != null && DungeonUIPanelExit.activeSelf));
 
+        
         // Check current scene
         string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         bool alwaysFreeCursorScene = currentScene == "SnowBiomeDungeon";
@@ -210,7 +209,7 @@ public class FirstPersonController : MonoBehaviour
 
 
 
-        if (anyPanelOpen || alwaysFreeCursorScene || alwaysFreeCursorScene2 || alwaysFreeCursorScene3)
+        if (anyPanelOpen)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -259,7 +258,7 @@ public class FirstPersonController : MonoBehaviour
         if (data == null) return;
 
         // Load player position
-        transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
+        transform.position = new Vector3(data.position[0], data.position[1] + 20f, data.position[2]);
 
         // Clear current inventory
         for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
@@ -279,6 +278,7 @@ public class FirstPersonController : MonoBehaviour
             for (int i = 0; i < Inventory.Instance.inventoryItems.Length; i++)
                 InventoryUI.Instance.UpdateSlot(i);
 
+        //HotBarManager.Instance.hotbarSelect.playerInput = Instance.GetComponent<PlayerInput>();
         // Clear hotbar
         for (int i = 0; i < HotBarManager.Instance.slotItems.Length; i++)
         {
@@ -329,6 +329,10 @@ public class FirstPersonController : MonoBehaviour
         {
             EndlessTerrain.Instance.viewer = this.transform;
         }
+
+        gameManager = GameObject.FindGameObjectWithTag("InGameManager");
+        gameManager.GetComponent<GameManagerTemp>().player = Instance.gameObject;
+        if (gameManager == null) Debug.Log("NOOOOOO");
 
     }
 
@@ -581,7 +585,6 @@ public class FirstPersonController : MonoBehaviour
 
     public void DropSelectedItem()
     {
-        if (HotBarManager.Instance == null) return;
         int selectedSlot = HotBarManager.Instance.selectedSlot;
         if (selectedSlot == -1) return;
         SlotItem slotItem = HotBarManager.Instance.slotItems[selectedSlot];
@@ -613,6 +616,11 @@ public class FirstPersonController : MonoBehaviour
 
         if (slotItem.quantity > 0)
         {
+            if (gameManager == null)
+            {
+                gameManager = GameObject.FindGameObjectWithTag("InGameManager");
+                gameManager.GetComponent<GameManagerTemp>().player = Instance.gameObject;
+            }
             slotItem.itemDetails.Use(gameManager);
             if (slotItem.itemDetails.usable) slotItem.quantity--;
             HotBarManager.Instance.UpdateSlot(selectedSlot);

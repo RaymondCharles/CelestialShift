@@ -30,11 +30,21 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  dungeonPrefab: {fileID: 578770440915052239, guid: 5b694e860b8ab3e45ab209917a25c23b, type: 3}
+  dungeonPrefab: {fileID: 5366979772160559663, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
   treePrefabs:
-  - name: Rock
-    prefab: {fileID: 6057102198567465640, guid: 731c45c19a171374190a9a14a22abfe3, type: 3}
-    countPerBiome: 5
+  - name: SandBlock1
+    prefab: {fileID: 425810458908392639, guid: 3193fa33b71051d4f912eae3acf9d6e1, type: 3}
+    countPerBiome: 2
+    groupSize: 0
+    groupProbability: 0
+  - name: SandBlock2
+    prefab: {fileID: 5962315789990077718, guid: 5273174fb10414d46a8241d1be0e09e5, type: 3}
+    countPerBiome: 2
+    groupSize: 0
+    groupProbability: 0
+  - name: SandBlock3
+    prefab: {fileID: 6995482498943007113, guid: 56a1b6b53f94d2840a8333d03b30458e, type: 3}
+    countPerBiome: 1
     groupSize: 0
     groupProbability: 0
   enemyPrefabs:

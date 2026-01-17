@@ -12,6 +12,8 @@ public class HotBarManager : MonoBehaviour, UIManager
     public SlotItem[] slotItems;
     public int selectedSlot = -1;
 
+    public HotBarSelect hotbarSelect;
+
 
     //private void Awake()
     //{

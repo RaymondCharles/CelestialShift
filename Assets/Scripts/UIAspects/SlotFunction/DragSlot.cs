@@ -58,7 +58,6 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         dragIcon.color = new Color(1, 1, 1, 0.8f); // optional transparency
         dragIcon.gameObject.SetActive(true);
         group.alpha = 0.5f;
-
     }
 
     public void OnDrag(PointerEventData eventData)

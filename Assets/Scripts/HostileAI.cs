@@ -77,6 +77,10 @@ public class HostileAI : MonoBehaviour
 
     private void Awake()
     {
+        if (playerTransform == null)
+        {
+            if (FirstPersonController.Instance != null) playerTransform = FirstPersonController.Instance.transform;
+        }
         if (navAgent == null)
             navAgent = GetComponent<NavMeshAgent>();
 

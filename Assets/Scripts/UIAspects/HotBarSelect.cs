@@ -9,6 +9,12 @@ public class HotBarSelect : MonoBehaviour
 
     private InputAction hotbarAction;
 
+    
+    void Awake()
+    {
+        if (FirstPersonController.Instance != null) playerInput = FirstPersonController.Instance.GetComponent<PlayerInput>();
+        else Debug.Log("FIRST PERSON CONTROLLER IS NULL");
+    }
     void Start()
     {
         if (HotBarManager.Instance == null)
@@ -16,10 +22,13 @@ public class HotBarSelect : MonoBehaviour
             Debug.LogWarning("HotBarManager instance not found. HotBarSelect will not function.");
             return;
         }
+        if (FirstPersonController.Instance != null) playerInput = FirstPersonController.Instance.GetComponent<PlayerInput>();
+        if (playerInput == null) return;
         hotbarAction = playerInput.actions["HotBarSelect"];
         hotbarAction.performed += OnHotbarPressed;
         hotbarAction.Enable();
     }
+
 
     private void OnHotbarPressed(InputAction.CallbackContext ctx)
     {

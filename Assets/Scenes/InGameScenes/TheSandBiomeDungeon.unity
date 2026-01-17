@@ -6784,7 +6784,7 @@ GameObject:
   - component: {fileID: 176643334}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: Untagged
+  m_TagString: InGameManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9558,6 +9558,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIPanel: {fileID: 899591843}
+  OtherUIPanel1: {fileID: 0}
+  OtherUIPanel2: {fileID: 0}
   targetSceneName: SampleScene
   targetSpawnID: Dungeon1_Sand
 --- !u!4 &276585041
@@ -59367,6 +59369,8 @@ MonoBehaviour:
   targetSceneName: GameScene
   targetSpawnID: Dungeon1_Sand
   UIPanel: {fileID: 899591843}
+  OtherUIPanel1: {fileID: 0}
+  OtherUIPanel2: {fileID: 0}
   spawnPos: {x: -50, y: 20, z: -30}
   isReturnPoint: 1
 --- !u!1001 &1870372563
