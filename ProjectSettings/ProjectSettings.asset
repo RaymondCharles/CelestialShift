@@ -730,7 +730,13 @@ PlayerSettings:
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
   cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
     UNet: 1
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -750,11 +756,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: 1676d6e3-7a6c-405a-8bb0-b585ef3be46c
+  cloudProjectId: 9cdec79b-fcfc-4b5d-8e38-ef35cf42c9a2
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: gameproject
-  organizationId: stingray81
+  organizationId: superhamed
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
