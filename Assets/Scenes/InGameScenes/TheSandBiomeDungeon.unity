@@ -6806,6 +6806,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 68f8d68dcb7337742a29d74270a74edf, type: 2}
   - {fileID: 11400000, guid: a14e1eda2b10d374a813241505cc5b44, type: 2}
   player: {fileID: 0}
+  Level: 0
+  isGameOver: 0
 --- !u!114 &176643335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9558,7 +9560,6 @@ MonoBehaviour:
   UIPanel: {fileID: 899591843}
   targetSceneName: SampleScene
   targetSpawnID: Dungeon1_Sand
-  isReturnPoint: 1
 --- !u!4 &276585041
 Transform:
   m_ObjectHideFlags: 0
@@ -27833,6 +27834,8 @@ MonoBehaviour:
   gameOverPanel: {fileID: 1626911230}
   mainMenuButton: {fileID: 1972311724}
   Crosshair: {fileID: 2069519069}
+  xpSlider: {fileID: 0}
+  levelText: {fileID: 0}
 --- !u!1 &849891756
 GameObject:
   m_ObjectHideFlags: 0
@@ -59227,6 +59230,7 @@ GameObject:
   - component: {fileID: 1867451058}
   - component: {fileID: 1867451057}
   - component: {fileID: 1867451056}
+  - component: {fileID: 1867451059}
   m_Layer: 5
   m_Name: DungeonExitButton
   m_TagString: Untagged
@@ -59298,8 +59302,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 276585040}
-        m_TargetAssemblyTypeName: DungeonLocation, Assembly-CSharp
+      - m_Target: {fileID: 1867451059}
+        m_TargetAssemblyTypeName: EnterDungeon, Assembly-CSharp
         m_MethodName: Travel
         m_Mode: 1
         m_Arguments:
@@ -59348,6 +59352,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1867451054}
   m_CullTransparentMesh: 1
+--- !u!114 &1867451059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1867451054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a3a49abf897bb243a53e1e1beabd835, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetSceneName: GameScene
+  targetSpawnID: Dungeon1_Sand
+  UIPanel: {fileID: 899591843}
+  spawnPos: {x: -50, y: 20, z: -30}
+  isReturnPoint: 1
 --- !u!1001 &1870372563
 PrefabInstance:
   m_ObjectHideFlags: 0

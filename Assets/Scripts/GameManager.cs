@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour
     public string nextSceneName;
     public string nextSpawnID;
 
+    public Vector3 checkpointPos;
+
+
 
 
     private void Awake()
@@ -176,6 +179,7 @@ public class GameManager : MonoBehaviour
 
     public void TravelToScene(string sceneName, string spawnID)
     {
+        FirstPersonController.Instance.transform.position = checkpointPos;
         nextSceneName = sceneName;
         nextSpawnID = spawnID;
         SceneManager.LoadScene(sceneName);

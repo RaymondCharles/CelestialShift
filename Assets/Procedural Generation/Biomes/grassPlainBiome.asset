@@ -39,7 +39,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  dungeonPrefab: {fileID: 651509608423966001, guid: 8e7ae73a0436de04db57344a3028524b, type: 3}
+  dungeonPrefab: {fileID: 2506315355552738149, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
   treePrefabs:
   - name: Tree
     prefab: {fileID: 4098151115256204285, guid: e08f9d7c970be444d9c4087f3af53976, type: 3}

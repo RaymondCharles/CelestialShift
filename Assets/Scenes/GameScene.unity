@@ -4673,51 +4673,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 228874252}
   m_CullTransparentMesh: 1
---- !u!1 &229098679
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 229098680}
-  - component: {fileID: 229098681}
-  m_Layer: 0
-  m_Name: SpawnPointFromGrass
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &229098680
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 229098679}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -30.75612, y: 132.98318, z: 234.02882}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1486029293}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &229098681
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 229098679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 774c589cebb2c2b4892cd1905979fabe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnID: Dungeon1_Grass
 --- !u!1 &232230308
 GameObject:
   m_ObjectHideFlags: 0
@@ -9047,63 +9002,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 382618486}
   m_CullTransparentMesh: 1
---- !u!1001 &388711573
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 381441916541963554, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_Name
-      value: Door (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.12
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.43
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -3.79
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
 --- !u!1 &405443573
 GameObject:
   m_ObjectHideFlags: 0
@@ -9247,6 +9145,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 405443573}
   m_CullTransparentMesh: 1
+--- !u!4 &414326297 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5574600328276123187, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+  m_PrefabInstance: {fileID: 2006089160008631482}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &424885014
 GameObject:
   m_ObjectHideFlags: 0
@@ -10270,7 +10173,7 @@ Transform:
   m_GameObject: {fileID: 447958145}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -16.15612, y: 132.98318, z: 254.08882}
+  m_LocalPosition: {x: -12.88, y: 155.69, z: 227.38}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11945,76 +11848,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 939754981}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!1 &525020157
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 525020158}
-  - component: {fileID: 525020160}
-  - component: {fileID: 525020159}
-  m_Layer: 0
-  m_Name: SnowDungeonEntrance
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &525020158
+--- !u!4 &525020158 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 3033012035907414105, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+  m_PrefabInstance: {fileID: 1553304334377907710}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 525020157}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -21.48, y: 136.27, z: 210.61}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1486029293}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &525020159
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 525020157}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 4.1889024, y: 2.9875214, z: 2.7885628}
-  m_Center: {x: -0.35128474, y: 0.9937607, z: 0.8942814}
---- !u!114 &525020160
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 525020157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 384364ff0f8e5a34dadc5bd4fce929ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UIPanel: {fileID: 1526787709}
-  targetSceneName: SnowBiomeDungeon
-  targetSpawnID: Snow_Entry
-  isReturnPoint: 0
 --- !u!1 &527500844
 GameObject:
   m_ObjectHideFlags: 0
@@ -12824,63 +12662,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 546505194}
   m_CullTransparentMesh: 1
---- !u!1001 &549781173
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 381441916541963554, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_Name
-      value: Door
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5.34
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.43
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -3.79
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
 --- !u!224 &557005008 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1758234550491257960, guid: 0ec49db3fefb2d547ba10b40734135b4, type: 3}
@@ -26104,6 +25885,7 @@ GameObject:
   - component: {fileID: 778025434}
   - component: {fileID: 778025433}
   - component: {fileID: 778025432}
+  - component: {fileID: 778025435}
   m_Layer: 5
   m_Name: DungeonEnterButton
   m_TagString: Untagged
@@ -26175,8 +25957,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 525020160}
-        m_TargetAssemblyTypeName: DungeonLocation, Assembly-CSharp
+      - m_Target: {fileID: 778025435}
+        m_TargetAssemblyTypeName: EnterDungeon, Assembly-CSharp
         m_MethodName: Travel
         m_Mode: 1
         m_Arguments:
@@ -26225,6 +26007,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 778025430}
   m_CullTransparentMesh: 1
+--- !u!114 &778025435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 778025430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a3a49abf897bb243a53e1e1beabd835, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetSceneName: SnowBiomeDungeon
+  targetSpawnID: Snow_Entry
+  UIPanel: {fileID: 1526787709}
+  spawnPos: {x: -50, y: 20, z: -30}
+  isReturnPoint: 0
 --- !u!1 &778036449
 GameObject:
   m_ObjectHideFlags: 0
@@ -26492,6 +26291,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 782854685}
   m_CullTransparentMesh: 1
+--- !u!1 &794579126
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 794579127}
+  - component: {fileID: 794579128}
+  m_Layer: 0
+  m_Name: SpawnPointFromGrass
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &794579127
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 794579126}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -12.88, y: 155.69, z: 227.38}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1486029293}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &794579128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 794579126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 774c589cebb2c2b4892cd1905979fabe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnID: Dungeon1_Grass
 --- !u!224 &802769044 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6183775567451604414, guid: c39ea5572abe4884daafcf31a070b0dd, type: 3}
@@ -26584,6 +26428,7 @@ GameObject:
   - component: {fileID: 812286554}
   - component: {fileID: 812286553}
   - component: {fileID: 812286552}
+  - component: {fileID: 812286555}
   m_Layer: 5
   m_Name: DungeonEnterButton
   m_TagString: Untagged
@@ -26655,8 +26500,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1517271620}
-        m_TargetAssemblyTypeName: DungeonLocation, Assembly-CSharp
+      - m_Target: {fileID: 812286555}
+        m_TargetAssemblyTypeName: EnterDungeon, Assembly-CSharp
         m_MethodName: Travel
         m_Mode: 1
         m_Arguments:
@@ -26705,6 +26550,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 812286550}
   m_CullTransparentMesh: 1
+--- !u!114 &812286555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812286550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a3a49abf897bb243a53e1e1beabd835, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetSceneName: GrassBiomeDungeon
+  targetSpawnID: Grass_Entry
+  UIPanel: {fileID: 1824278836}
+  spawnPos: {x: -50, y: 20, z: -30}
+  isReturnPoint: 0
 --- !u!1 &828258270
 GameObject:
   m_ObjectHideFlags: 0
@@ -28409,7 +28271,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 903206890}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.25815228, y: 0.000000016623154, z: -0.000000004441866, w: 0.96610427}
+  m_LocalRotation: {x: 0.25815228, y: -0.000000016623162, z: 0.0000000044418673, w: 0.96610427}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -36916,6 +36778,7 @@ MonoBehaviour:
   cameraController: {fileID: 0}
   turnSpeed: 12
   isGameOver: 0
+  inDungeon: 0
 --- !u!1 &1376351647
 GameObject:
   m_ObjectHideFlags: 0
@@ -39585,6 +39448,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1486029293}
+  - component: {fileID: 1486029294}
   m_Layer: 0
   m_Name: Dungeon
   m_TagString: Untagged
@@ -39605,14 +39469,26 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 229098680}
+  - {fileID: 794579127}
   - {fileID: 1558288618}
   - {fileID: 447958146}
-  - {fileID: 1517271618}
   - {fileID: 1863831555}
   - {fileID: 525020158}
+  - {fileID: 414326297}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1486029294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486029292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74ecf3ed5fd8050449440404c9602680, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1494344952
 GameObject:
   m_ObjectHideFlags: 3
@@ -40065,138 +39941,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1820088115321678141, guid: c39ea5572abe4884daafcf31a070b0dd, type: 3}
   m_PrefabInstance: {fileID: 1738686577}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1515410517
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 381441916541963554, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_Name
-      value: Door (2)
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 3.57
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.43
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -3.79
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228281619349736001, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 31c2436c7f5a58f448f8df1677372a6a, type: 3}
 --- !u!224 &1516156046 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2704356567942851276, guid: c39ea5572abe4884daafcf31a070b0dd, type: 3}
   m_PrefabInstance: {fileID: 1738686577}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1517271617
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1517271618}
-  - component: {fileID: 1517271620}
-  - component: {fileID: 1517271619}
-  m_Layer: 0
-  m_Name: GrassDungeonEntrance
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1517271618
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1517271617}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -12.88, y: 136.15, z: 209.37}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1486029293}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1517271619
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1517271617}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 2.5778751, y: 4.510173, z: 2.97778}
-  m_Center: {x: 0.38998127, y: 0.86089516, z: 0.98889005}
---- !u!114 &1517271620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1517271617}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 384364ff0f8e5a34dadc5bd4fce929ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UIPanel: {fileID: 1824278836}
-  targetSceneName: GrassBiomeDungeon
-  targetSpawnID: Grass_Entry
-  isReturnPoint: 0
 --- !u!1 &1526787709
 GameObject:
   m_ObjectHideFlags: 0
@@ -41509,7 +41258,7 @@ Transform:
   m_GameObject: {fileID: 1558288617}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -16.15612, y: 291.0832, z: 254.08882}
+  m_LocalPosition: {x: -12.88, y: 155.69, z: 227.38}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -43127,6 +42876,7 @@ GameObject:
   - component: {fileID: 1626585317}
   - component: {fileID: 1626585316}
   - component: {fileID: 1626585315}
+  - component: {fileID: 1626585318}
   m_Layer: 5
   m_Name: DungeonEnterButton
   m_TagString: Untagged
@@ -43198,8 +42948,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1863831557}
-        m_TargetAssemblyTypeName: DungeonLocation, Assembly-CSharp
+      - m_Target: {fileID: 1626585318}
+        m_TargetAssemblyTypeName: EnterDungeon, Assembly-CSharp
         m_MethodName: Travel
         m_Mode: 1
         m_Arguments:
@@ -43248,6 +42998,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1626585313}
   m_CullTransparentMesh: 1
+--- !u!114 &1626585318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1626585313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a3a49abf897bb243a53e1e1beabd835, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetSceneName: TheSandBiomeDungeon
+  targetSpawnID: Sand_Entry
+  UIPanel: {fileID: 1191919048}
+  spawnPos: {x: -50, y: 20, z: -30}
+  isReturnPoint: 0
 --- !u!1 &1628002006
 GameObject:
   m_ObjectHideFlags: 0
@@ -48021,76 +47788,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1861777580}
   m_CullTransparentMesh: 1
---- !u!1 &1863831554
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1863831555}
-  - component: {fileID: 1863831557}
-  - component: {fileID: 1863831556}
-  m_Layer: 0
-  m_Name: SandDungeonEntrance
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1863831555
+--- !u!4 &1863831555 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 8306525437465123985, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+  m_PrefabInstance: {fileID: 8947354583480348705}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1863831554}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -17.55, y: 136.73, z: 210.6}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1486029293}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1863831556
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1863831554}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 2.7910812, y: 3.4305139, z: 2.7677307}
-  m_Center: {x: 0.058647275, y: 1.2152569, z: 0.88386536}
---- !u!114 &1863831557
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1863831554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 384364ff0f8e5a34dadc5bd4fce929ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UIPanel: {fileID: 1191919048}
-  targetSceneName: TheSandBiomeDungeon
-  targetSpawnID: Sand_Entry
-  isReturnPoint: 0
 --- !u!224 &1867218329 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5379678767226039503, guid: 0ec49db3fefb2d547ba10b40734135b4, type: 3}
@@ -57150,7 +56852,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144748341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24058327, y: 0.00000001670101, z: -0.0000000041395687, w: 0.97062856}
+  m_LocalRotation: {x: 0.24058327, y: -0.000000016701, z: 0.0000000041395665, w: 0.97062856}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -58040,6 +57742,67 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1001 &1553304334377907710
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1486029293}
+    m_Modifications:
+    - target: {fileID: 3033012035907414105, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -21.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 3033012035907414105, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 136.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 3033012035907414105, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 210.61
+      objectReference: {fileID: 0}
+    - target: {fileID: 3033012035907414105, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3033012035907414105, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3033012035907414105, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3033012035907414105, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3033012035907414105, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3033012035907414105, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3033012035907414105, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3991640251540074524, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: UIPanel
+      value: 
+      objectReference: {fileID: 1526787709}
+    - target: {fileID: 7316849883098341880, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
+      propertyPath: m_Name
+      value: SnowDungeonEntrance
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e80c261889dcd2c4aaa5f20e1c34403d, type: 3}
 --- !u!1 &1580828575518540150
 GameObject:
   m_ObjectHideFlags: 0
@@ -58238,6 +58001,67 @@ Transform:
   - {fileID: 5746006417274038095}
   m_Father: {fileID: 6176639735330578259}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2006089160008631482
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1486029293}
+    m_Modifications:
+    - target: {fileID: 2506315355552738149, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: m_Name
+      value: GrassDungeonEntrance
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574600328276123187, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 14.633881
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574600328276123187, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 136.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574600328276123187, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 209.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574600328276123187, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574600328276123187, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574600328276123187, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574600328276123187, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574600328276123187, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574600328276123187, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574600328276123187, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7549145402499048705, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
+      propertyPath: UIPanel
+      value: 
+      objectReference: {fileID: 1824278836}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5648792e4e710d64483bf7bac8e622e8, type: 3}
 --- !u!4 &2009746439773348970
 Transform:
   m_ObjectHideFlags: 0
@@ -61579,6 +61403,7 @@ MonoBehaviour:
   cameraController: {fileID: 3031775645218132493}
   turnSpeed: 12
   isGameOver: 0
+  inDungeon: 0
 --- !u!114 &7902220941128870779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62276,6 +62101,67 @@ Transform:
   - {fileID: 2009746439773348970}
   m_Father: {fileID: 543450652733109136}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &8947354583480348705
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1486029293}
+    m_Modifications:
+    - target: {fileID: 3534227326901234235, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: UIPanel
+      value: 
+      objectReference: {fileID: 1191919048}
+    - target: {fileID: 5366979772160559663, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: m_Name
+      value: SandDungeonEntrance
+      objectReference: {fileID: 0}
+    - target: {fileID: 8306525437465123985, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -17.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 8306525437465123985, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 136.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 8306525437465123985, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 210.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8306525437465123985, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8306525437465123985, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8306525437465123985, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8306525437465123985, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8306525437465123985, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8306525437465123985, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8306525437465123985, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 838bc85e38865a9459f16d67dc3dba66, type: 3}
 --- !u!4 &8970532550288176301
 Transform:
   m_ObjectHideFlags: 0
@@ -62460,9 +62346,6 @@ SceneRoots:
   - {fileID: 301881605}
   - {fileID: 1240978434}
   - {fileID: 328640820}
-  - {fileID: 549781173}
-  - {fileID: 388711573}
-  - {fileID: 1515410517}
   - {fileID: 142528372}
   - {fileID: 1250739134}
   - {fileID: 159386534}

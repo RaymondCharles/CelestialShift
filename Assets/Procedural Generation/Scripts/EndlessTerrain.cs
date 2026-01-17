@@ -361,7 +361,7 @@ public class EndlessTerrain : MonoBehaviour
                     GameObject dungeon = GameObject.Instantiate(biome.dungeonPrefab, dungeonPos, Quaternion.identity);
                     dungeon.layer = LayerMask.NameToLayer("Ground");
                     dungeon.transform.parent = meshObject.transform;
-                    dungeon.SetActive(false);
+                    dungeon.SetActive(true);
                     dungeonList.Add(dungeon);
                 }
             }

@@ -131,6 +131,7 @@ public class FirstPersonController : MonoBehaviour
 
 
     public bool isGameOver = false;
+    public bool inDungeon = false;
 
 
 
@@ -226,7 +227,7 @@ public class FirstPersonController : MonoBehaviour
         if (InventoryPanel == null) Debug.Log("IT WAS NUL 11L");
         if (InventoryUI.Instance == null) Debug.Log("IT WAS NUL 22222L");
         InventoryUI.Instance = InventoryPanel.GetComponentInChildren<InventoryUI>(true);
-                if (InventoryUI.Instance == null) Debug.Log("IT WAS NUL3 33333L");
+                if (InventoryUI.Instance == null) Debug.Log("IT WAS NUL3 33333 L");
         //InventoryPanel = GameObject.Find("Inventory"); // better: Find by tag or serialized binder
         //HotBar = GameObject.Find("HotBar");
     }
@@ -235,6 +236,8 @@ public class FirstPersonController : MonoBehaviour
 
     public void SavePlayer()
     {
+        int index = SceneManager.GetActiveScene().buildIndex;
+        if (index > 0 && index < 4) return;
         SaveSystem.SavePlayer(this);
         Debug.Log("Player saved at position: " + playerTransform.position);
 
