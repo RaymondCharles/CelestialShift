@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
   m_Name: Prickly Pear
   m_EditorClassIdentifier: 
-  itemName: 
+  itemName: Prickly Pear
   itemImg: {fileID: 0}
   usable: 0
   useSpeed: 1

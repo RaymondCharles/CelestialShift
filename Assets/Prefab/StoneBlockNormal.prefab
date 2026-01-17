@@ -11,9 +11,12 @@ GameObject:
   - component: {fileID: 934362788137320491}
   - component: {fileID: 1641170759230542164}
   - component: {fileID: 524280324884743030}
-  - component: {fileID: 1213950825968719588}
+  - component: {fileID: 1974160661399292608}
+  - component: {fileID: -5979338249341691234}
+  - component: {fileID: -2519383051119230120}
+  - component: {fileID: 3036828738189262732}
   m_Layer: 0
-  m_Name: StoneBlockPickupItem
+  m_Name: StoneBlockNormal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,7 +87,76 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1213950825968719588
+--- !u!65 &1974160661399292608
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4945389321966997897}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.1392994, y: 3.2367816, z: 4.2951894}
+  m_Center: {x: 0.035443757, y: 0.0614573, z: 0.011685788}
+--- !u!54 &-5979338249341691234
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4945389321966997897}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &-2519383051119230120
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4945389321966997897}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.7145047, y: 4.2242994, z: 4.7940474}
+  m_Center: {x: 0.02884269, y: 0.10241478, z: 0.35841238}
+--- !u!114 &3036828738189262732
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,7 +165,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4945389321966997897}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 186d569141ff92c4a806413425ec1b89, type: 3}
+  m_Script: {fileID: 11500000, guid: e8f1257943e51974c90b735a482fdf2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 0f8c5d751cdb67a489ca7a7d82f43705, type: 2}
+  quantity: 1
+  hotBarManager: {fileID: 0}
+  minimapIconPrefab: {fileID: 0}
