@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
-  m_Name: Wooden Armor
+  m_Name: Sandstone Armor
   m_EditorClassIdentifier: 
-  itemName: Wooden Armor
-  itemImg: {fileID: 21300000, guid: 8287effc14877324bbc83ae18a8dffa0, type: 3}
+  itemName: Sandstone Armor
+  itemImg: {fileID: 676052041, guid: 08e8e8d6be0771b4c9e3c80d3fadb555, type: 3}
   usable: 0
   useSpeed: 1
   quantityLimit: 1
@@ -21,12 +21,18 @@ MonoBehaviour:
   parentItems: []
   childrenItems:
   - items:
-    - {fileID: 11400000, guid: 0b5a77da78534954d9b52f9bb09a3d80, type: 2}
-    - {fileID: 11400000, guid: 0b5a77da78534954d9b52f9bb09a3d80, type: 2}
-    - {fileID: 11400000, guid: 0b5a77da78534954d9b52f9bb09a3d80, type: 2}
-    - {fileID: 11400000, guid: 0b5a77da78534954d9b52f9bb09a3d80, type: 2}
+    - {fileID: 11400000, guid: 49bb943ac3232d644b663a19fc7446c7, type: 2}
+    - {fileID: 11400000, guid: 49bb943ac3232d644b663a19fc7446c7, type: 2}
+    - {fileID: 11400000, guid: 49bb943ac3232d644b663a19fc7446c7, type: 2}
+    - {fileID: 11400000, guid: 49bb943ac3232d644b663a19fc7446c7, type: 2}
     itemQuantities: 0a0000000a0000000a0000000a000000
-  worldPrefab: {fileID: 4838005253792636186, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+  - items: []
+    itemQuantities: 
+  - items: []
+    itemQuantities: 
+  - items: []
+    itemQuantities: 
+  worldPrefab: {fileID: 4838005253792636186, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
   action: {fileID: 0}
   minimapIconPrefab: {fileID: 0}
   newObject: {fileID: 0}

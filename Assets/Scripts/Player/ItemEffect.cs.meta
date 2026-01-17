@@ -3,7 +3,21 @@ guid: 48bac2990fe60c843b5ce03a6cc85e9e
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - equippedShield: {instanceID: 0}
+  - equippedItem: {instanceID: 0}
+  - equippedArmorObject: {instanceID: 0}
+  - equippedArmor: {instanceID: 0}
+  - fpController: {instanceID: 0}
+  - playerAnimator: {instanceID: 0}
+  - throwItemClip: {instanceID: 0}
+  - consumeItemClip: {instanceID: 0}
+  - useItemClip: {instanceID: 0}
+  - swingItemClip: {instanceID: 0}
+  - player: {fileID: 1020880105739665674, guid: fcaf0104333e2084da4a3e80c5ae4383, type: 3}
+  - woodenArmorMat: {fileID: 2100000, guid: 2344addf60bbadb49b8fb58d52cf0218, type: 2}
+  - sandstoneArmorMat: {fileID: 2100000, guid: e17d76fa43215c746b99d6645d1790b4, type: 2}
+  - iceArmorMat: {fileID: 2100000, guid: c015dfd9fa23e2d41b257877e8ccbbc0, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -21,6 +21,7 @@ MonoBehaviour:
   parentItems:
   - {fileID: 11400000, guid: 0ffb03a55cf71d64a943168af6784660, type: 2}
   - {fileID: 11400000, guid: 9a90bd727caa45547b707076098b03e2, type: 2}
+  - {fileID: 11400000, guid: 0ffb03a55cf71d64a943168af6784660, type: 2}
   childrenItems: []
   worldPrefab: {fileID: 1689312501208030411, guid: 0d1206e58d1c4974a81836af5c6a0e1a, type: 3}
   action: {fileID: 0}
