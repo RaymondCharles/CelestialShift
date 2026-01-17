@@ -10,6 +10,6 @@ public class TimeText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        clockText.text = DayNightCycle.Instance.UpdateClock();
+        clockText.text = DayNightCycle.Instance.clockText;
     }
 }

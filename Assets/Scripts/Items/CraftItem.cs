@@ -20,12 +20,13 @@ public class CraftItem : MonoBehaviour
     public void craftItem()
     {
         slotItem1 = craftingUI.craftingItems[0];
-        slotItem2 = craftingUI.craftingItems[1];
+        Debug.Log(slotItem1);
+        if (craftingUI.craftingItems[1] != null) slotItem2 = craftingUI.craftingItems[1];
 
-        if (slotItem1 == null || slotItem2 == null) return;
-        
-        Item item1 = slotItem1.itemDetails;
-        Item item2 = slotItem2.itemDetails;
+        if (slotItem1 == null) return;
+        item1 = slotItem1.itemDetails;
+        if (slotItem2 != null) item2 = slotItem2.itemDetails;
+        Debug.Log("HJNSIDFBNGOUISDFDSA");
 
         if (craftingUI.isSuperCrafting())
         {
@@ -43,7 +44,8 @@ public class CraftItem : MonoBehaviour
         foreach (Item parent in item1.parentItems)
         {
             bool craftSuccess = true;
-            if (item2.parentItems.Contains(parent) && (!superCrafting || item3.parentItems.Contains(parent)))
+            Debug.Log(item2);
+            if ((item2 != null && item2.parentItems.Contains(parent) && (!superCrafting || item3.parentItems.Contains(parent))) || item2 == null)
             {
                 Debug.Log(parent.itemName);
                 List<ItemGroup> requiredChildren = parent.childrenItems;
@@ -72,13 +74,17 @@ public class CraftItem : MonoBehaviour
                     craftingUI.craftingItems[3] = newItem;
                     craftingUI.UpdateSlot(3);
                     return;*/
-
+                    Debug.Log("ejifidajfda");
                     List<string> itemNames = new List<string>();
                     int[] quantities = {0, 0, 0};
-                    int numOfLoops = (superCrafting) ? 3 : 2;
+                    int numOfLoops = 0;
+                    if (item1!=null) numOfLoops +=1;
+                    if (item2!=null) numOfLoops +=1;
+                    if (item3!=null) numOfLoops +=1;
                     for (int i=0; i<numOfLoops; i++)
                     {
                         Item requiredItem = group.items[i];
+                        Debug.Log(requiredItem.itemName);
 
                         SlotItem correctItem = null;
                         if (requiredItem == null && !superCrafting) continue;
@@ -87,7 +93,7 @@ public class CraftItem : MonoBehaviour
                             correctItem = slotItem1;
                             quantities[0] = group.itemQuantities[i];
                         }
-                        else if (requiredItem.itemName == item2.itemName)
+                        else if (item2 != null && requiredItem.itemName == item2.itemName)
                         {
                             correctItem = slotItem2;
                             quantities[1] = group.itemQuantities[i];
@@ -107,8 +113,9 @@ public class CraftItem : MonoBehaviour
 
                         if (correctItem.quantity < group.itemQuantities[i]) break;
                     }
+                    Debug.Log("DOESNT GO PAST BREAK");
 
-                    if (itemNames.Contains(item1.itemName) && itemNames.Contains(item2.itemName) && (!superCrafting || itemNames.Contains(item3.itemName)))
+                    if (itemNames.Contains(item1.itemName) && (item2 == null || itemNames.Contains(item2.itemName)) && (!superCrafting || itemNames.Contains(item3.itemName)))
                     {
                         if (craftingUI.craftingItems[3] != null && craftingUI.craftingItems[3].itemDetails.itemName == parent.itemName)
                         {
@@ -125,11 +132,12 @@ public class CraftItem : MonoBehaviour
                             craftingUI.craftingItems[3] = newItem;
                             craftingUI.UpdateSlot(3);
                         }
+                        Debug.Log("GOT HERE");
                         slotItem1.quantity -= quantities[0];
-                        slotItem2.quantity -= quantities[1];
+                        if (slotItem2!= null) slotItem2.quantity -= quantities[1];
                         if (superCrafting) slotItem3.quantity -= quantities[2];
                         if (slotItem1.quantity <= 0) craftingUI.ClearSlot(0);
-                        if (slotItem2.quantity <= 0) craftingUI.ClearSlot(1);
+                        if (slotItem2 != null && slotItem2.quantity <= 0) craftingUI.ClearSlot(1);
                         if (superCrafting && slotItem3.quantity <= 0) craftingUI.ClearSlot(2);
                         craftingUI.UpdateSlot(0);
                         craftingUI.UpdateSlot(1);

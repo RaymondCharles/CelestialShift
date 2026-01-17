@@ -20,7 +20,11 @@ public class CraftingUI : MonoBehaviour, UIManager
     public void UpdateSlot(int slotIndex)
     {
         slots[slotIndex].sprite = craftingItems[slotIndex] != null ? craftingItems[slotIndex].itemDetails.itemImg : emptySprite;
-        slots[slotIndex].GetComponentInChildren<TMP_Text>().text = craftingItems[slotIndex] != null ? craftingItems[slotIndex].quantity.ToString() : "";
+        TMP_Text quantity = slots[slotIndex].transform.Find("Quantity")?.GetComponent<TMP_Text>();
+        quantity.text =  craftingItems[slotIndex] != null ? craftingItems[slotIndex].quantity.ToString() : ""; //GetComponentInChildren<TMP_Text>().text = item != null ? item.quantity.ToString() : "";
+        TMP_Text name = slots[slotIndex].transform.Find("Name")?.GetComponent<TMP_Text>();
+        name.text =  craftingItems[slotIndex] != null ? craftingItems[slotIndex].itemDetails.itemName : "";
+
     }
 
     public void SlotSwap(int slot1, int slot2)

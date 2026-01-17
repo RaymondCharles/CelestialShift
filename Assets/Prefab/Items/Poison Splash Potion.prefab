@@ -51,8 +51,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 4e813426ebee27d4da320dfe6f263502, type: 2}
-  hotBarManager: {fileID: 0}
   quantity: 1
+  hotBarManager: {fileID: 0}
+  minimapIconPrefab: {fileID: 0}
 --- !u!65 &7297484438255103493
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -72,8 +73,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.3438263, y: 4.0876937, z: 2.7631762}
-  m_Center: {x: 0.04009247, y: 1.5438473, z: 0.2941193}
+  m_Size: {x: 2.9357147, y: 4.0876937, z: 3.3088555}
+  m_Center: {x: -0.11405945, y: 1.5438473, z: 0.021279652}
 --- !u!23 &4123136274275193809
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -139,7 +140,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
@@ -162,8 +163,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.4995958, y: 2.8951302, z: 1}
+  m_Center: {x: -0.0041261315, y: 1.740135, z: 0}
 --- !u!1 &3914271445683348590
 GameObject:
   m_ObjectHideFlags: 0
