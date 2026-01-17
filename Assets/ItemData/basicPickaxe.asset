@@ -19,7 +19,11 @@ MonoBehaviour:
   quantityLimit: 1
   selected: 0
   parentItems: []
-  childrenItems: []
+  childrenItems:
+  - items:
+    - {fileID: 11400000, guid: 0b5a77da78534954d9b52f9bb09a3d80, type: 2}
+    - {fileID: 11400000, guid: 0f8c5d751cdb67a489ca7a7d82f43705, type: 2}
+    itemQuantities: 0a0000000f000000
   worldPrefab: {fileID: 3279265994378489053, guid: f9ac752608c3a3c4b84475b859aa4298, type: 3}
   action: {fileID: 0}
   minimapIconPrefab: {fileID: 0}

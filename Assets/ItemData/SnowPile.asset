@@ -10,23 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
-  m_Name: Stick
+  m_Name: SnowPile
   m_EditorClassIdentifier: 
-  itemName: Stick
-  itemImg: {fileID: 21300000, guid: de247de69e7a92e4e840ccf3b9f0d513, type: 3}
+  itemName: Snow Pile
+  itemImg: {fileID: 21300000, guid: a2b139bd7c6ed004481e0342d89bcfeb, type: 3}
   usable: 0
   useSpeed: 1
-  quantityLimit: 100
+  quantityLimit: 1
   selected: 0
   parentItems:
-  - {fileID: 11400000, guid: 9a90bd727caa45547b707076098b03e2, type: 2}
-  - {fileID: 11400000, guid: 0ffb03a55cf71d64a943168af6784660, type: 2}
+  - {fileID: 11400000, guid: c3fcde6fd631f564ea0e239027f2ae5b, type: 2}
+  - {fileID: 11400000, guid: fba5fe63d67de5041980c99e12ccb1dd, type: 2}
+  - {fileID: 11400000, guid: dee98b3ae00747f41a61f6e3212f12cf, type: 2}
   childrenItems: []
-  worldPrefab: {fileID: 1689312501208030411, guid: 0d1206e58d1c4974a81836af5c6a0e1a, type: 3}
+  worldPrefab: {fileID: 687042363521305635, guid: d22138e67b57eb74290a0862da720741, type: 3}
   action: {fileID: 0}
   minimapIconPrefab: {fileID: 0}
   newObject: {fileID: 0}
-  objectToSpawn: {fileID: 4023274866942333150, guid: de184ea440555134092bc57974aa1a7e, type: 3}
+  objectToSpawn: {fileID: 687042363521305635, guid: 8ccc066cc3eaac24ca2c07fb6840dc28, type: 3}
   positionalGameObjectName: right hand_end
   swingable: 0
   throwable: 0

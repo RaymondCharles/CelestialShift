@@ -10,24 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 630a221814293e849b68ee592d9c04d8, type: 3}
-  m_Name: Stick
+  m_Name: Prickly Pear
   m_EditorClassIdentifier: 
-  itemName: Stick
-  itemImg: {fileID: 21300000, guid: de247de69e7a92e4e840ccf3b9f0d513, type: 3}
+  itemName: 
+  itemImg: {fileID: 0}
   usable: 0
   useSpeed: 1
-  quantityLimit: 100
+  quantityLimit: 0
   selected: 0
-  parentItems:
-  - {fileID: 11400000, guid: 9a90bd727caa45547b707076098b03e2, type: 2}
-  - {fileID: 11400000, guid: 0ffb03a55cf71d64a943168af6784660, type: 2}
+  parentItems: []
   childrenItems: []
-  worldPrefab: {fileID: 1689312501208030411, guid: 0d1206e58d1c4974a81836af5c6a0e1a, type: 3}
+  worldPrefab: {fileID: 0}
   action: {fileID: 0}
   minimapIconPrefab: {fileID: 0}
   newObject: {fileID: 0}
-  objectToSpawn: {fileID: 4023274866942333150, guid: de184ea440555134092bc57974aa1a7e, type: 3}
-  positionalGameObjectName: right hand_end
+  objectToSpawn: {fileID: 0}
+  positionalGameObjectName: 
   swingable: 0
   throwable: 0
   consumable: 0

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -323,7 +323,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9c3abf2dd8216ec48ae11ac167b80437, type: 2}
   player: {fileID: 3459231171067390903}
   Level: 100
-  endlessTerrain: {fileID: 0}
+  isGameOver: 0
 --- !u!114 &10606636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2887,6 +2887,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 152285456}
   m_CullTransparentMesh: 1
+--- !u!1001 &157745275
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1740907904191704707, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.973453
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.8217378
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 32.864
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4838005253792636186, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
+      propertyPath: m_Name
+      value: Sandstone Armor
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a98154f1e1a9bc945b3438ea2eceac4b, type: 3}
 --- !u!1 &161284930
 GameObject:
   m_ObjectHideFlags: 0
@@ -6044,6 +6101,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   equippedShield: {fileID: 704515061}
   equippedItem: {fileID: 7439121437167147942}
+  equippedArmorObject: {fileID: 0}
+  equippedArmor: {fileID: 0}
   fpController: {fileID: 1376318064}
   playerAnimator: {fileID: 919132149081975084}
   throwable: 0
@@ -6055,6 +6114,10 @@ MonoBehaviour:
   swingItemClip: {fileID: 0}
   useSpeed: 1
   midSwing: 0
+  player: {fileID: 0}
+  woodenArmorMat: {fileID: 0}
+  sandstoneArmorMat: {fileID: 0}
+  iceArmorMat: {fileID: 0}
 --- !u!95 &276474662
 Animator:
   serializedVersion: 7
@@ -17712,6 +17775,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DungeonUIPanelSnowExit: {fileID: 0}
+  DungeonUIPanelSandExit: {fileID: 0}
+  DungeonUIPanelGrassExit: {fileID: 0}
   DungeonUIPanelSnow: {fileID: 0}
   DungeonUIPanelGrass: {fileID: 0}
   DungeonUIPanelSand: {fileID: 0}
@@ -17767,6 +17832,8 @@ MonoBehaviour:
   mouseSmoothTime: 0.03
   cameraController: {fileID: 0}
   turnSpeed: 12
+  isGameOver: 0
+  time: {fileID: 0}
 --- !u!224 &615376268 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5882612985282958000, guid: 0ec49db3fefb2d547ba10b40734135b4, type: 3}
@@ -24793,6 +24860,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   equippedShield: {fileID: 704515061}
   equippedItem: {fileID: 7439121437167147942}
+  equippedArmorObject: {fileID: 6986605493525632109}
+  equippedArmor: {fileID: 0}
   fpController: {fileID: 7902220941128870778}
   playerAnimator: {fileID: 7902220941128870775}
   throwable: 0
@@ -24804,6 +24873,10 @@ MonoBehaviour:
   swingItemClip: {fileID: 6251526563410470785, guid: 56209f2b674b6fa418a0ee0e9b9386f5, type: 3}
   useSpeed: 1
   midSwing: 0
+  player: {fileID: 0}
+  woodenArmorMat: {fileID: 0}
+  sandstoneArmorMat: {fileID: 0}
+  iceArmorMat: {fileID: 0}
 --- !u!1 &762733659
 GameObject:
   m_ObjectHideFlags: 0
@@ -30597,6 +30670,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 812286550}
   m_CullTransparentMesh: 1
+--- !u!1001 &826243014
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1740907904191704707, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.628
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.821738
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 32.864
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4838005253792636186, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
+      propertyPath: m_Name
+      value: Ice Armor
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e9853f2a449dc404b9564e5ef2f72d75, type: 3}
 --- !u!1 &828756810
 GameObject:
   m_ObjectHideFlags: 0
@@ -46790,6 +46920,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1177327777}
   m_CullTransparentMesh: 1
+--- !u!1001 &1179068447
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1740907904191704707, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 12.9734535
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.821738
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 32.864
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1740907904191704707, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4838005253792636186, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
+      propertyPath: m_Name
+      value: Wood Armor
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 96ad0910d91cb22428ecbd6413518bee, type: 3}
 --- !u!1 &1181947737
 GameObject:
   m_ObjectHideFlags: 0
@@ -49786,6 +49973,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DungeonUIPanelSnowExit: {fileID: 0}
+  DungeonUIPanelSandExit: {fileID: 0}
+  DungeonUIPanelGrassExit: {fileID: 0}
   DungeonUIPanelSnow: {fileID: 0}
   DungeonUIPanelGrass: {fileID: 0}
   DungeonUIPanelSand: {fileID: 0}
@@ -49841,6 +50030,8 @@ MonoBehaviour:
   mouseSmoothTime: 0.03
   cameraController: {fileID: 0}
   turnSpeed: 12
+  isGameOver: 0
+  time: {fileID: 0}
 --- !u!1 &1376351647
 GameObject:
   m_ObjectHideFlags: 0
@@ -54518,6 +54709,7 @@ MonoBehaviour:
   aimHeightOffset: 1.2
   usePrediction: 1
   maxLeadTime: 1
+  lastPlayerPosition: {x: 0, y: 0, z: 0}
   rotationSpeed: 1000
   visionRange: 20
   engagementRange: 10
@@ -72981,7 +73173,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2144748341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24058327, y: -0.000000016701, z: 0.0000000041395665, w: 0.97062856}
+  m_LocalRotation: {x: 0.24058327, y: 0.00000001670101, z: -0.0000000041395687, w: 0.97062856}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -73597,6 +73789,7 @@ MonoBehaviour:
   aimHeightOffset: 1.2
   usePrediction: 1
   maxLeadTime: 1
+  lastPlayerPosition: {x: 0, y: 0, z: 0}
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
@@ -75191,7 +75384,6 @@ MonoBehaviour:
   sandFX: {fileID: 2081581927}
   snowFX: {fileID: 776696746}
   grassFX: {fileID: 731270514}
-  mapGenerator: {fileID: 2103651205}
   biome: 
   transitionSpeed: 3
   targetFXRate: 100
@@ -78573,6 +78765,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DungeonUIPanelSnowExit: {fileID: 0}
+  DungeonUIPanelSandExit: {fileID: 0}
+  DungeonUIPanelGrassExit: {fileID: 0}
   DungeonUIPanelSnow: {fileID: 0}
   DungeonUIPanelGrass: {fileID: 0}
   DungeonUIPanelSand: {fileID: 0}
@@ -78628,6 +78822,8 @@ MonoBehaviour:
   mouseSmoothTime: 0.03
   cameraController: {fileID: 3031775645218132493}
   turnSpeed: 12
+  isGameOver: 0
+  time: {fileID: 0}
 --- !u!114 &7902220941128870779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78646,6 +78842,7 @@ MonoBehaviour:
   hunger: 100
   hungerDrainPerSecond: 1
   starvingDamagePerSecond: 2
+  baseMaxHealth: 100
   level: 1
   currentXP: 0
   baseXPToNext: 100
@@ -78666,6 +78863,7 @@ MonoBehaviour:
   sword: {fileID: 0}
   attackCooldown: 0.35
   attackWindow: 0.25
+  swordColliderAnim: {fileID: 0}
 --- !u!1 &7945833629450419811
 GameObject:
   m_ObjectHideFlags: 0
@@ -79361,6 +79559,7 @@ MonoBehaviour:
   aimHeightOffset: 1.2
   usePrediction: 1
   maxLeadTime: 1
+  lastPlayerPosition: {x: 0, y: 0, z: 0}
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
@@ -79719,6 +79918,7 @@ MonoBehaviour:
   aimHeightOffset: 2
   usePrediction: 1
   maxLeadTime: 1
+  lastPlayerPosition: {x: 0, y: 0, z: 0}
   rotationSpeed: 720
   visionRange: 20
   engagementRange: 10
@@ -79967,3 +80167,6 @@ SceneRoots:
   - {fileID: 549781173}
   - {fileID: 388711573}
   - {fileID: 1515410517}
+  - {fileID: 1179068447}
+  - {fileID: 157745275}
+  - {fileID: 826243014}
