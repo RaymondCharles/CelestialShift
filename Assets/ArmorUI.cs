@@ -22,7 +22,14 @@ public class ArmorUI : MonoBehaviour
     public void UpdateSlot(int slotIndex)
     {
         slots[slotIndex].sprite = armorItem[slotIndex] != null ? armorItem[slotIndex].itemDetails.itemImg : emptySprite;
-        itemEffect.UpdatePlayerArmor(armorItem[0].itemDetails);
+        if (armorItem[slotIndex] == null)
+        {
+            itemEffect.UpdatePlayerArmor(null);
+        }
+        else
+        {
+            itemEffect.UpdatePlayerArmor(armorItem[0].itemDetails);
+        }
     }
 
     public void ClearSlot(int index)

@@ -2773,6 +2773,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   equippedShield: {fileID: 0}
   equippedItem: {fileID: 0}
+  equippedArmorObject: {fileID: 564857099}
+  equippedArmor: {fileID: 0}
   fpController: {fileID: 506062155}
   playerAnimator: {fileID: 506062156}
   throwable: 0
@@ -2784,6 +2786,10 @@ MonoBehaviour:
   swingItemClip: {fileID: 6251526563410470785, guid: 56209f2b674b6fa418a0ee0e9b9386f5, type: 3}
   useSpeed: 1
   midSwing: 0
+  player: {fileID: 506062151}
+  woodenArmorMat: {fileID: -1730641597795635952, guid: 56209f2b674b6fa418a0ee0e9b9386f5, type: 3}
+  sandstoneArmorMat: {fileID: 2100000, guid: e17d76fa43215c746b99d6645d1790b4, type: 2}
+  iceArmorMat: {fileID: 2100000, guid: c015dfd9fa23e2d41b257877e8ccbbc0, type: 2}
 --- !u!1 &341323051
 GameObject:
   m_ObjectHideFlags: 0
@@ -4554,6 +4560,7 @@ MonoBehaviour:
   hunger: 100
   hungerDrainPerSecond: 1
   starvingDamagePerSecond: 2
+  baseMaxHealth: 100
   level: 1
   currentXP: 0
   baseXPToNext: 100
@@ -5246,7 +5253,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &564857100
 Transform:
   m_ObjectHideFlags: 0

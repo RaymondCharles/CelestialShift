@@ -200,7 +200,7 @@ public class FirstPersonController : MonoBehaviour
             (DungeonUIPanelSnow != null && DungeonUIPanelSnow.activeSelf) ||
             (DungeonUIPanelGrass != null && DungeonUIPanelGrass.activeSelf) ||
             (DungeonUIPanelSand != null && DungeonUIPanelSand.activeSelf) ||
-            (DungeonUIPanelSnowExit != null && DungeonUIPanelSnowExit.activeSelf)) && (GameManager.Instance != null && GameManager.Instance.inGame);
+            (DungeonUIPanelSnowExit != null && DungeonUIPanelSnowExit.activeSelf));
 
         // Check current scene
         string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
