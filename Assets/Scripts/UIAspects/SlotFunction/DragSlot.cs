@@ -63,6 +63,10 @@ public class DragSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (InventoryUI.Instance != null)
+        {
+            Debug.Log("IT EXISTS");
+        }
         if (dragIcon != null && InventoryUI.Instance.InventoryPanel.activeSelf)
         {
             dragIcon.transform.position = eventData.position;

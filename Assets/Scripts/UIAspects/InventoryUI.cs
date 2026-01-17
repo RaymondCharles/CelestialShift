@@ -14,6 +14,14 @@ public class InventoryUI : MonoBehaviour, UIManager
     {
         Instance = this;
     }
+/*
+    private void Update()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }*/
 
     // ---------- SAFETY CHECK ----------
     bool IsValidIndex(int index)
