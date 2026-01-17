@@ -16,16 +16,23 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float hungerDrainPerSecond = 1f;
     [SerializeField] private float starvingDamagePerSecond = 2f;
 
+    // Armor Health Multiplier
+
+    [SerializeField] private int baseMaxHealth = 100;
+    private float healthMultiplier = 1f;
+
     public static GameObject player;
 
     private float hungerDrainAccumulator;
 
-    public int MaxHealth => maxHealth;
+    //public int MaxHealth => maxHealth;
+    public int MaxHealth => Mathf.RoundToInt(baseMaxHealth * healthMultiplier);
+
     public int MaxHunger => maxHunger;
     public int Health => health;
     public int Hunger => hunger;
 
-    public int Defense;
+    //public int Defense;
 
 
     // XP + Level 
@@ -157,4 +164,13 @@ public class PlayerStats : MonoBehaviour
         hunger = clamped;
         OnStatsChanged?.Invoke();
     }
+
+    public void ApplyArmorMultiplier(float multiplier)
+    {
+        healthMultiplier = multiplier;
+        health = Mathf.Clamp(health, 0, MaxHealth);
+
+        OnStatsChanged?.Invoke();
+    }
+
 }

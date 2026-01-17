@@ -9,6 +9,12 @@ public class ItemEffect : MonoBehaviour
     public GameObject equippedArmorObject;
     public Item equippedArmor;
 
+    // Armor Materials
+    [SerializeField] private Material woodenArmorMat;
+    [SerializeField] private Material sandstoneArmorMat;
+    [SerializeField] private Material iceArmorMat;
+
+    private Renderer armorRenderer;
 
     private PlayerInputActions inputActions;
     public FirstPersonController fpController;
@@ -40,6 +46,10 @@ public class ItemEffect : MonoBehaviour
         playerAnimator.runtimeAnimatorController = overrideController;
         inputActions = new PlayerInputActions();
         rightArmLayer = playerAnimator.GetLayerIndex("RightArm Layer");
+        if (equippedArmorObject != null)
+        {
+            armorRenderer = equippedArmorObject.GetComponentInChildren<Renderer>(true);
+        }
     }
 
     // Start is called before the first frame update
@@ -144,16 +154,24 @@ public class ItemEffect : MonoBehaviour
 
     public void UpdatePlayerArmor(Item armor)
     {
-        if (armor.positionalGameObjectName != "armor" || armor == null) 
+        PlayerStats ps = PlayerStats.player != null
+        ? PlayerStats.player.GetComponent<PlayerStats>()
+        : FindFirstObjectByType<PlayerStats>();
+
+        if (armor == null || armor.positionalGameObjectName != "armor") //armor.positionalGameObjectName != "armor" || armor == null
         {
             equippedArmor = null;
             equippedArmorObject.SetActive(false);
 
-
+            if (ps != null) ps.ApplyArmorMultiplier(1f);
             return;
         }
 
-
+         if (ps == null)
+        {
+            Debug.LogError("ItemEffect: PlayerStats not found, can't apply armor multiplier.");
+            return;
+        }
         
         equippedArmor = armor;
 
@@ -164,8 +182,29 @@ public class ItemEffect : MonoBehaviour
             //CHANGE MATERIAL HERE FOR ARMOR.
             //equippedArmorObject is gameobject to get material and set material.
             //equippedArmor
+            armorRenderer.material = woodenArmorMat;
+            ps.ApplyArmorMultiplier(1.25f);
         }
-        
+        else if (armor.itemName == "Sandstone Armor")
+        {
+            Debug.Log("Equipped Sandstone Armor");
+            armorRenderer.material = sandstoneArmorMat;
+            ps.ApplyArmorMultiplier(1.75f);
+
+        }
+        else if (armor.itemName == "Ice Armor")
+        {
+            Debug.Log("Equipped Ice Armor");
+            armorRenderer.material = iceArmorMat;
+            ps.ApplyArmorMultiplier(1.5f);
+        }
+        else
+        {
+            Debug.LogWarning("Unknown armor type: " + armor.itemName);
+            equippedArmorObject.SetActive(false);
+            equippedArmor = null;
+        }
+
         Debug.Log("CHANGED ARMOR");
         equippedArmorObject.SetActive(true);
 
