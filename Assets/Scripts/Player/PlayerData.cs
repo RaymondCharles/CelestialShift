@@ -62,6 +62,7 @@ public class PlayerData
             SlotItem slot = inv.inventoryItems[i];
             if (slot != null)
             {
+                Debug.Log(slot.itemDetails.itemName);
                 inventorySlots.Add(
                     new InventorySlotData(
                         slot.itemDetails.itemName,
@@ -80,6 +81,7 @@ public class PlayerData
                 SlotItem slot = hotbar.slotItems[i];
                 if (slot != null)
                 {
+                    Debug.Log(slot.itemDetails.itemName);
                     HotBarSlots.Add(
                         new InventorySlotData(
                             slot.itemDetails.itemName,

@@ -22,6 +22,7 @@ public class InventoryUI : MonoBehaviour, UIManager
             Instance = this;
         }
     }*/
+    
 
     // ---------- SAFETY CHECK ----------
     bool IsValidIndex(int index)

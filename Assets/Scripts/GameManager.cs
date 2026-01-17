@@ -151,6 +151,8 @@ public class GameManager : MonoBehaviour
         if (loadGame && sceneName == "GameScene")
         {
             FirstPersonController.Instance.LoadPlayer();
+            yield return null;
+            FirstPersonController.Instance.RebindSceneUI();
             inGame = true;
         }
 

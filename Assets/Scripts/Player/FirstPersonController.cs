@@ -172,12 +172,12 @@ public class FirstPersonController : MonoBehaviour
         float zoomValue = MapZoomAction.ReadValue<float>();
 
 
-        
+        /*
         if (GameManager.Instance.loadGame)
         {
             StartCoroutine(DelayedLoadPlayer(1f));
         }
-
+*/
     }
     private IEnumerator DelayedLoadPlayer(float delay)
     {
@@ -221,6 +221,15 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
+    public void RebindSceneUI()
+    {
+        if (InventoryPanel == null) Debug.Log("IT WAS NUL 11L");
+        if (InventoryUI.Instance == null) Debug.Log("IT WAS NUL 22222L");
+        InventoryUI.Instance = InventoryPanel.GetComponentInChildren<InventoryUI>(true);
+                if (InventoryUI.Instance == null) Debug.Log("IT WAS NUL3 33333L");
+        //InventoryPanel = GameObject.Find("Inventory"); // better: Find by tag or serialized binder
+        //HotBar = GameObject.Find("HotBar");
+    }
 
 
 
