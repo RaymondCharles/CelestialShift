@@ -209,7 +209,10 @@ public class HotBarManager : MonoBehaviour, UIManager
     public void UpdateSlot(int slotIndex)
     {
         Slots[slotIndex].image.sprite = slotItems[slotIndex] != null ? slotItems[slotIndex].itemDetails.itemImg : emptySlotSprite;
-        Slots[slotIndex].GetComponentInChildren<TMP_Text>().text = slotItems[slotIndex] != null ? slotItems[slotIndex].quantity.ToString() : "";
+        TMP_Text quantity = Slots[slotIndex].transform.Find("Quantity")?.GetComponent<TMP_Text>();
+        quantity.text = slotItems[slotIndex] != null ? slotItems[slotIndex].quantity.ToString() : "";
+        TMP_Text name = Slots[slotIndex].transform.Find("Name")?.GetComponent<TMP_Text>();
+        name.text =  slotItems[slotIndex] != null ? slotItems[slotIndex].itemDetails.itemName : "";
     }
 
     //public void DropSelectedItem()

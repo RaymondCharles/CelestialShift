@@ -37,9 +37,10 @@ public class InventoryUI : MonoBehaviour, UIManager
         slots[slotIndex].sprite =
             item != null ? item.itemDetails.itemImg : emptySprite;
 
-        slots[slotIndex]
-            .GetComponentInChildren<TMP_Text>()
-            .text = item != null ? item.quantity.ToString() : "";
+        TMP_Text quantity = slots[slotIndex].transform.Find("Quantity")?.GetComponent<TMP_Text>();
+        quantity.text =  item != null ? item.quantity.ToString() : ""; //GetComponentInChildren<TMP_Text>().text = item != null ? item.quantity.ToString() : "";
+        TMP_Text name = slots[slotIndex].transform.Find("Name")?.GetComponent<TMP_Text>();
+        name.text =  item != null ? item.itemDetails.itemName : "";
     }
 
     public void SlotSwap(int slot1, int slot2)

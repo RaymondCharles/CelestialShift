@@ -21,34 +21,20 @@ public class DayNightCycle : MonoBehaviour {
         }
     }
 
-    [SerializeField]
-    private float elapsedTime;
+
+    public float elapsedTime;
 
     [SerializeField]
     private bool use24Clock = true;
 
-    public TMP_Text clockText;
+    public string clockText;
 
     [SerializeField]
     [Range(0f, 1f)]
-    private float _timeOfDay;
-    public float timeOfDay
-    {
-        get
-        {
-            return _timeOfDay;
-        }
-    }
+    public float timeOfDay;
 
-    [SerializeField]
-    private int _dayNumber = 0; //tracks the days passed
-    public int dayNumber
-    {
-        get
-        {
-            return _dayNumber;
-        }
-    }
+    public int dayNumber=0;
+
     private float _timeScale = 100f; // how fast time moves in the game world
 
     [SerializeField]
@@ -103,7 +89,7 @@ public class DayNightCycle : MonoBehaviour {
         {
             UpdateTimeScale();
             UpdateTime();
-            UpdateClock();
+            clockText = UpdateClock();
         }
 
 
@@ -140,13 +126,13 @@ public class DayNightCycle : MonoBehaviour {
 
     private void UpdateTime()
     {
-        _timeOfDay += Time.deltaTime * _timeScale / 86400; // seconds in a day
+        timeOfDay += Time.deltaTime * _timeScale / 86400; // seconds in a day
         elapsedTime += Time.deltaTime;
-        if(_timeOfDay > 1) //new day
+        if(timeOfDay > 1) //new day
         {
             elapsedTime = 0;
-            _dayNumber++;
-            _timeOfDay -= 1;
+            dayNumber++;
+            timeOfDay -= 1;
             gameManagerTemp.Level+=10; // increase enemy level each day
             gameManagerTemp.UpdateEnemyLevels();
         }

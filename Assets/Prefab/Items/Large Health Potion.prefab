@@ -134,8 +134,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: d780f6cdda55d2345b9af117ba6e0660, type: 2}
-  hotBarManager: {fileID: 0}
   quantity: 1
+  hotBarManager: {fileID: 0}
+  minimapIconPrefab: {fileID: 0}
 --- !u!65 &7255521386947500034
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -155,8 +156,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.3355484, y: 3.992971, z: 2.1727085}
-  m_Center: {x: -0.032901764, y: 1.496486, z: 0.0841856}
+  m_Size: {x: 2.8014374, y: 3.992971, z: 2.5253296}
+  m_Center: {x: -0.09935379, y: 1.496486, z: -0.09212494}
 --- !u!54 &868680577934750889
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -203,8 +204,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.4796829, y: 2.8656268, z: 1.7467785}
+  m_Center: {x: 0.055999756, y: 1.6652441, z: -0.02389431}
 --- !u!1 &5062307804911937710
 GameObject:
   m_ObjectHideFlags: 0

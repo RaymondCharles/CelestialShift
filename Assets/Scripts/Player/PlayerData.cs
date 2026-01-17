@@ -7,12 +7,17 @@ public class PlayerData
     public float[] position;
     public List<InventorySlotData> inventorySlots;
     public List<InventorySlotData> HotBarSlots;
+
+    public InventorySlotData armorSlot;
+
     public float hotBarSize;
     public float inventorySize;
     public float musicVolume;
     public bool isGameOver;
 
     public int day;
+    public float timeOfDay;
+    public float elapsedTime;
     public string timeText;
 
 
@@ -22,7 +27,9 @@ public class PlayerData
     public PlayerData(FirstPersonController player, DayNightCycle time)
     {
         day = time.dayNumber;
-        timeText = time.clockText.text;
+        timeOfDay = time.timeOfDay;
+        elapsedTime = time.elapsedTime;
+        timeText = time.clockText;
 
 
 
@@ -83,6 +90,12 @@ public class PlayerData
                 }
             }
         }
+
+        if (ArmorUI.Instance != null && ArmorUI.Instance.armorItem[0] != null)
+        {
+            armorSlot = new InventorySlotData(ArmorUI.Instance.armorItem[0].itemDetails.itemName, ArmorUI.Instance.armorItem[0].quantity, 0);
+        }
+
         hotBarSize = PlayerPrefs.GetFloat("HotbarSize", 0.6f);
         inventorySize = PlayerPrefs.GetFloat("InvSize", 1f);
         musicVolume = PlayerPrefs.GetFloat("MusicVol", 0.6f);

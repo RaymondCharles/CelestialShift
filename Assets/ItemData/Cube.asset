@@ -18,10 +18,15 @@ MonoBehaviour:
   useSpeed: 5
   quantityLimit: 10
   selected: 0
-  parentItems: []
-  childrenItems: []
+  parentItems:
+  - {fileID: 11400000}
+  childrenItems:
+  - items:
+    - {fileID: 11400000}
+    itemQuantities: 01000000
   worldPrefab: {fileID: 1877884569096021469, guid: 07a3e520ef0ed754f8d35c4cd1d8ee86, type: 3}
   action: {fileID: 0}
+  minimapIconPrefab: {fileID: 0}
   newObject: {fileID: 0}
   objectToSpawn: {fileID: 1877884569096021469, guid: 6e1fa992237e74f489099e9126c5da23, type: 3}
   positionalGameObjectName: right hand_end

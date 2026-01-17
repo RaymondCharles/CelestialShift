@@ -131,7 +131,6 @@ public class FirstPersonController : MonoBehaviour
 
 
     public bool isGameOver = false;
-    public DayNightCycle time;
 
 
 
@@ -173,7 +172,7 @@ public class FirstPersonController : MonoBehaviour
         float zoomValue = MapZoomAction.ReadValue<float>();
 
 
-
+        
         if (GameManager.Instance.loadGame)
         {
             StartCoroutine(DelayedLoadPlayer(1f));
@@ -285,7 +284,22 @@ public class FirstPersonController : MonoBehaviour
             HotBarManager.Instance.UpdateSlot(slotData.slotIndex);
         }
 
+        if (data.armorSlot != null && ItemDatabase.Instance.GetItemByName(data.armorSlot.itemName) != null)
+        {
+            Item armorItem = ItemDatabase.Instance.GetItemByName(data.armorSlot.itemName);
+            SlotItem armorSlot = new SlotItem(armorItem, data.armorSlot.quantity);
+            ArmorUI.Instance.SetItem(0, armorSlot);
+            ArmorUI.Instance.UpdateSlot(0);
+        }
+
         Debug.Log("Player + Inventory/HotBar loaded");
+
+
+        DayNightCycle.Instance.dayNumber = data.day;
+        DayNightCycle.Instance.timeOfDay = Mathf.Repeat(data.timeOfDay, 1f);
+        DayNightCycle.Instance.elapsedTime = Mathf.Clamp(data.elapsedTime, 0f, DayNightCycle.Instance.targetDayLength * 60f);
+        DayNightCycle.Instance.clockText = data.timeText;
+
 
         // Apply HotBar size
         if (HotBar != null)
