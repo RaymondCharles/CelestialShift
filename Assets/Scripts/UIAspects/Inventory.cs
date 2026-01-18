@@ -14,7 +14,7 @@ public class Inventory : MonoBehaviour
 
     public void Awake()
     {
-        Instance = this;
+        if (Instance != null) Instance = this;
         inventoryItems = new SlotItem[inventorySize];
     }
 

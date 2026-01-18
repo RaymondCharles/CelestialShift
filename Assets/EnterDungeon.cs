@@ -41,6 +41,7 @@ public class EnterDungeon : MonoBehaviour
         }
         else
         {
+            Debug.Log("GameManager null");
             SceneManager.LoadScene(targetSceneName);
         }
 

@@ -79,6 +79,8 @@ public class SlotFunctions : MonoBehaviour
         {
             if (ArmorUI.Instance == null || index < 0 || index >= ArmorUI.Instance.armorItem.Length)
             {
+                if (ArmorUI.Instance == null)Debug.Log("INSTANCE NULL");
+                Debug.Log("NOT INSTANCE NULL BUT NOT DOING");
                 return;
             }
             ArmorUI.Instance.armorItem[index] = item;

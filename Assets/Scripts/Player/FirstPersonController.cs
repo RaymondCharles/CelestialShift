@@ -11,7 +11,6 @@ public class FirstPersonController : MonoBehaviour
     InputAction InventoryAction;
     InputAction PauseAction;
     InputAction DropAction;
-    InputAction UseAction;
     InputAction MapAction;
     InputAction MapZoomAction;
     public GameObject DungeonUIPanelExit;
@@ -165,7 +164,6 @@ public class FirstPersonController : MonoBehaviour
         InventoryAction = playerInput.actions.FindAction("Inventory");
         PauseAction = playerInput.actions.FindAction("Pause");
         DropAction = playerInput.actions.FindAction("Drop");
-        UseAction = playerInput.actions.FindAction("Use");
         MapAction = playerInput.actions.FindAction("Map");
         MapZoomAction = playerInput.actions.FindAction("MapZoom");
         float zoomValue = MapZoomAction.ReadValue<float>();
@@ -609,6 +607,7 @@ public class FirstPersonController : MonoBehaviour
         int selectedSlot = HotBarManager.Instance.selectedSlot;
         if (selectedSlot == -1) return;
         SlotItem slotItem = HotBarManager.Instance.slotItems[selectedSlot];
+        Debug.Log("USED");
         if (slotItem == null) return;
 
         if (Inventory.Instance == null) return;
@@ -616,11 +615,12 @@ public class FirstPersonController : MonoBehaviour
 
         if (slotItem.quantity > 0)
         {
+            /*
             if (gameManager == null)
             {
                 gameManager = GameObject.FindGameObjectWithTag("InGameManager");
                 gameManager.GetComponent<GameManagerTemp>().player = Instance.gameObject;
-            }
+            }*/
             slotItem.itemDetails.Use(gameManager);
             if (slotItem.itemDetails.usable) slotItem.quantity--;
             HotBarManager.Instance.UpdateSlot(selectedSlot);
@@ -663,10 +663,6 @@ public class FirstPersonController : MonoBehaviour
             if (DropAction.triggered)
             {
                 DropSelectedItem();
-            }
-            if (UseAction.triggered)
-            {
-                UseSelectedItem();
             }
             if (MapAction.triggered)
             {
